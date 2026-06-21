@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#15161c;color:#473c2e;padding:24px 14px 70px;}
+  .head{text-align:center;color:#e8eaf0;margin-bottom:14px;}
+  .head h1{font-size:20px;margin:0 0 5px;font-weight:800;}
+  .head p{margin:0 auto;max-width:520px;color:#9aa1b2;font-size:12.5px;line-height:1.5;}
+  .phone{width:392px;max-width:100%;margin:0 auto;border-radius:46px;padding:12px;background:#05060a;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;position:relative;}
+  .screen{position:relative;border-radius:36px;overflow:hidden;background:#fff8ec;}
+  .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:40;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;color:#5b4e3c;}
+  .pad{padding:6px 15px 20px;}
+  .hdr{display:flex;justify-content:space-between;align-items:center;padding:6px 2px 10px;}
+  .hdr .t{font-size:18px;font-weight:800;} .hdr .g{font-size:20px;cursor:pointer;}
+
+  h3.sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#a99877;margin:16px 4px 9px;display:flex;justify-content:space-between;align-items:center;}
+  h3.sec .lk{color:#1cb0f6;font-size:11px;cursor:pointer;}
+  .card{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:18px;padding:14px;margin-bottom:13px;}
+
+  /* identidad */
+  .idcard{text-align:center;}
+  .idcard .crit{height:120px;display:flex;align-items:center;justify-content:center;position:relative;}
+  .idcard .crit img{max-height:118px;filter:saturate(1.4) drop-shadow(0 0 18px #9fdc4a) drop-shadow(0 8px 10px rgba(0,0,0,.14));animation:flo 3s ease-in-out infinite;}
+  .idcard .nm{font-size:20px;font-weight:900;letter-spacing:-.3px;}
+  .idcard .meta{font-size:12px;color:#9b8c6e;font-weight:700;margin-top:1px;}
+  .idcard .lvl{display:inline-block;font-size:15px;font-weight:900;color:#46a302;margin-top:8px;}
+  .idcard .pos{display:block;font-size:11.5px;font-weight:800;color:#b07b00;margin-top:3px;}
+  .titulo{display:inline-block;margin-top:9px;font-size:11.5px;font-weight:800;color:#7a4ddb;background:#f3e9ff;border:1.5px solid #e2d2ff;border-radius:999px;padding:4px 12px;}
+  .qstats{display:flex;justify-content:center;gap:8px;margin-top:13px;flex-wrap:wrap;}
+  .qs{background:#fdf6e8;border:1.5px solid #efe3cd;border-radius:12px;padding:7px 11px;text-align:center;min-width:70px;}
+  .qs b{display:block;font-size:16px;font-weight:900;color:#473c2e;} .qs span{font-size:10px;color:#9b8c6e;font-weight:700;}
+
+  .cta{display:block;width:100%;text-align:center;background:#58cc02;color:#fff;font-weight:800;border:none;border-bottom:4px solid #3d8b00;border-radius:14px;padding:13px;font-size:15px;cursor:pointer;}
+
+  /* tarjeta compartible */
+  .share{border-radius:20px;padding:18px 16px 16px;color:#fff;text-align:center;position:relative;overflow:hidden;
+    background:radial-gradient(120% 80% at 50% -10%,#3a2c8f 0%,#241a5e 70%);}
+  .share::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.07);}
+  .share .brand{font-size:11px;font-weight:800;letter-spacing:.5px;opacity:.9;}
+  .share .crit img{max-height:104px;filter:saturate(1.4) drop-shadow(0 0 16px #9fdc4a);animation:flo 3s ease-in-out infinite;margin:4px 0;}
+  .share .who{font-size:13px;font-weight:700;opacity:.95;}
+  .share .big{font-size:24px;font-weight:900;letter-spacing:-.4px;margin:2px 0 4px;}
+  .share .stat{font-size:12.5px;font-weight:700;opacity:.95;}
+  .share .fire{display:inline-block;margin-top:8px;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800;}
+  .share .tag{font-size:12.5px;font-style:italic;margin-top:11px;opacity:.95;}
+  .share .foot{margin-top:11px;font-size:11px;font-weight:800;opacity:.92;}
+  .share .foot b{color:#9fe06a;}
+  .sharebtns{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px;}
+  .sb{border:none;border-radius:12px;padding:11px;font-weight:800;font-size:13px;cursor:pointer;}
+  .sb.wa{background:#25d366;color:#fff;grid-column:1/3;border-bottom:3px solid #1aa34a;}
+  .sb.sec{background:#fff;color:#473c2e;border:2px solid #efe3cd;}
+
+  /* logros */
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .lg{border:1.5px solid #efe3cd;border-radius:14px;padding:11px;background:#fdf6e8;display:flex;gap:10px;align-items:center;}
+  .lg .ic{font-size:24px;flex:0 0 auto;}
+  .lg .t{font-weight:800;font-size:12.5px;line-height:1.1;} .lg .d{font-size:10.5px;color:#9b8c6e;margin-top:2px;}
+  .lg.locked{opacity:.6;filter:grayscale(.4);}
+  .lg .bar{height:5px;border-radius:999px;background:#eee3cc;margin-top:5px;overflow:hidden;} .lg .bar i{display:block;height:100%;background:#46a302;}
+  .got{font-size:9px;font-weight:800;color:#b07b00;background:#fff3d1;border:1px solid #ffe49e;border-radius:999px;padding:1px 6px;display:inline-block;margin-top:4px;}
+
+  /* stats */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .st{background:#fff;border:2px solid #efe3cd;border-bottom-width:4px;border-radius:14px;padding:11px;text-align:center;}
+  .st b{display:block;font-size:18px;font-weight:900;color:#473c2e;} .st span{font-size:10px;color:#9b8c6e;font-weight:700;}
+
+  /* escalera link */
+  .esc{display:flex;align-items:center;gap:12px;cursor:pointer;}
+  .esc .row{display:flex;gap:-8px;} .esc img{width:34px;height:34px;object-fit:contain;margin-left:-8px;filter:saturate(1.3) drop-shadow(0 2px 3px rgba(0,0,0,.15));}
+  .esc img:first-child{margin-left:0;}
+
+  .navbar{display:flex;justify-content:space-around;align-items:center;height:74px;background:#fff;border-top:2px solid #efe3cd;}
+  .nav i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#bbae93;cursor:pointer;}
+  .nav i.on{color:#58cc02;} .nav .ic{font-size:20px;}
+  .scanbtn{width:58px;height:58px;border-radius:50%;background:#1cb0f6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin-top:-24px;border:4px solid #fff;box-shadow:0 8px 20px rgba(28,176,246,.4);}
+
+  @keyframes flo{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .demo-idx{position:fixed;left:12px;top:12px;z-index:99999;background:#473c2e;color:#fff;font:700 12px/1 -apple-system,system-ui,Arial;padding:7px 12px;border-radius:999px;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="pad">
+        <div class="hdr"><div class="t">Mi perfil</div><div class="g">⚙️</div></div>
+
+        <!-- IDENTIDAD -->
+        <div class="card idcard">
+          <div class="crit" style="cursor:pointer" onclick="location.href='niveles-final.html'"><img src="criaturas/05_notable.webp" alt="criatura"><div style="font-size:10.5px;font-weight:800;color:#1cb0f6;margin-top:2px">ver mis niveles ▸</div></div>
+          <div class="nm">Martina Soto</div>
+          <div class="meta">4° medio · 🇨🇱 Chile · se unió en marzo</div>
+          <div class="lvl">😎 Puntaje Notable</div>
+          <span class="pos">🇨🇱 Le ganas al 82% de Chile que va por Medicina</span>
+          <div><span class="titulo">🔥 Título: Racha imparable</span></div>
+          <div class="qstats">
+            <div class="qs"><b>🔥 12</b><span>racha</span></div>
+            <div class="qs"><b>8.450</b><span>XP total</span></div>
+            <div class="qs"><b>38</b><span>días activa</span></div>
+          </div>
+          <div class="sharebtns">
+            <button class="sb wa" onclick="alert('Compartir por WhatsApp (demo) 🟢')">📲 Compartir mi perfil</button>
+            <button class="sb sec" onclick="alert('Descargar imagen (demo) 🖼️')">Descargar</button>
+            <button class="sb sec" onclick="alert('Link copiado (demo) 🔗')">Copiar link</button>
+          </div>
+        </div>
+
+        <!-- LOGROS -->
+        <h3 class="sec">Tus logros <span class="lk" style="cursor:pointer" onclick="location.href='logros.html'">ver todos ▸</span></h3>
+        <div class="grid2">
+          <div class="lg"><div class="ic">⭐</div><div><div class="t">Llegaste a Notable</div><div class="d">Subiste tu 5º nivel</div><span class="got">✓ obtenido</span></div></div>
+          <div class="lg"><div class="ic">🔥</div><div><div class="t">Racha de 7</div><div class="d">7 días seguidos</div><span class="got">✓ obtenido</span></div></div>
+          <div class="lg"><div class="ic">📕</div><div><div class="t">Libro conectado</div><div class="d">Tu 1er escaneo</div><span class="got">✓ obtenido</span></div></div>
+          <div class="lg"><div class="ic">🎯</div><div><div class="t">100 preguntas</div><div class="d">Respondiste 100</div><span class="got">✓ obtenido</span></div></div>
+          <div class="lg locked"><div class="ic">🤝</div><div><div class="t">Mentora</div><div class="d">Ayuda a 10 en Dudas · 4/10</div><div class="bar"><i style="width:40%"></i></div></div></div>
+          <div class="lg locked"><div class="ic">💎</div><div><div class="t">Caza-difíciles</div><div class="d">Acierta 50 difíciles · 18/50</div><div class="bar"><i style="width:36%"></i></div></div></div>
+          <div class="lg locked"><div class="ic">🔥</div><div><div class="t">Racha de 30</div><div class="d">12/30 días</div><div class="bar"><i style="width:40%"></i></div></div></div>
+          <div class="lg locked"><div class="ic">🏆</div><div><div class="t">Maestra de M1</div><div class="d">Domina todos los temas</div><div class="bar"><i style="width:60%"></i></div></div></div>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <h3 class="sec">Estadísticas</h3>
+        <div class="grid3">
+          <div class="st"><b>21</b><span>mejor racha</span></div>
+          <div class="st"><b>14</b><span>ensayos</span></div>
+          <div class="st"><b>78%</b><span>precisión</span></div>
+          <div class="st"><b>1.240</b><span>preguntas</span></div>
+          <div class="st"><b>6</b><span>libros</span></div>
+          <div class="st"><b>Esmeralda</b><span>liga</span></div>
+        </div>
+
+        <!-- ESCALERA -->
+        <h3 class="sec">Mi escalera <span class="lk" onclick="location.href='niveles-final.html'">ver completa ▸</span></h3>
+        <div class="card esc" onclick="location.href='niveles-final.html'">
+          <div class="row">
+            <img src="criaturas/03_bueno.webp"><img src="criaturas/04_solido.webp"><img src="criaturas/05_notable.webp"><img src="criaturas/06_brillante.webp">
+          </div>
+          <div style="flex:1;text-align:right"><div style="font-weight:800;font-size:13px">Vas en el 5° de 12</div><div style="font-size:11px;color:#9b8c6e">Sigue para evolucionar 🧬</div></div>
+        </div>
+
+      </div>
+      <div class="navbar nav">
+        <i onclick="location.href='home.html'"><span class="ic">🏠</span>Inicio</i>
+        <i onclick="location.href='practicar-v5.html'"><span class="ic">🎯</span>Practicar</i>
+        <i onclick="location.href='escanear-v1.html'"><span class="ic">📷</span>Escanear</i>
+        <i onclick="alert('Ligas: próximamente 🏆')"><span class="ic">🏆</span>Ligas</i>
+        <i class="on"><span class="ic">🦦</span>Perfil</i>
+      </div>
+    </div>
+  </div></body>
+</html>

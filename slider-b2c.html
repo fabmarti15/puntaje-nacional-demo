@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — Modelo + Diseño</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(120% 80% at 50% -10%,#1b2030 0%,#0c0d12 70%);color:#e8eaf0;min-height:100vh;overflow:hidden;}
+  .wrap{height:100vh;display:flex;flex-direction:column;}
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;flex:0 0 auto;}
+  .bar .brand{font-size:13px;font-weight:800;letter-spacing:.3px;color:#cdd3e3;display:flex;align-items:center;gap:7px;}
+  .bar .brand .o{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .bar .count{font-size:12px;font-weight:800;color:#7180a0;}
+
+  .viewport{flex:1;overflow:hidden;position:relative;}
+  .track{display:flex;height:100%;transition:transform .5s cubic-bezier(.45,0,.2,1);}
+  .slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:10px 24px 24px;}
+  .sc{width:100%;max-width:440px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .eyebrow{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#7e8cae;}
+  .big{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.04;color:#fff;}
+  .big.sm{font-size:30px;}
+  .accent{color:#9fe06a;}
+  .micro{font-size:14.5px;font-weight:600;color:#aeb6cc;}
+
+  /* chips concepto */
+  .crow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px;}
+  .cc{background:#171b27;border:1.5px solid #2c3346;border-radius:14px;padding:12px 16px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:9px;color:#e8eaf0;}
+  .cc .e{font-size:20px;}
+  .free$ {color:#9fe06a;}
+  .big$ {font-size:30px;font-weight:900;color:#9fe06a;letter-spacing:-1px;}
+
+  /* tiers */
+  .tiers{display:flex;flex-direction:column;gap:9px;width:100%;margin-top:2px;}
+  .tier{display:flex;align-items:center;gap:12px;border:2px solid #2c3346;border-radius:16px;padding:13px 15px;background:#141826;text-align:left;}
+  .tier .tn{font-weight:900;font-size:15px;color:#fff;}
+  .tier .ts{font-size:12px;color:#9aa3bd;font-weight:600;margin-top:1px;}
+  .tier .tg{margin-left:auto;font-size:12px;font-weight:800;color:#7180a0;}
+  .tier.mid{border-color:#3d6b2e;background:#16210f;}
+  .tier.top{border-color:#7a6422;background:#241d0d;}
+  .tier.top .tg{color:#ffce3a;}
+
+  /* ===== UI SNIPPETS (del home real) ===== */
+  .ui{width:340px;max-width:100%;background:#fff8ec;border-radius:22px;padding:16px;color:#473c2e;box-shadow:0 24px 60px rgba(0,0,0,.5);text-align:left;}
+  .topbar{display:flex;align-items:center;gap:7px;}
+  .chip{font-size:14px;font-weight:800;background:#fff;border:2px solid #efe3cd;border-radius:999px;padding:5px 10px;display:flex;gap:5px;align-items:center;}
+  .chip.fire{color:#ff7a00;border-color:#ffd9a8;} .chip.gem{color:#1cb0f6;border-color:#bfe9ff;} .chip.liga{color:#0c9c7e;border-color:#bfeee0;}
+  .chip .sh{width:17px;height:20px;display:block;}
+  .ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(160deg,#ffb84d,#ff8a00);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;margin-left:auto;}
+  .card{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:18px;padding:14px;}
+  .lvlcard{display:flex;align-items:center;gap:13px;}
+  .crit{width:70px;height:70px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .crit img{max-width:100%;max-height:100%;filter:saturate(1.38) drop-shadow(0 0 12px #9fdc4a);}
+  .lname{font-weight:900;font-size:19px;color:#46a302;letter-spacing:-.3px;}
+  .pos{display:inline-block;font-size:11px;font-weight:800;color:#b07b00;background:#fff3d1;border:1.5px solid #ffe49e;padding:3px 9px;border-radius:999px;margin-top:5px;}
+  .pr{height:8px;border-radius:999px;background:#eee3cc;overflow:hidden;margin-top:8px;} .pr i{display:block;height:100%;width:84%;background:linear-gradient(90deg,#58cc02,#46a302);}
+  .prl{font-size:11px;color:#9b8c6e;font-weight:700;margin-top:5px;} .prl b{color:#46a302;}
+  .mis{border:2px solid #d6efb6;border-bottom:6px solid #9fdc4a;background:linear-gradient(180deg,#fbfff4,#fff);}
+  .mis h2{font-size:21px;font-weight:900;letter-spacing:-.4px;margin-bottom:2px;}
+  .msub{font-size:12px;color:#9b8c6e;font-weight:700;}
+  .uplift{margin:11px 0 0;background:#eafbe0;border:1.5px solid #bfe9a8;border-radius:13px;padding:9px 11px;font-size:12.5px;font-weight:700;color:#2f8b00;}
+  .cta{display:block;width:100%;text-align:center;background:#58cc02;color:#fff;font-weight:800;border:none;border-bottom:4px solid #3d8b00;border-radius:13px;padding:12px;font-size:14px;margin-top:11px;}
+  .week{display:flex;justify-content:space-between;}
+  .day{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#b6a98a;}
+  .dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:#f1e7d2;color:#cdbf9f;}
+  .dot.on{background:#ff9600;color:#fff;box-shadow:0 3px 0 #d97a00;} .dot.today{background:#fff;border:2px dashed #ff9600;color:#ff9600;}
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center;}
+  .med{font-size:10px;color:#9b8c6e;font-weight:700;}
+  .medico{width:42px;height:42px;border-radius:12px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:19px;background:#f3ead4;}
+  .medico.silver{background:linear-gradient(160deg,#eef1f4,#d3dae0);} .medico.bronze{background:linear-gradient(160deg,#f6e2cd,#e9c8a6);}
+  .ens-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;} .ens-head .ic{font-size:20px;} .ens-head .t{font-weight:900;font-size:14px;} .ens-head .s{font-size:10.5px;color:#9b8c6e;font-weight:700;}
+  .erow{display:flex;align-items:center;gap:10px;padding:8px 2px;border-top:1.5px solid #f1e7d2;} .erow .em{font-weight:800;font-size:12.5px;flex:1;}
+  .score{font-size:11px;font-weight:800;color:#b07b00;background:#fff3d1;border:1.5px solid #ffe49e;border-radius:999px;padding:3px 9px;}
+  .cd{font-size:11px;font-weight:800;color:#1c7ad6;background:#eaf5ff;border:1.5px solid #bfe0ff;border-radius:999px;padding:3px 9px;}
+  .emp{font-size:11px;font-weight:800;color:#fff;background:#58cc02;border:none;border-bottom:3px solid #3d8b00;border-radius:10px;padding:5px 14px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .tile{background:#fff;border:2px solid #efe3cd;border-bottom-width:4px;border-radius:16px;padding:12px;}
+  .tile .ic{font-size:21px;} .tile .t{font-weight:800;font-size:13px;margin-top:3px;} .tile .s{font-size:10.5px;color:#9b8c6e;}
+  .tile.dudas{background:linear-gradient(160deg,#eaf7ff,#fff);border-color:#bfe9ff;}
+  .plus{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fff6df,#fffdf7);border:1.5px solid #ffe49e;border-bottom-width:4px;border-radius:16px;padding:13px;}
+  .plus .pic{width:42px;height:42px;border-radius:11px;background:linear-gradient(160deg,#ffd76a,#ffae18);display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto;}
+  .plus .t{font-weight:800;font-size:13px;color:#5b4e2c;} .plus .s{font-size:10.5px;color:#9b8c6e;font-weight:600;} .plus .arr{margin-left:auto;color:#b07b00;font-weight:900;font-size:18px;}
+  .uihint{font-size:11px;font-weight:800;color:#a99877;text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;}
+
+  /* nav */
+  .foot{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:16px;padding:14px 22px 22px;}
+  .navb{width:46px;height:46px;border-radius:50%;border:1.5px solid #313748;background:#171b27;color:#e8eaf0;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .1s;}
+  .navb:hover{background:#222838;} .navb:active{transform:scale(.92);}
+  .dots{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:60vw;}
+  .d{width:8px;height:8px;border-radius:50%;background:#3a4055;cursor:pointer;transition:all .25s;}
+  .d.on{background:#9fe06a;width:22px;border-radius:999px;}
+  .hintkey{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);font-size:10.5px;color:#56607a;font-weight:600;}
+  @media(max-width:520px){ .big{font-size:30px;} .big.sm{font-size:24px;} .ui{width:300px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <div class="brand"><span class="o">🦦</span> Puntaje Nacional</div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <div class="viewport">
+    <div class="track" id="track">
+
+      <!-- 1 · COVER -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">Para Seba</div>
+        <div class="big">Nuevo modelo.<br><span class="accent">Nuevo diseño.</span></div>
+        <div class="micro">El estudiante de Puntaje Nacional.</div>
+      </div></div>
+
+      <!-- 2 · B2C principio -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El modelo</div>
+        <div class="big">Aprender<br>es <span class="accent">gratis</span>.</div>
+        <div class="crow"><div class="cc"><span class="e">🎓</span> Aprendizaje <span class="big$">$0</span></div></div>
+        <div class="micro">Siempre. Esa es la misión.</div>
+      </div></div>
+
+      <!-- 3 · dónde está el negocio -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El modelo</div>
+        <div class="big sm">¿El negocio?</div>
+        <div class="crow">
+          <div class="cc"><span class="e">📕</span> El libro + hojas</div>
+          <div class="cc"><span class="e">🦦</span> nutrIA</div>
+        </div>
+        <div class="micro">Lo difícil de copiar. No el aprender.</div>
+      </div></div>
+
+      <!-- 4 · 3 tiers -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El modelo</div>
+        <div class="big sm">Tres planes.</div>
+        <div class="tiers">
+          <div class="tier"><div><div class="tn">Free</div><div class="ts">todo digital</div></div><div class="tg">nutrIA acotada</div></div>
+          <div class="tier mid"><div><div class="tn">Plan</div><div class="ts">+ libro y hojas en PDF</div></div><div class="tg">nutrIA libre</div></div>
+          <div class="tier top"><div><div class="tn">Libro</div><div class="ts">papel + hojas impresas</div></div><div class="tg">$49.990</div></div>
+        </div>
+      </div></div>
+
+      <!-- 5 · bridge -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El diseño</div>
+        <div class="big">El diseño<br>lo <span class="accent">potencia</span>.</div>
+        <div class="micro">Cada sección, un objetivo.</div>
+      </div></div>
+
+      <!-- 6 · top bar -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">Tu pulso</div>
+        <div class="ui">
+          <div class="uihint">Barra superior</div>
+          <div class="topbar">
+            <span class="chip fire"><span>🔥</span> 12</span>
+            <span class="chip gem">💎 400</span>
+            <span class="chip liga"><svg class="sh" viewBox="0 0 40 48"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3ee0bd"/><stop offset="1" stop-color="#0c9c7e"/></linearGradient></defs><path d="M20 1L37 7v17c0 11-8 18-17 23C11 42 3 35 3 24V7z" fill="url(#cg)" stroke="#0a8a70" stroke-width="2"/><path d="M20 13l2.3 4.7 5.2.7-3.8 3.7.9 5.2L20 25.6l-4.6 2.3.9-5.2-3.8-3.7 5.2-.7z" fill="#fff" opacity=".95"/></svg> 3º</span>
+            <span class="ava">M</span>
+          </div>
+        </div>
+        <div class="micro">Racha · gemas · liga.</div>
+      </div></div>
+
+      <!-- 7 · nivel -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">Identidad</div>
+        <div class="ui">
+          <div class="uihint">Tu nivel</div>
+          <div class="card lvlcard">
+            <div class="crit"><img src="criaturas/05_notable.webp" alt=""></div>
+            <div style="flex:1">
+              <div class="lname">Puntaje Notable</div>
+              <span class="pos">🇨🇱 Le ganas al 82% que va por Medicina</span>
+              <div class="pr"><i></i></div>
+              <div class="prl">Te faltan <b>480 XP</b> para Brillante</div>
+            </div>
+          </div>
+        </div>
+        <div class="micro">Una criatura que evoluciona con tu esfuerzo.</div>
+      </div></div>
+
+      <!-- 8 · misión -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">Foco diario</div>
+        <div class="ui">
+          <div class="uihint">Tu misión de hoy</div>
+          <div class="card mis">
+            <h2>Leyes de Mendel</h2>
+            <div class="msub">Biología · según tu plan</div>
+            <div class="uplift">📈 Podrías subir +15 a +30 pts. <span style="color:#9b8c6e">Estimación.</span></div>
+            <button class="cta">Empezar misión</button>
+          </div>
+        </div>
+        <div class="micro">Una sola, elegida por nutrIA.</div>
+      </div></div>
+
+      <!-- 9 · semana -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">Hábito</div>
+        <div class="ui">
+          <div class="uihint">Tu semana</div>
+          <div class="card"><div class="week">
+            <div class="day"><div class="dot on">✓</div>L</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>J</div>
+            <div class="day"><div class="dot today">●</div>V</div>
+            <div class="day"><div class="dot">·</div>S</div>
+            <div class="day"><div class="dot">·</div>D</div>
+          </div></div>
+        </div>
+        <div class="micro">La racha manda.</div>
+      </div></div>
+
+      <!-- 10 · temas -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">A tu medida</div>
+        <div class="ui">
+          <div class="uihint">Tus temas</div>
+          <div class="card"><div class="grid5">
+            <div><div class="medico silver">🥈</div><div class="med">Genética</div></div>
+            <div><div class="medico bronze">🥉</div><div class="med">Estequiom.</div></div>
+            <div><div class="medico silver">🥈</div><div class="med">Lectora</div></div>
+            <div><div class="medico bronze">🥉</div><div class="med">Funciones</div></div>
+            <div><div class="medico">🔒</div><div class="med">Termodin.</div></div>
+          </div></div>
+        </div>
+        <div class="micro">Según tu carrera. Al dominar 🥇, sale.</div>
+      </div></div>
+
+      <!-- 11 · ensayos -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">Mídete</div>
+        <div class="ui">
+          <div class="uihint">Ensayos de la semana</div>
+          <div class="card">
+            <div class="ens-head"><div class="ic">🏁</div><div style="flex:1"><div class="t">Mídete esta semana</div><div class="s">Cortos (~20 min)</div></div></div>
+            <div class="erow"><div class="em">Matemática M1</div><span class="score">685 pts · 4º</span></div>
+            <div class="erow"><div class="em">Biología</div><span class="cd">abre en 3d 8h</span></div>
+            <div class="erow"><div class="em">Lenguaje</div><button class="emp">Empezar</button></div>
+          </div>
+        </div>
+        <div class="micro">Cortos. Con ranking.</div>
+      </div></div>
+
+      <!-- 12 · explora -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">Todo a un toque</div>
+        <div class="ui">
+          <div class="uihint">Explora</div>
+          <div class="grid2">
+            <div class="tile dudas"><div class="ic">💬</div><div class="t">Dudas</div><div class="s">pregunta y ayuda</div></div>
+            <div class="tile"><div class="ic">🎥</div><div class="t">Clases en vivo</div><div class="s">hoy 18:00</div></div>
+            <div class="tile"><div class="ic">✍️</div><div class="t">Hacer ensayo</div><div class="s">a tu medida</div></div>
+            <div class="tile"><div class="ic">🗂️</div><div class="t">Plan</div><div class="s">tu ruta</div></div>
+          </div>
+        </div>
+        <div class="micro">Comunidad, clases, plan.</div>
+      </div></div>
+
+      <!-- 13 · libro -->
+      <div class="slide"><div class="sc">
+        <div class="eyebrow">El home</div>
+        <div class="big sm">El motor</div>
+        <div class="ui">
+          <div class="uihint">Abajo del todo</div>
+          <div class="plus">
+            <div class="pic">📕</div>
+            <div><div class="t">Lleva tu prepa a otro nivel</div><div class="s">libro + hojas para escanear</div></div>
+            <div class="arr">›</div>
+          </div>
+        </div>
+        <div class="micro">El negocio. Sin presión.</div>
+      </div></div>
+
+      <!-- 14 · close -->
+      <div class="slide"><div class="sc">
+        <div class="big">Gratis de verdad.<br><span class="accent">Negocio sano.</span></div>
+        <div class="micro">Puntaje Nacional · el estudiante</div>
+      </div></div>
+
+    </div>
+  </div>
+
+  <div class="foot">
+    <button class="navb" id="prev">◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="navb" id="next">▶</button>
+  </div>
+</div>
+<div class="hintkey">← → o swipe para navegar</div>
+
+<script>
+(function(){
+  var track=document.getElementById('track'), slides=track.children, N=slides.length,
+      dots=document.getElementById('dots'), count=document.getElementById('count'), idx=0;
+  for(var i=0;i<N;i++){ (function(j){ var d=document.createElement('div'); d.className='d'; d.onclick=function(){go(j);}; dots.appendChild(d); })(i); }
+  function go(i){ idx=Math.max(0,Math.min(N-1,i)); track.style.transform='translateX(-'+(idx*100)+'%)';
+    for(var k=0;k<dots.children.length;k++){ dots.children[k].classList.toggle('on',k===idx); }
+    count.textContent=(idx+1)+' / '+N; }
+  document.getElementById('next').onclick=function(){ go(idx+1); };
+  document.getElementById('prev').onclick=function(){ go(idx-1); };
+  document.addEventListener('keydown',function(e){ if(e.key==='ArrowRight'||e.key===' ')go(idx+1); else if(e.key==='ArrowLeft')go(idx-1); });
+  var x0=null;
+  track.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  track.addEventListener('touchend',function(e){ if(x0===null)return; var dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>40){ go(idx+(dx<0?1:-1)); } x0=null; });
+  go(0);
+})();
+</script>
+</body>
+</html>

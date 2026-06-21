@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — Home completo (v2 · Aventura)</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#15161c;color:#473c2e;padding:24px 14px 90px;}
+  .head{text-align:center;color:#e8eaf0;margin-bottom:18px;}
+  .head h1{font-size:21px;margin:0 0 5px;font-weight:800;}
+  .head p{margin:0 auto;max-width:520px;color:#9aa1b2;font-size:13px;line-height:1.5;}
+
+  .phone{width:392px;max-width:100%;margin:0 auto;border-radius:46px;padding:12px;background:#05060a;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;position:relative;}
+  .screen{position:relative;border-radius:36px;overflow:hidden;background:#fff8ec;}
+  .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:40;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;color:#5b4e3c;}
+  .pad{padding:4px 15px 18px;}
+
+  /* top bar */
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 2px 12px;gap:7px;}
+  .chip{font-size:14px;font-weight:800;background:#fff;border:2px solid #efe3cd;border-radius:999px;padding:5px 10px;display:flex;gap:5px;align-items:center;cursor:pointer;}
+  .chip.fire{color:#ff7a00;border-color:#ffd9a8;} .chip.gem{color:#1cb0f6;border-color:#bfe9ff;}
+  .chip.lvl{color:#46a302;border-color:#bfe9a8;}
+  .ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(160deg,#ffb84d,#ff8a00);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;flex:0 0 auto;}
+
+  /* greeting */
+  .greet{display:flex;gap:11px;align-items:flex-start;margin:2px 0 14px;}
+  .otter{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:32px;flex:0 0 auto;box-shadow:0 5px 0 #7c5a2c;}
+  .bubble{background:#fff;border:2px solid #efe3cd;border-radius:16px;padding:9px 12px;font-size:13px;font-weight:600;line-height:1.35;}
+  .bubble b{color:#58cc02;}
+
+  h3.sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#a99877;margin:16px 4px 9px;display:flex;justify-content:space-between;align-items:center;}
+  h3.sec .lk{color:#1cb0f6;font-size:11px;}
+
+  .card{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:18px;padding:14px;margin-bottom:13px;}
+
+  /* nivel hero */
+  .lvlcard{text-align:center;}
+  .lvlcard .ctx{font-size:11px;font-weight:800;letter-spacing:.4px;color:#a99877;text-transform:uppercase;}
+  .lvlcard .big{font-size:32px;font-weight:900;color:#46a302;margin:5px 0 5px;display:inline-flex;gap:8px;align-items:center;letter-spacing:-.5px;}
+  .lvlcard .pos{display:inline-block;font-size:12px;font-weight:800;color:#b07b00;background:#fff3d1;border:1.5px solid #ffe49e;padding:5px 12px;border-radius:999px;cursor:pointer;}
+  .lvlcard .pr{height:11px;border-radius:999px;background:#eee3cc;overflow:hidden;margin:14px 0 6px;}
+  .lvlcard .pr i{display:block;height:100%;width:70%;background:linear-gradient(90deg,#58cc02,#46a302);}
+  .lvlcard .prl{font-size:11px;font-weight:700;color:#9b8c6e;} .lvlcard .prl b{color:#46a302;}
+
+  /* mision / jefe */
+  .mis .top{display:flex;gap:12px;align-items:center;}
+  .boss{width:54px;height:54px;border-radius:14px;background:linear-gradient(160deg,#6a3bb0,#3f2070);display:flex;align-items:center;justify-content:center;font-size:28px;flex:0 0 auto;box-shadow:0 4px 0 #2e1652;}
+  .mis .mt{font-weight:800;font-size:15px;} .mis .ms{font-size:12px;color:#9b8c6e;margin-top:2px;}
+  .prog{height:9px;border-radius:999px;background:#eee3cc;overflow:hidden;margin:13px 0;}
+  .prog i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#ffc800,#ff9600);}
+  .cta{display:block;width:100%;text-align:center;background:#58cc02;color:#fff;font-weight:800;border:none;border-bottom:4px solid #3d8b00;border-radius:14px;padding:13px;font-size:15px;cursor:pointer;}
+  .cta.alt{background:#fff;color:#46a302;border:2px solid #bfe9a8;border-bottom-width:4px;}
+
+  /* escanear */
+  .scan{display:flex;align-items:center;gap:12px;background:#fff;border:2px dashed #1cb0f6;border-radius:18px;padding:13px;margin-bottom:13px;cursor:pointer;}
+  .scan .ic{width:46px;height:46px;border-radius:13px;background:#e8f7ff;display:flex;align-items:center;justify-content:center;font-size:23px;flex:0 0 auto;}
+  .scan .st{font-weight:800;font-size:14px;} .scan .ss{font-size:11.5px;color:#9b8c6e;}
+  .scan .xp{margin-left:auto;color:#ff9600;font-weight:900;font-size:13px;}
+
+  /* racha semanal */
+  .week{display:flex;justify-content:space-between;margin-top:4px;}
+  .day{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#b6a98a;}
+  .dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:#f1e7d2;color:#cdbf9f;}
+  .dot.on{background:#ff9600;color:#fff;box-shadow:0 3px 0 #d97a00;}
+  .dot.today{background:#fff;border:2px dashed #ff9600;color:#ff9600;}
+
+  /* liga */
+  .liga{display:flex;align-items:center;gap:12px;cursor:pointer;}
+  .ligaemb{width:46px;height:46px;border-radius:12px;background:linear-gradient(160deg,#34e0c0,#11b894);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto;}
+  .liga .xp{margin-left:auto;font-weight:900;color:#11b894;text-align:center;font-size:15px;}
+  .liga .xp span{font-size:10px;font-weight:700;display:block;}
+
+  /* maestria */
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center;}
+  .med{font-size:10.5px;color:#9b8c6e;font-weight:700;}
+  .medico{width:42px;height:42px;border-radius:12px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:19px;background:#f3ead4;cursor:pointer;}
+  .medico.gold{background:linear-gradient(160deg,#ffe08a,#ffb020);box-shadow:0 4px 12px rgba(255,176,32,.45);}
+
+  /* explora grid */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .tile{background:#fff;border:2px solid #efe3cd;border-bottom-width:4px;border-radius:16px;padding:13px;display:flex;flex-direction:column;gap:7px;cursor:pointer;}
+  .tile .ic{font-size:24px;} .tile .t{font-weight:800;font-size:13.5px;} .tile .s{font-size:11px;color:#9b8c6e;}
+
+  /* banner mes */
+  .banner{background:linear-gradient(135deg,#2b2f6b,#5b54c8);border-radius:18px;padding:15px;color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:13px;}
+  .banner .ic{font-size:28px;} .banner .t{font-weight:800;font-size:14px;} .banner .s{font-size:11.5px;opacity:.9;}
+  .banner .go{margin-left:auto;background:#fff;color:#3b3aa0;font-weight:800;border-radius:10px;padding:8px 12px;font-size:12px;}
+
+  /* navbar */
+  .navbar{display:flex;justify-content:space-around;align-items:center;height:74px;background:#fff;border-top:2px solid #efe3cd;}
+  .nav i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#bbae93;}
+  .nav i.on{color:#58cc02;} .nav .ic{font-size:20px;}
+  .scanbtn{width:58px;height:58px;border-radius:50%;background:#1cb0f6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin-top:-24px;border:4px solid #fff;box-shadow:0 8px 20px rgba(28,176,246,.4);}
+
+  #tipbox{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;max-width:330px;background:#473c2e;color:#fff;font-size:13px;line-height:1.45;padding:11px 15px;border-radius:13px;box-shadow:0 10px 28px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .15s;z-index:999;text-align:center;}
+  #tipbox.show{opacity:1;}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+  .fireanim{display:inline-block;animation:pulse 1.1s cubic-bezier(.2,.8,.2,1) infinite;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>🎓 Home del estudiante — bosquejo completo</h1>
+    <p>Estilo Aventura, mobile-first. Toca los 🔥 / nivel / medallas para ver hovers. Integra nivel, misión, escaneo, racha, liga, maestría y accesos a más funciones.</p>
+  </div>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="pad">
+
+        <!-- top bar -->
+        <div class="topbar">
+          <span class="chip fire tip" data-tip="Racha: 12 días seguidos estudiando 🔥. Tienes 1 Protector de Racha por si fallas un día.">
+            <span class="fireanim">🔥</span> 12</span>
+          <span class="chip gem tip" data-tip="Gemas: tu moneda para canjear premios y cosméticos. Las ganas estudiando.">💎 340</span>
+          <span class="chip lvl tip" data-tip="Tu nivel global: Crack. Cada asignatura tiene su propio nivel.">😎 Crack</span>
+          <span class="ava">M</span>
+        </div>
+
+        <!-- greeting -->
+        <div class="greet">
+          <div class="otter">🦦</div>
+          <div class="bubble">¡Hola, <b>Martina</b>! Hoy le damos al jefe de M1. Te quedan <b>2 pasos</b> para tu misión 💪</div>
+        </div>
+
+        <!-- nivel hero -->
+        <div class="card lvlcard">
+          <div class="ctx">Tu nivel en Matemática M1</div>
+          <div class="big tip" data-tip="Crack: vas mejor que el 85% de Chile en M1. Subes acertando preguntas; las difíciles suman más.">😎 Crack</div><br>
+          <span class="pos tip" data-tip="Tu posición real entre quienes rinden M1 en Chile, según psicometría (IRT) sobre tus ensayos.">🇨🇱 Le ganas al 85% de Chile</span>
+          <div class="pr"><i></i></div>
+          <div class="prl">Progreso a <b>Extraordinario</b> · 70%</div>
+        </div>
+
+        <!-- misión de hoy / jefe -->
+        <h3 class="sec">Misión de hoy <span class="lk">2/4 ✓</span></h3>
+        <div class="card mis">
+          <div class="top">
+            <div class="boss tip" data-tip="Tu kryptonita: el tema donde más fallas en M1 (78% de los alumnos también falla aquí). ¡Derrótalo y sube de nivel!">👾</div>
+            <div><div class="mt">Jefe: Funciones cuadráticas</div>
+                 <div class="ms">Tu punto débil en M1 · 3 ejercicios + 1 TestTAC</div></div>
+          </div>
+          <div class="prog"><i></i></div>
+          <button class="cta">Seguir misión ⚔️</button>
+        </div>
+
+        <!-- escanear libro -->
+        <div class="scan tip" data-tip="Resolviste ejercicios en tu libro impreso. Saca una foto y los corregimos al instante, sumando XP.">
+          <div class="ic">📸</div>
+          <div><div class="st">Escanea tu libro</div><div class="ss">Foto a tus respuestas → corrección al toque</div></div>
+          <div class="xp">+50⚡</div>
+        </div>
+
+        <!-- racha semanal -->
+        <h3 class="sec">Tu semana 🔥</h3>
+        <div class="card">
+          <div class="week">
+            <div class="day"><div class="dot on">✓</div>L</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>J</div>
+            <div class="day"><div class="dot today">●</div>V</div>
+            <div class="day"><div class="dot">·</div>S</div>
+            <div class="day"><div class="dot">·</div>D</div>
+          </div>
+        </div>
+
+        <!-- liga -->
+        <h3 class="sec">Liga Esmeralda <span class="lk">ver ▸</span></h3>
+        <div class="card liga tip" data-tip="Cada semana compites por XP con 30 estudiantes. El Top 7 sube de liga; los últimos bajan. ¡Quedan 2 días!">
+          <div class="ligaemb">💚</div>
+          <div><div style="font-weight:800">Vas 3º de 30</div>
+               <div style="font-size:11.5px;color:#9b8c6e">Top 7 sube a Diamante · quedan 2 días</div></div>
+          <div class="xp">1.240<span>XP</span></div>
+        </div>
+
+        <!-- maestria -->
+        <h3 class="sec">Maestría por eje <span class="lk">todos ▸</span></h3>
+        <div class="card">
+          <div class="grid5">
+            <div><div class="medico gold tip" data-tip="Álgebra: dominada 🥇. ¡Brilla en oro!">🥇</div><div class="med">Álgebra</div></div>
+            <div><div class="medico gold tip" data-tip="Números: dominado 🥇.">🥇</div><div class="med">Números</div></div>
+            <div><div class="medico tip" data-tip="Geometría: nivel plata 🥈. Te falta poco para el oro.">🥈</div><div class="med">Geom.</div></div>
+            <div><div class="medico tip" data-tip="Probabilidad: nivel bronce 🥉. A reforzar.">🥉</div><div class="med">Prob.</div></div>
+            <div><div class="medico tip" data-tip="Datos: aún bloqueado 🔒. Se abre al avanzar.">🔒</div><div class="med">Datos</div></div>
+          </div>
+        </div>
+
+        <!-- banner ensayo del mes -->
+        <div class="banner">
+          <div class="ic">📅</div>
+          <div><div class="t">Ensayo PAES del mes</div><div class="s">Mídete oficial · disponible hasta el 30 Jun</div></div>
+          <div class="go">Rendir</div>
+        </div>
+
+        <!-- explora -->
+        <h3 class="sec">Explora</h3>
+        <div class="grid2">
+          <div class="tile"><div class="ic">✍️</div><div class="t">Hacer ensayo</div><div class="s">Arma uno a tu medida</div></div>
+          <div class="tile"><div class="ic">🎥</div><div class="t">Clases en vivo</div><div class="s">Hoy: Biología 18:00</div></div>
+          <div class="tile"><div class="ic">🗂️</div><div class="t">Planes de estudio</div><div class="s">Tu ruta semanal</div></div>
+          <div class="tile"><div class="ic">👥</div><div class="t">Comunidad</div><div class="s">Estudia con otros</div></div>
+        </div>
+
+      </div>
+      <!-- navbar -->
+      <div class="navbar nav">
+        <i class="on"><span class="ic">🏠</span>Inicio</i>
+        <i><span class="ic">🎯</span>Practicar</i>
+        <i><span class="scanbtn">📸</span></i>
+        <i><span class="ic">🏆</span>Ligas</i>
+        <i><span class="ic">🦦</span>Perfil</i>
+      </div>
+    </div>
+  </div>
+
+<div id="tipbox"></div>
+<script>
+(function(){
+  var box=document.getElementById('tipbox');var t;
+  function show(el){box.textContent=el.getAttribute('data-tip');box.classList.add('show');clearTimeout(t);}
+  function hide(){box.classList.remove('show');}
+  document.querySelectorAll('.tip').forEach(function(el){
+    el.addEventListener('mouseenter',function(){show(el);});
+    el.addEventListener('mouseleave',hide);
+    el.addEventListener('click',function(e){e.stopPropagation();show(el);clearTimeout(t);t=setTimeout(hide,2800);});
+  });
+  document.addEventListener('click',hide);
+})();
+</script>
+</body>
+</html>

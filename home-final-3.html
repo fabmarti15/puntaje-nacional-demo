@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#15161c;color:#473c2e;padding:24px 14px 90px;}
+  .phone{width:392px;max-width:100%;margin:0 auto;border-radius:46px;padding:12px;background:#05060a;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;position:relative;}
+  .screen{position:relative;border-radius:36px;overflow:hidden;background:#fff8ec;}
+  .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:40;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;color:#5b4e3c;}
+  .pad{padding:4px 15px 20px;}
+
+  /* TOP BAR */
+  .topbar{display:flex;align-items:center;gap:7px;padding:8px 2px 12px;}
+  .chip{font-size:14px;font-weight:800;background:#fff;border:2px solid #efe3cd;border-radius:999px;padding:5px 10px;display:flex;gap:4px;align-items:center;cursor:pointer;}
+  .chip.fire{color:#ff7a00;border-color:#ffd9a8;} .chip.gem{color:#1cb0f6;border-color:#bfe9ff;} .chip.liga{color:#11b894;border-color:#bfeee0;}
+  .ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(160deg,#ffb84d,#ff8a00);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;margin-left:auto;cursor:pointer;}
+
+  h3.sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#a99877;margin:16px 4px 9px;display:flex;justify-content:space-between;align-items:center;}
+  h3.sec .lk{color:#1cb0f6;font-size:11px;cursor:pointer;}
+  .card{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:18px;padding:14px;margin-bottom:13px;}
+  .cta{display:block;width:100%;text-align:center;background:#58cc02;color:#fff;font-weight:800;border:none;border-bottom:4px solid #3d8b00;border-radius:14px;padding:13px;font-size:15px;cursor:pointer;letter-spacing:.2px;}
+
+  /* HEADER NIVEL compacto bajo la topbar */
+  .lvlhdr{display:flex;align-items:center;gap:11px;background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:18px;padding:11px 13px;margin-bottom:14px;cursor:pointer;}
+  .lvlhdr .mini{width:50px;height:50px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .lvlhdr .mini img{max-width:100%;max-height:100%;filter:saturate(1.38) drop-shadow(0 0 12px #9fdc4a) drop-shadow(0 4px 5px rgba(0,0,0,.12));animation:critfloat 3s ease-in-out infinite;}
+  @keyframes critfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .lvlhdr .lname{font-weight:900;font-size:17px;color:#46a302;letter-spacing:-.3px;line-height:1.05;}
+  .lvlhdr .pos{display:inline-block;font-size:11px;font-weight:800;color:#b07b00;background:#fff3d1;border:1.5px solid #ffe49e;padding:2px 8px;border-radius:999px;margin-top:4px;cursor:pointer;}
+  .lvlhdr .pr{height:7px;border-radius:999px;background:#eee3cc;overflow:hidden;margin-top:8px;}
+  .lvlhdr .pr i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#58cc02,#46a302);}
+  .lvlhdr .prl{font-size:10px;color:#9b8c6e;font-weight:700;margin-top:4px;}
+  .lvlhdr .go{align-self:flex-start;color:#1cb0f6;font-size:18px;font-weight:900;margin-left:2px;}
+
+  /* MISIÓN intro encima del camino */
+  .misintro{display:flex;gap:10px;align-items:flex-start;margin:2px 4px 6px;}
+  .otter{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:25px;flex:0 0 auto;box-shadow:0 4px 0 #7c5a2c;}
+  .bubble{background:#fff;border:2px solid #efe3cd;border-radius:16px;padding:9px 12px;font-size:12.5px;font-weight:600;line-height:1.35;}
+  .bubble b{color:#58cc02;}
+  .bubble .topic{font-weight:900;color:#473c2e;font-size:13.5px;}
+
+  .uplift{margin:0 0 4px;background:#eafbe0;border:1.5px solid #bfe9a8;border-radius:12px;padding:9px 11px;font-size:12.5px;font-weight:700;color:#2f8b00;}
+  .uplift small{display:block;color:#9b8c6e;font-weight:600;font-size:10.5px;margin-top:2px;}
+
+  /* CAMINO / JOURNEY */
+  .path{position:relative;padding:6px 0 2px;margin:2px 0 4px;}
+  .node{position:relative;display:flex;align-items:center;gap:13px;padding:0 2px;min-height:74px;}
+  /* segmento vertical conector */
+  .node::before{content:"";position:absolute;left:33px;top:-2px;width:6px;height:50%;background:#e6dcc4;transform:translateX(-50%);z-index:0;}
+  .node::after{content:"";position:absolute;left:33px;bottom:-2px;width:6px;height:50%;background:#e6dcc4;transform:translateX(-50%);z-index:0;}
+  .node:first-child::before{display:none;}
+  .node:last-child::after{display:none;}
+  .node.done::after,.node.done::before{background:#86d34b;}
+  .node.current::before{background:#86d34b;}
+  .circle{position:relative;z-index:2;width:66px;height:66px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:800;border:none;cursor:pointer;}
+  /* completado */
+  .node.done .circle{background:linear-gradient(160deg,#6fd83a,#46a302);color:#fff;box-shadow:0 5px 0 #2f7a00;}
+  /* actual */
+  .node.current .circle{background:linear-gradient(160deg,#ffd34d,#ff9600);color:#fff;box-shadow:0 6px 0 #d97a00;animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  /* bloqueado */
+  .node.lock .circle{background:#efe6d2;color:#c3b594;box-shadow:0 5px 0 #ddd0b3;cursor:default;}
+
+  .ntxt{flex:1;z-index:2;}
+  .ntxt .nt{font-weight:800;font-size:14px;line-height:1.15;}
+  .node.lock .ntxt .nt{color:#b3a585;}
+  .ntxt .ns{font-size:11px;color:#9b8c6e;font-weight:700;margin-top:2px;}
+  .node.done .ntxt .ns{color:#46a302;}
+
+  /* avatar criatura junto al nodo actual */
+  .critavatar{position:absolute;z-index:3;left:-4px;top:-30px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+  .critavatar img{max-width:100%;max-height:100%;filter:saturate(1.38) drop-shadow(0 0 12px #9fdc4a) drop-shadow(0 4px 5px rgba(0,0,0,.15));animation:critfloat 3s ease-in-out infinite;}
+  .critavatar .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#473c2e;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;}
+  .critavatar .tag::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#473c2e;}
+
+  /* tarjeta de acción del nodo actual */
+  .curaction{margin:6px 0 4px;background:#fffaf0;border:2px solid #ffe49e;border-bottom-width:5px;border-radius:16px;padding:12px;}
+  .curaction .ttl{font-weight:900;font-size:16px;margin:0 0 2px;}
+  .curaction .meta{font-size:11.5px;color:#9b8c6e;font-weight:700;margin-bottom:9px;}
+  .book{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:11px;font-size:12px;font-weight:700;color:#1cb0f6;cursor:pointer;}
+
+  /* SEMANA */
+  .week{display:flex;justify-content:space-between;}
+  .day{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#b6a98a;}
+  .dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:#f1e7d2;color:#cdbf9f;}
+  .dot.on{background:#ff9600;color:#fff;box-shadow:0 3px 0 #d97a00;}
+  .dot.today{background:#fff;border:2px dashed #ff9600;color:#ff9600;}
+
+  /* TEMAS */
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center;}
+  .med{font-size:10px;color:#9b8c6e;font-weight:700;}
+  .medico{width:42px;height:42px;border-radius:12px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:19px;background:#f3ead4;cursor:pointer;}
+  .medico.gold{background:linear-gradient(160deg,#ffe08a,#ffb020);box-shadow:0 4px 12px rgba(255,176,32,.45);}
+
+  /* EXPLORA */
+  .banner{background:linear-gradient(135deg,#2b2f6b,#5b54c8);border-radius:18px;padding:14px;color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:13px;cursor:pointer;}
+  .banner .ic{font-size:26px;} .banner .t{font-weight:800;font-size:14px;} .banner .s{font-size:11.5px;opacity:.9;}
+  .banner .go{margin-left:auto;background:#fff;color:#3b3aa0;font-weight:800;border-radius:10px;padding:8px 12px;font-size:12px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .tile{background:#fff;border:2px solid #efe3cd;border-bottom-width:4px;border-radius:16px;padding:13px;display:flex;flex-direction:column;gap:6px;cursor:pointer;}
+  .tile .ic{font-size:23px;} .tile .t{font-weight:800;font-size:13.5px;} .tile .s{font-size:11px;color:#9b8c6e;}
+  .tile.dudas{background:linear-gradient(160deg,#eaf7ff,#fff);border-color:#bfe9ff;}
+  .tile .badgeN{align-self:flex-start;background:#1cb0f6;color:#fff;font-size:9px;font-weight:800;border-radius:999px;padding:1px 7px;}
+  .tile .count{color:#ff7a00;font-weight:800;}
+  .tile .pastlink{font-size:10.5px;color:#1cb0f6;font-weight:700;margin-top:6px;cursor:pointer;}
+
+  /* UPSELL B2C sutil */
+  .plus{display:flex;align-items:center;gap:9px;background:#fffdf6;border:1.5px dashed #e8d49a;border-radius:14px;padding:10px 12px;margin-bottom:13px;cursor:pointer;}
+  .plus .pic{font-size:18px;} .plus .pt{font-weight:800;font-size:12.5px;color:#9a7a18;}
+  .plus .ps{font-size:10.5px;color:#b09a6a;font-weight:600;}
+  .plus .pgo{margin-left:auto;font-size:11px;font-weight:800;color:#9a7a18;}
+
+  /* NAVBAR */
+  .navbar{display:flex;justify-content:space-around;align-items:center;height:74px;background:#fff;border-top:2px solid #efe3cd;}
+  .nav i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#bbae93;cursor:pointer;flex:1;}
+  .nav i.on{color:#58cc02;} .nav .ic{font-size:20px;}
+
+  /* TOOLTIPS */
+  #tipbox{position:fixed;max-width:250px;background:#473c2e;color:#fff;font-size:12.5px;line-height:1.4;padding:9px 12px;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .12s;z-index:999;text-align:center;}
+  #tipbox.show{opacity:1;}
+  #tipbox::after{content:"";position:absolute;left:var(--ax,50%);transform:translateX(-50%);top:100%;border:7px solid transparent;border-top-color:#473c2e;}
+  #tipbox.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#473c2e;}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+  .fireanim{display:inline-block;animation:pulse 1.1s ease-in-out infinite;}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="pad">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+          <span class="chip fire tip" data-tip="Racha: 12 días seguidos 🔥. Tienes 1 protector por si fallas un día.">
+            <span class="fireanim">🔥</span> 12</span>
+          <span class="chip gem tip" data-tip="Gemas: las ganas estudiando. Sirven para pistas, recargar corazones y cosméticos de nutrIA.">💎 400</span>
+          <span class="chip liga tip" data-tip="Liga Esmeralda 💚 — Vas 3º de 30. El Top 7 sube de liga. Quedan 2 días · 1.240 XP esta semana.">💚 3º</span>
+          <span class="ava" onclick="location.href='perfil.html'">M</span>
+        </div>
+
+        <!-- HEADER NIVEL compacto -->
+        <div class="lvlhdr" onclick="location.href='perfil.html'">
+          <div class="mini tip" data-tip="Tu nivel es una criatura que evoluciona contigo. Sube por tu ESFUERZO y progreso, no por tu puntaje bruto."><img src="criaturas/05_notable.webp" alt="Puntaje Notable"></div>
+          <div style="flex:1">
+            <div class="lname">Puntaje Notable</div>
+            <span class="pos tip" data-tip="Tu posición REAL en Chile (psicometría IRT). Es un dato aparte; tu nivel sube por esfuerzo.">🇨🇱 Le ganas al 85% en M1</span>
+            <div class="pr"><i></i></div>
+            <div class="prl">Te falta poco para <b>Puntaje Brillante</b> · 62%</div>
+          </div>
+          <div class="go">›</div>
+        </div>
+
+        <!-- MISIÓN DE HOY: intro + camino -->
+        <h3 class="sec">Tu misión de hoy <span class="lk">2/4 ✓</span></h3>
+
+        <div class="misintro">
+          <div class="otter">🦦</div>
+          <div class="bubble">¡Vamos por tu camino de hoy! Tema: <span class="topic">Funciones cuadráticas</span>. Vas a la mitad, sigue avanzando. 💪</div>
+        </div>
+
+        <div class="card mis" style="padding:14px 13px 10px;">
+          <div class="uplift tip" data-tip="Estimación de un modelo matemático según tus ensayos. NO es una promesa; es para orientarte y motivarte.">
+            📈 Si dominas este camino, podrías subir <b>+15 a +30 pts</b> en M1.
+            <small>Es una estimación para motivarte, no una promesa.</small>
+          </div>
+
+          <!-- CAMINO / JOURNEY -->
+          <div class="path">
+
+            <div class="node done">
+              <div class="circle tip" data-tip="Video completado ✓. Repasa cuando quieras.">✓</div>
+              <div class="ntxt">
+                <div class="nt">▶ Video: Operaciones</div>
+                <div class="ns">Completado</div>
+              </div>
+            </div>
+
+            <div class="node done">
+              <div class="circle tip" data-tip="Repaso de conceptos completado ✓.">✓</div>
+              <div class="ntxt">
+                <div class="nt">📖 Repaso de conceptos</div>
+                <div class="ns">Completado</div>
+              </div>
+            </div>
+
+            <div class="node current">
+              <div class="critavatar">
+                <span class="tag">¡Tú estás aquí!</span>
+                <img src="criaturas/05_notable.webp" alt="">
+              </div>
+              <div class="circle tip" data-tip="Tu paso actual. Resuelve los 3 ejercicios para desbloquear el siguiente." onclick="location.href='practicar-v5.html'">🎯</div>
+              <div class="ntxt">
+                <div class="nt">3 ejercicios</div>
+                <div class="ns">Paso actual · ¡continúa!</div>
+              </div>
+            </div>
+
+            <div class="node lock">
+              <div class="circle tip" data-tip="Se desbloquea al terminar los 3 ejercicios. El TestTAC mide cuánto dominas el tema.">🧪</div>
+              <div class="ntxt">
+                <div class="nt">TestTAC del tema</div>
+                <div class="ns">🔒 Bloqueado</div>
+              </div>
+            </div>
+
+            <div class="node lock">
+              <div class="circle tip" data-tip="El paso final del camino de hoy. Un mini-ensayo para cerrar el tema.">🏁</div>
+              <div class="ntxt">
+                <div class="nt">Mini-ensayo</div>
+                <div class="ns">🔒 Bloqueado</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ACCIÓN DEL NODO ACTUAL -->
+          <div class="curaction">
+            <div class="ttl">🎯 3 ejercicios</div>
+            <div class="meta">Funciones cuadráticas · sin gastar corazones aquí</div>
+            <button class="cta" onclick="location.href='practicar-v5.html'">Empezar misión</button>
+            <div class="book tip" data-tip="¿Tienes el libro? Resuelve estos ejercicios en papel (pág. 127) y escanéalos: te los corregimos al toque y suma XP." onclick="location.href='escanear-v1.html'">📕 o hazla en tu libro (pág. 127) y escanéala 📸</div>
+          </div>
+        </div>
+
+        <!-- SEMANA -->
+        <h3 class="sec">Tu semana 🔥</h3>
+        <div class="card">
+          <div class="week">
+            <div class="day"><div class="dot on">✓</div>L</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>J</div>
+            <div class="day"><div class="dot today">●</div>V</div>
+            <div class="day"><div class="dot">·</div>S</div>
+            <div class="day"><div class="dot">·</div>D</div>
+          </div>
+        </div>
+
+        <!-- TUS TEMAS -->
+        <h3 class="sec">Tus temas <span class="lk">ver todos ▸</span></h3>
+        <div class="card">
+          <div class="grid5">
+            <div><div class="medico gold tip" data-tip="Álgebra: dominada 🥇">🥇</div><div class="med">Álgebra</div></div>
+            <div><div class="medico gold tip" data-tip="Números: dominado 🥇">🥇</div><div class="med">Números</div></div>
+            <div><div class="medico tip" data-tip="Geometría: nivel plata 🥈, te falta poco">🥈</div><div class="med">Geom.</div></div>
+            <div><div class="medico tip" data-tip="Probabilidad: bronce 🥉, a reforzar">🥉</div><div class="med">Prob.</div></div>
+            <div><div class="medico tip" data-tip="Datos: aún por desbloquear 🔒">🔒</div><div class="med">Datos</div></div>
+          </div>
+        </div>
+
+        <!-- UPSELL B2C sutil -->
+        <div class="plus tip" data-tip="PAES Plus: preguntas ilimitadas, ensayos y más nutrIA. Lo gratis sigue siendo gratis siempre." onclick="alert('PAES Plus: próximamente ✨')">
+          <span class="pic">✨</span>
+          <div>
+            <div class="pt">Desbloquea PAES Plus</div>
+            <div class="ps">Ensayos completos y nutrIA sin límite</div>
+          </div>
+          <span class="pgo">Ver ›</span>
+        </div>
+
+        <!-- EXPLORA -->
+        <h3 class="sec">Explora</h3>
+        <div class="banner" onclick="alert('Ensayo PAES del mes: próximamente 📅')">
+          <div class="ic">📅</div>
+          <div><div class="t">Ensayo PAES del mes</div><div class="s">Mídete oficial · hasta el 30 Jun</div></div>
+          <div class="go">Rendir</div>
+        </div>
+        <div class="grid2">
+          <div class="tile dudas" onclick="alert('Dudas: próximamente 💬')"><span class="badgeN">gana puntos</span><div class="ic">💬</div><div class="t">Dudas</div><div class="s">Pregunta tus dudas y ayuda a otros respondiendo las suyas.</div></div>
+          <div class="tile clases" onclick="alert('Clases en vivo: próximamente 🎥')"><div class="ic">🎥</div><div class="t">Clases en vivo</div><div class="s">Próxima: <b>Biología</b> · hoy 18:00<br><span class="count">empieza en 2 h 15 min</span></div><span class="pastlink" onclick="event.stopPropagation();alert('Clases anteriores: próximamente 🎥')">ver clases anteriores ▸</span></div>
+          <div class="tile" onclick="alert('Hacer ensayo: próximamente ✍️')"><div class="ic">✍️</div><div class="t">Hacer ensayo</div><div class="s">Arma uno a tu medida</div></div>
+          <div class="tile" onclick="alert('Planes de estudio: próximamente 🗂️')"><div class="ic">🗂️</div><div class="t">Planes de estudio</div><div class="s">Tu ruta semanal</div></div>
+        </div>
+
+      </div>
+      <div class="navbar nav">
+        <i class="on" onclick="location.href='home-final-3.html'"><span class="ic">🏠</span>Inicio</i>
+        <i onclick="location.href='practicar-v5.html'"><span class="ic">🎯</span>Practicar</i>
+        <i onclick="location.href='escanear-v1.html'"><span class="ic">📷</span>Escanear</i>
+        <i onclick="alert('Ligas: próximamente 🏆')"><span class="ic">🏆</span>Ligas</i>
+        <i onclick="location.href='perfil.html'"><span class="ic">🦦</span>Perfil</i>
+      </div>
+    </div>
+  </div>
+
+<div id="tipbox"></div>
+<script>
+(function(){
+  var box=document.getElementById('tipbox');var t;
+  function place(el){box.style.left='0px';box.style.top='0px';box.classList.remove('below');
+    var r=el.getBoundingClientRect();var bw=box.offsetWidth,bh=box.offsetHeight;var cx=r.left+r.width/2;
+    var left=Math.min(Math.max(8,cx-bw/2),window.innerWidth-bw-8);var top=r.top-bh-12;
+    if(top<8){top=r.bottom+12;box.classList.add('below');}
+    box.style.left=left+'px';box.style.top=top+'px';box.style.setProperty('--ax',(cx-left)+'px');}
+  function show(el){box.textContent=el.getAttribute('data-tip');box.classList.add('show');place(el);clearTimeout(t);}
+  function hide(){box.classList.remove('show');}
+  document.querySelectorAll('.tip').forEach(function(el){
+    el.addEventListener('mouseenter',function(){show(el);});
+    el.addEventListener('mouseleave',hide);
+    el.addEventListener('click',function(e){e.stopPropagation();show(el);clearTimeout(t);t=setTimeout(hide,3000);});
+  });
+  document.addEventListener('click',hide);window.addEventListener('scroll',hide,true);
+})();
+</script>
+</body>
+</html>

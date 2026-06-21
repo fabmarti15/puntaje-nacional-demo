@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — Insignias (Duolingo + escalada)</title>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#fff8ec;color:#473c2e;padding:26px 16px 80px;}
+  .wrap{max-width:1000px;margin:0 auto;}
+  h1{text-align:center;font-size:23px;margin:0 0 4px;font-weight:800;}
+  .lead{text-align:center;color:#9b8c6e;font-size:13.5px;max-width:680px;margin:0 auto 22px;line-height:1.5;}
+  .lead b{color:#46a302;}
+  #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:14px;}
+  .lvl{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;cursor:pointer;padding:12px 6px;border-radius:16px;border:2px solid transparent;}
+  .lvl:hover{background:#fff;border-color:#efe3cd;}
+  .lvl.cur{background:#fff;border-color:#9fe06a;box-shadow:0 6px 0 rgba(70,163,2,.12);}
+  .lvl svg{width:92px;height:auto;display:block;filter:drop-shadow(0 4px 5px rgba(0,0,0,.18));}
+  .lvl.glow svg{filter:drop-shadow(0 0 10px var(--g)) drop-shadow(0 4px 5px rgba(0,0,0,.18));}
+  .lvl.top svg{animation:shim 2.4s ease-in-out infinite;}
+  @keyframes shim{0%,100%{filter:drop-shadow(0 0 7px var(--g)) drop-shadow(0 4px 5px rgba(0,0,0,.18));}50%{filter:drop-shadow(0 0 17px var(--g)) drop-shadow(0 4px 5px rgba(0,0,0,.18));}}
+  .lname{font-weight:800;font-size:12.5px;line-height:1.12;}
+  .you{font-size:9.5px;font-weight:800;color:#fff;background:#46a302;padding:2px 8px;border-radius:999px;}
+  .note{margin:24px auto 0;background:#fff;border:2px dashed #d9cdb2;border-radius:16px;padding:14px 18px;font-size:12.5px;color:#6b5e46;line-height:1.55;}
+  .note b{color:#46a302;}
+  #tipbox{position:fixed;max-width:240px;background:#473c2e;color:#fff;font-size:12.5px;line-height:1.4;padding:9px 12px;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .12s;z-index:999;text-align:center;}
+  #tipbox.show{opacity:1;}
+  #tipbox::after{content:"";position:absolute;left:var(--ax,50%);transform:translateX(-50%);top:100%;border:7px solid transparent;border-top-color:#473c2e;}
+  #tipbox.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#473c2e;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🛡️ Insignias — simple + pastel, y más épicas arriba</h1>
+  <p class="lead">Mezcla de tus 2 referencias: base <b>Duolingo</b> (glossy, pastel, limpia) + escalada <b>tipo LoL</b> (corona, laureles, brillo y gema en los niveles altos). <b>Toca</b> cada una. 🟢 = Martina.</p>
+  <div id="grid"></div>
+  <div class="note">💡 Primer intento de la mezcla. Dime: ¿el estilo va?, ¿más/menos brillo?, ¿el centro (estrella) lo dejamos constante o cambiamos por algo PN?, ¿los colores pastel te gustan? Lo afinamos.</div>
+</div>
+<div id="tipbox"></div>
+<script>
+const SHIELD="M50 4 C66 4 80 8 86 12 L86 56 C86 86 70 102 50 110 C30 102 14 86 14 56 L14 12 C20 8 34 4 50 4 Z";
+const STAR="M50 40 L54.6 52.5 L67.6 52.9 L57.2 60.9 L60.9 73.4 L50 65.9 L39.1 73.4 L42.8 60.9 L32.4 52.9 L45.4 52.5 Z";
+
+function spark(x,y,s){s=s||5;return `<path d="M${x} ${y-s} L${x+s*0.28} ${y-s*0.28} L${x+s} ${y} L${x+s*0.28} ${y+s*0.28} L${x} ${y+s} L${x-s*0.28} ${y+s*0.28} L${x-s} ${y} L${x-s*0.28} ${y-s*0.28} Z" fill="#fff"/>`;}
+function crown(grand,gemColor){
+  const base=`<g stroke="#e0a000" stroke-width="1.2" stroke-linejoin="round">
+    <path d="M30 22 L34 7 L42 16 L50 3 L58 16 L66 7 L70 22 Z" fill="#ffd24a"/>
+    <circle cx="34" cy="7" r="2.4" fill="#ffd24a"/><circle cx="50" cy="3" r="2.6" fill="#ffd24a"/><circle cx="66" cy="7" r="2.4" fill="#ffd24a"/>
+  </g>`;
+  const gem = grand?`<circle cx="50" cy="15" r="3.2" fill="${gemColor}" stroke="#fff" stroke-width="1"/>`:"";
+  return base+gem;
+}
+function laurel(color){
+  // tres hojas por lado, arco inferior
+  function leaf(cx,cy,rot){return `<ellipse cx="${cx}" cy="${cy}" rx="4.4" ry="9" transform="rotate(${rot} ${cx} ${cy})" fill="${color}" opacity=".9"/>`;}
+  const L=leaf(16,70,30)+leaf(13,82,18)+leaf(15,95,4);
+  const R=leaf(84,70,-30)+leaf(87,82,-18)+leaf(85,95,-4);
+  return `<g>${L}${R}</g>`;
+}
+
+const LEVELS=[
+ {n:"Puntaje Inicial",c:"#c7e7b0",c2:"#94c46f",o:0,tip:"Puntaje Inicial: ¡el comienzo de tu viaje!"},
+ {n:"Puntaje Regular",c:"#ecd9b0",c2:"#cdb27e",o:0,tip:"Puntaje Regular: ya tomaste ritmo."},
+ {n:"Puntaje Sólido",c:"#f2c79a",c2:"#d99a5c",o:1,tip:"Puntaje Sólido: base firme y constante."},
+ {n:"Puntaje Notable",c:"#f5d28e",c2:"#e0ad4a",o:1,you:true,tip:"Estás aquí: Puntaje Notable. ¡Vas muy bien!"},
+ {n:"Puntaje Brillante",c:"#d9e1ec",c2:"#aab7c9",o:2,tip:"Puntaje Brillante: tu próximo nivel."},
+ {n:"Puntaje Magnífico",c:"#aacdf3",c2:"#6f9fd8",o:2,tip:"Puntaje Magnífico: rendimiento que destaca."},
+ {n:"Puntaje Mundial",c:"#a3e7d6",c2:"#4cc3a6",o:3,tip:"Puntaje Mundial: entre los mejores."},
+ {n:"Puntaje Sobrenatural",c:"#cdbcf3",c2:"#9270d6",o:3,tip:"Puntaje Sobrenatural: ya es otro nivel."},
+ {n:"Puntaje Titánico",c:"#b1b8f3",c2:"#6b73d6",o:3,tip:"Puntaje Titánico: fuerza imparable."},
+ {n:"Puntaje Extraterrestre",c:"#d9aef0",c2:"#a64fd0",o:4,glow:true,tip:"Puntaje Extraterrestre: de otro planeta."},
+ {n:"Puntaje Mítico",c:"#f4adc8",c2:"#d85f90",o:4,glow:true,tip:"Puntaje Mítico: leyenda viviente."},
+ {n:"Puntaje Divino",c:"#ffe09a",c2:"#ecb52e",o:5,glow:true,top:true,tip:"Puntaje Divino: la elite absoluta."},
+ {n:"Puntaje Nacional",c:"#ffd673",c2:"#f0a81e",o:5,glow:true,top:true,tip:"Puntaje Nacional: la cima. El nombre ES tu marca."}
+];
+
+function badge(L,i){
+  const id="grad"+i;
+  let orn="";
+  if(L.o>=4) orn+=laurel(L.c2);
+  // shield group
+  const shield=`<g transform="translate(0,14)">
+    <path d="${SHIELD}" fill="url(#${id})" stroke="#fff" stroke-width="2.6" stroke-opacity=".65"/>
+    <ellipse cx="40" cy="42" rx="23" ry="14" fill="#fff" opacity=".26"/>
+    <path d="${STAR}" fill="#fff" opacity=".96"/>
+  </g>`;
+  let top="";
+  if(L.o>=2) top+=crown(L.o>=5,L.c2);
+  let sp="";
+  const n=Math.min(L.o,3);
+  const pos=[[22,30],[80,34],[26,96]];
+  for(let k=0;k<n;k++){sp+=spark(pos[k][0],pos[k][1],4.5);}
+  const cls=["lvl","tip",L.glow?"glow":"",L.top?"top":""].join(" ");
+  return `<div class="${cls}" style="--g:${L.c}" data-tip="${L.tip}">
+    <svg viewBox="0 0 100 130">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${L.c}"/><stop offset="1" stop-color="${L.c2}"/></linearGradient></defs>
+      ${orn}${shield}${top}${sp}
+    </svg>
+    <div class="lname">${L.n}</div>${L.you?'<span class="you">TÚ</span>':''}
+  </div>`;
+}
+document.getElementById("grid").innerHTML=LEVELS.map(badge).join("");
+
+(function(){
+  var box=document.getElementById('tipbox');var t;
+  function place(el){box.style.left='0px';box.style.top='0px';box.classList.remove('below');
+    var r=el.getBoundingClientRect();var bw=box.offsetWidth,bh=box.offsetHeight;var cx=r.left+r.width/2;
+    var left=Math.min(Math.max(8,cx-bw/2),window.innerWidth-bw-8);var top=r.top-bh-12;
+    if(top<8){top=r.bottom+12;box.classList.add('below');}
+    box.style.left=left+'px';box.style.top=top+'px';box.style.setProperty('--ax',(cx-left)+'px');}
+  function show(el){box.textContent=el.getAttribute('data-tip');box.classList.add('show');place(el);clearTimeout(t);}
+  function hide(){box.classList.remove('show');}
+  document.querySelectorAll('.tip').forEach(function(el){
+    el.addEventListener('mouseenter',function(){show(el);});
+    el.addEventListener('mouseleave',hide);
+    el.addEventListener('click',function(e){e.stopPropagation();show(el);clearTimeout(t);t=setTimeout(hide,3000);});
+  });
+  document.addEventListener('click',hide);window.addEventListener('scroll',hide,true);
+})();
+</script>
+</body>
+</html>

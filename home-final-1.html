@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#15161c;color:#473c2e;padding:24px 14px 90px;}
+  .phone{width:392px;max-width:100%;margin:0 auto;border-radius:46px;padding:12px;background:#05060a;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;position:relative;}
+  .screen{position:relative;border-radius:36px;overflow:hidden;background:#fff8ec;}
+  .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:40;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;color:#5b4e3c;}
+  .pad{padding:4px 15px 20px;}
+
+  .topbar{display:flex;align-items:center;gap:7px;padding:8px 2px 12px;}
+  .chip{font-size:14px;font-weight:800;background:#fff;border:2px solid #efe3cd;border-radius:999px;padding:5px 10px;display:flex;gap:4px;align-items:center;cursor:pointer;}
+  .chip.fire{color:#ff7a00;border-color:#ffd9a8;} .chip.gem{color:#1cb0f6;border-color:#bfe9ff;} .chip.liga{color:#11b894;border-color:#bfeee0;}
+  .ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(160deg,#ffb84d,#ff8a00);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;margin-left:auto;cursor:pointer;}
+
+  .greet{display:flex;gap:10px;align-items:center;margin:2px 0 14px;}
+  .otter{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:25px;flex:0 0 auto;box-shadow:0 4px 0 #7c5a2c;}
+  .bubble{background:#fff;border:2px solid #efe3cd;border-radius:16px;padding:9px 12px;font-size:13px;font-weight:600;line-height:1.35;flex:1;}
+  .bubble b{color:#58cc02;}
+
+  h3.sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#a99877;margin:18px 4px 9px;display:flex;justify-content:space-between;align-items:center;}
+  h3.sec .lk{color:#1cb0f6;font-size:11px;cursor:pointer;}
+  .card{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:18px;padding:14px;margin-bottom:13px;}
+  .cta{display:block;width:100%;text-align:center;background:#58cc02;color:#fff;font-weight:800;border:none;border-bottom:4px solid #3d8b00;border-radius:14px;padding:14px;font-size:16px;cursor:pointer;letter-spacing:.2px;}
+
+  /* MISIÓN HERO — la estrella */
+  .mis{position:relative;overflow:hidden;border:2px solid #d6efb6;border-bottom:6px solid #9fdc4a;background:linear-gradient(180deg,#fbfff4,#fff);box-shadow:0 12px 30px rgba(70,163,2,.14);padding:16px;}
+  .mis::before{content:"";position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(159,220,74,.30),transparent 70%);pointer-events:none;}
+  .mis .kick{font-size:11px;font-weight:800;color:#1cb0f6;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;position:relative;}
+  .mis .kick .ct{margin-left:auto;color:#46a302;background:#eafbe0;border:1.5px solid #bfe9a8;border-radius:999px;padding:2px 9px;font-size:10.5px;}
+  .mis h2{margin:9px 0 4px;font-size:24px;font-weight:900;letter-spacing:-.4px;position:relative;}
+  .mis .sub{font-size:12.5px;color:#7a6c52;font-weight:700;position:relative;}
+  .uplift{position:relative;margin:13px 0 4px;background:#eafbe0;border:1.5px solid #bfe9a8;border-radius:13px;padding:10px 12px;font-size:13px;font-weight:700;color:#2f8b00;}
+  .uplift small{display:block;color:#9b8c6e;font-weight:600;font-size:10.5px;margin-top:3px;}
+  .prog{position:relative;height:11px;border-radius:999px;background:#eee3cc;overflow:hidden;margin:14px 0 6px;}
+  .prog i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#ffc800,#ff9600);}
+  .progl{position:relative;font-size:10.5px;color:#9b8c6e;font-weight:700;margin:0 0 12px;}
+  .book{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:13px;font-size:12px;font-weight:700;color:#1cb0f6;cursor:pointer;position:relative;}
+
+  /* nivel */
+  .lvlcard{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .crit{width:78px;height:78px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .crit img{max-width:100%;max-height:100%;filter:saturate(1.38) drop-shadow(0 0 14px #9fdc4a) drop-shadow(0 5px 6px rgba(0,0,0,.12));animation:critfloat 3s ease-in-out infinite;}
+  @keyframes critfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .lvlcard .lname{font-weight:900;font-size:20px;color:#46a302;letter-spacing:-.3px;}
+  .lvlcard .pos{display:inline-block;font-size:11.5px;font-weight:800;color:#b07b00;background:#fff3d1;border:1.5px solid #ffe49e;padding:3px 9px;border-radius:999px;margin-top:4px;cursor:pointer;}
+  .lvlcard .pr{height:8px;border-radius:999px;background:#eee3cc;overflow:hidden;margin-top:9px;}
+  .lvlcard .pr i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#58cc02,#46a302);}
+  .lvlcard .prl{font-size:10.5px;color:#9b8c6e;font-weight:700;margin-top:5px;}
+
+  .week{display:flex;justify-content:space-between;}
+  .day{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#b6a98a;}
+  .dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:#f1e7d2;color:#cdbf9f;}
+  .dot.on{background:#ff9600;color:#fff;box-shadow:0 3px 0 #d97a00;}
+  .dot.today{background:#fff;border:2px dashed #ff9600;color:#ff9600;}
+
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center;}
+  .med{font-size:10px;color:#9b8c6e;font-weight:700;}
+  .medico{width:42px;height:42px;border-radius:12px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:19px;background:#f3ead4;cursor:pointer;}
+  .medico.gold{background:linear-gradient(160deg,#ffe08a,#ffb020);box-shadow:0 4px 12px rgba(255,176,32,.45);}
+
+  .banner{background:linear-gradient(135deg,#2b2f6b,#5b54c8);border-radius:18px;padding:14px;color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:13px;cursor:pointer;}
+  .banner .ic{font-size:26px;} .banner .t{font-weight:800;font-size:14px;} .banner .s{font-size:11.5px;opacity:.9;}
+  .banner .go{margin-left:auto;background:#fff;color:#3b3aa0;font-weight:800;border-radius:10px;padding:8px 12px;font-size:12px;}
+
+  /* upsell sutil */
+  .plus{display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,#fff6df,#fffdf7);border:1.5px solid #ffe49e;border-bottom-width:4px;border-radius:16px;padding:12px 13px;margin-bottom:13px;cursor:pointer;}
+  .plus .ic{width:38px;height:38px;border-radius:11px;background:linear-gradient(160deg,#ffd76a,#ffae18);display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto;}
+  .plus .t{font-weight:800;font-size:13.5px;color:#5b4e2c;}
+  .plus .s{font-size:11px;color:#9b8c6e;font-weight:600;}
+  .plus .arr{margin-left:auto;color:#b07b00;font-weight:900;font-size:18px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .tile{background:#fff;border:2px solid #efe3cd;border-bottom-width:4px;border-radius:16px;padding:13px;display:flex;flex-direction:column;gap:6px;cursor:pointer;}
+  .tile .ic{font-size:23px;} .tile .t{font-weight:800;font-size:13.5px;} .tile .s{font-size:11px;color:#9b8c6e;}
+  .tile.dudas{background:linear-gradient(160deg,#eaf7ff,#fff);border-color:#bfe9ff;}
+  .tile .badgeN{align-self:flex-start;background:#1cb0f6;color:#fff;font-size:9px;font-weight:800;border-radius:999px;padding:1px 7px;}
+  .tile .count{color:#ff7a00;font-weight:800;}
+  .tile .pastlink{font-size:10.5px;color:#1cb0f6;font-weight:700;margin-top:6px;cursor:pointer;}
+
+  .navbar{display:flex;justify-content:space-around;align-items:center;height:74px;background:#fff;border-top:2px solid #efe3cd;}
+  .nav i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#bbae93;cursor:pointer;flex:1;}
+  .nav i.on{color:#58cc02;} .nav .ic{font-size:20px;}
+
+  #tipbox{position:fixed;max-width:250px;background:#473c2e;color:#fff;font-size:12.5px;line-height:1.4;padding:9px 12px;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .12s;z-index:999;text-align:center;}
+  #tipbox.show{opacity:1;}
+  #tipbox::after{content:"";position:absolute;left:var(--ax,50%);transform:translateX(-50%);top:100%;border:7px solid transparent;border-top-color:#473c2e;}
+  #tipbox.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#473c2e;}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+  .fireanim{display:inline-block;animation:pulse 1.1s ease-in-out infinite;}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="pad">
+
+        <div class="topbar">
+          <span class="chip fire tip" data-tip="Racha: 12 días seguidos 🔥. Tienes 1 protector por si fallas un día.">
+            <span class="fireanim">🔥</span> 12</span>
+          <span class="chip gem tip" data-tip="Gemas: las ganas estudiando. Sirven para pistas, recargar corazones y cosméticos de nutrIA.">💎 400</span>
+          <span class="chip liga tip" data-tip="Liga Esmeralda 💚 — Vas 3º de 30. El Top 7 sube de liga. Quedan 2 días · 1.240 XP esta semana.">💚 3º</span>
+          <span class="ava tip" data-tip="Tu perfil y carnet." onclick="location.href='perfil.html'">M</span>
+        </div>
+
+        <!-- SALUDO nutrIA (1 línea) -->
+        <div class="greet">
+          <div class="otter">🦦</div>
+          <div class="bubble">Hola 👋 Tu misión de hoy te espera. <b>5 minutos</b> y mantienes la racha.</div>
+        </div>
+
+        <!-- MISIÓN DE HOY — HÉROE -->
+        <h3 class="sec">Tu misión de hoy</h3>
+        <div class="card mis">
+          <div class="kick">🎯 Recomendada para ti <span class="ct">2/4 ✓</span></div>
+          <h2>Funciones cuadráticas</h2>
+          <div class="sub">Matemática M1 · adaptada a tus errores reales</div>
+          <div class="uplift tip" data-tip="Estimación de un modelo matemático según tus ensayos. NO es una promesa; es para orientarte y motivarte.">
+            📈 Si la dominas, podrías subir <b>+15 a +30 pts</b> en M1.
+            <small>Es una estimación para motivarte, no una promesa.</small>
+          </div>
+          <div class="prog"><i></i></div>
+          <div class="progl">2 de 4 pasos completados hoy</div>
+          <button class="cta" onclick="location.href='practicar-v5.html'">Empezar misión</button>
+          <div class="book tip" data-tip="¿Tienes el libro? Resuelve esta misión en papel (pág. 127) y escanéala: te la corregimos al instante y suma XP." onclick="location.href='escanear-v1.html'">📕 o hazla en tu libro (pág. 127) y escanéala 📸</div>
+        </div>
+
+        <!-- TU NIVEL -->
+        <h3 class="sec">Tu nivel <span class="lk" onclick="location.href='perfil.html'">ver mi perfil ▸</span></h3>
+        <div class="card lvlcard" onclick="location.href='perfil.html'">
+          <div class="crit tip" data-tip="Tu nivel es una criatura que evoluciona contigo. Sube por tu ESFUERZO y progreso, no por tu puntaje bruto."><img src="criaturas/05_notable.webp" alt="Puntaje Notable"></div>
+          <div style="flex:1">
+            <div class="lname">Puntaje Notable</div>
+            <span class="pos tip" data-tip="Tu posición REAL en Chile (psicometría IRT). Es un dato aparte; tu nivel sube por esfuerzo.">🇨🇱 Le ganas al 85% en M1</span>
+            <div class="pr"><i></i></div>
+            <div class="prl">Te falta poco para <b>Puntaje Brillante</b> · 62%</div>
+          </div>
+        </div>
+
+        <!-- TU SEMANA -->
+        <h3 class="sec">Tu semana 🔥</h3>
+        <div class="card">
+          <div class="week">
+            <div class="day"><div class="dot on">✓</div>L</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>M</div>
+            <div class="day"><div class="dot on">✓</div>J</div>
+            <div class="day"><div class="dot today">●</div>V</div>
+            <div class="day"><div class="dot">·</div>S</div>
+            <div class="day"><div class="dot">·</div>D</div>
+          </div>
+        </div>
+
+        <!-- TUS TEMAS -->
+        <h3 class="sec">Tus temas <span class="lk">ver todos ▸</span></h3>
+        <div class="card">
+          <div class="grid5">
+            <div><div class="medico gold tip" data-tip="Álgebra: dominada 🥇">🥇</div><div class="med">Álgebra</div></div>
+            <div><div class="medico gold tip" data-tip="Números: dominado 🥇">🥇</div><div class="med">Números</div></div>
+            <div><div class="medico tip" data-tip="Geometría: nivel plata 🥈, te falta poco">🥈</div><div class="med">Geom.</div></div>
+            <div><div class="medico tip" data-tip="Probabilidad: bronce 🥉, a reforzar">🥉</div><div class="med">Prob.</div></div>
+            <div><div class="medico tip" data-tip="Datos: aún por desbloquear 🔒">🔒</div><div class="med">Datos</div></div>
+          </div>
+        </div>
+
+        <!-- EXPLORA -->
+        <h3 class="sec">Explora</h3>
+        <div class="banner">
+          <div class="ic">📅</div>
+          <div><div class="t">Ensayo PAES del mes</div><div class="s">Mídete oficial · hasta el 30 Jun</div></div>
+          <div class="go">Rendir</div>
+        </div>
+
+        <!-- UPSELL B2C sutil -->
+        <div class="plus tip" data-tip="PAES Plus: plan adaptativo, preguntas ilimitadas, ensayos y más nutrIA. Lo gratis sigue gratis siempre." onclick="alert('PAES Plus: próximamente ✨')">
+          <div class="ic">✨</div>
+          <div>
+            <div class="t">Desbloquea PAES Plus</div>
+            <div class="s">Preguntas ilimitadas y ensayos completos</div>
+          </div>
+          <div class="arr">›</div>
+        </div>
+
+        <div class="grid2">
+          <div class="tile dudas"><span class="badgeN">gana puntos</span><div class="ic">💬</div><div class="t">Dudas</div><div class="s">Pregunta tus dudas y ayuda a otros respondiendo las suyas.</div></div>
+          <div class="tile clases"><div class="ic">🎥</div><div class="t">Clases en vivo</div><div class="s">Próxima: <b>Biología</b> · hoy 18:00<br><span class="count">empieza en 2 h 15 min</span></div><span class="pastlink" onclick="event.stopPropagation();alert('Clases anteriores: próximamente 🎥')">ver clases anteriores ▸</span></div>
+          <div class="tile"><div class="ic">✍️</div><div class="t">Hacer ensayo</div><div class="s">Arma uno a tu medida</div></div>
+          <div class="tile"><div class="ic">🗂️</div><div class="t">Planes de estudio</div><div class="s">Tu ruta semanal</div></div>
+        </div>
+
+      </div>
+      <div class="navbar nav">
+        <i class="on" onclick="location.href='home-final-1.html'"><span class="ic">🏠</span>Inicio</i>
+        <i onclick="location.href='practicar-v5.html'"><span class="ic">🎯</span>Practicar</i>
+        <i onclick="location.href='escanear-v1.html'"><span class="ic">📷</span>Escanear</i>
+        <i onclick="alert('Ligas: próximamente 🏆')"><span class="ic">🏆</span>Ligas</i>
+        <i onclick="location.href='perfil.html'"><span class="ic">🦦</span>Perfil</i>
+      </div>
+    </div>
+  </div>
+
+<div id="tipbox"></div>
+<script>
+(function(){
+  var box=document.getElementById('tipbox');var t;
+  function place(el){box.style.left='0px';box.style.top='0px';box.classList.remove('below');
+    var r=el.getBoundingClientRect();var bw=box.offsetWidth,bh=box.offsetHeight;var cx=r.left+r.width/2;
+    var left=Math.min(Math.max(8,cx-bw/2),window.innerWidth-bw-8);var top=r.top-bh-12;
+    if(top<8){top=r.bottom+12;box.classList.add('below');}
+    box.style.left=left+'px';box.style.top=top+'px';box.style.setProperty('--ax',(cx-left)+'px');}
+  function show(el){box.textContent=el.getAttribute('data-tip');box.classList.add('show');place(el);clearTimeout(t);}
+  function hide(){box.classList.remove('show');}
+  document.querySelectorAll('.tip').forEach(function(el){
+    el.addEventListener('mouseenter',function(){show(el);});
+    el.addEventListener('mouseleave',hide);
+    el.addEventListener('click',function(e){e.stopPropagation();show(el);clearTimeout(t);t=setTimeout(hide,3000);});
+  });
+  document.addEventListener('click',hide);window.addEventListener('scroll',hide,true);
+})();
+</script>
+</body>
+</html>

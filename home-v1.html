@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — Home del estudiante (3 conceptos)</title>
+<style>
+  :root{ --ease:cubic-bezier(.2,.8,.2,1); }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:#0c0d12;color:#e8eaf0;}
+  .wrap{max-width:1380px;margin:0 auto;padding:28px 18px 80px;}
+  header.intro{text-align:center;margin-bottom:8px;}
+  header.intro h1{font-size:26px;margin:0 0 6px;font-weight:800;letter-spacing:-.3px;}
+  header.intro p{margin:0 auto;max-width:680px;color:#9aa1b2;font-size:14px;line-height:1.5;}
+  .legend{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 26px;}
+  .legend span{font-size:12px;color:#aeb4c4;background:#171922;border:1px solid #262a38;padding:6px 12px;border-radius:999px;}
+  .legend b{color:#fff;}
+  .row{display:flex;gap:34px;justify-content:center;align-items:flex-start;flex-wrap:wrap;}
+  .concept{display:flex;flex-direction:column;align-items:center;gap:14px;width:392px;max-width:100%;}
+  .concept .tag{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-height:64px;}
+  .concept .tag h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.2px;}
+  .concept .tag .sub{font-size:12.5px;color:#9aa1b2;max-width:330px;line-height:1.45;}
+  .fav{display:inline-block;margin-top:2px;font-size:11px;font-weight:800;color:#0c0d12;background:linear-gradient(90deg,#ffd24a,#ffb020);padding:3px 10px;border-radius:999px;letter-spacing:.3px;}
+
+  /* ---------- phone shell ---------- */
+  .phone{width:390px;max-width:100%;height:800px;border-radius:46px;padding:12px;position:relative;
+         box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;background:#05060a;}
+  .screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:40;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;z-index:30;}
+  .scroll{flex:1;overflow:hidden;position:relative;}
+  .scroll .pad{padding:6px 16px 96px;}
+  .navbar{position:absolute;bottom:0;left:0;right:0;height:74px;display:flex;justify-content:space-around;align-items:center;z-index:35;}
+  .nav i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;}
+  .nav .ic{font-size:20px;line-height:1;}
+  .scanbtn{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;
+           margin-top:-26px;box-shadow:0 8px 22px rgba(0,0,0,.35);border:4px solid #fff;}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-weight:800;border-radius:999px;}
+  .ring{transform:rotate(-90deg);}
+  .ringtrack{fill:none;}
+  .ringbar{fill:none;stroke-linecap:round;}
+
+  /* ===================== A · DUOLINGO "AVENTURA" ===================== */
+  .A .screen{background:#fff8ec;color:#473c2e;}
+  .A .statusbar{color:#5b4e3c;}
+  .A .topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px 12px;}
+  .A .chip{font-size:15px;font-weight:800;background:#fff;border:2px solid #efe3cd;border-radius:999px;padding:5px 11px;display:flex;gap:5px;align-items:center;}
+  .A .chip.fire{color:#ff7a00;border-color:#ffd9a8;}
+  .A .chip.gem{color:#1cb0f6;border-color:#bfe9ff;}
+  .A .greet{display:flex;gap:12px;align-items:center;margin:4px 2px 14px;}
+  .A .otter{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:36px;flex:0 0 auto;box-shadow:0 6px 0 #7c5a2c;}
+  .A .bubble{background:#fff;border:2px solid #efe3cd;border-radius:16px;padding:9px 12px;font-size:13px;font-weight:600;line-height:1.35;position:relative;}
+  .A .bubble b{color:#58cc02;}
+  .A .card{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:18px;padding:14px;margin-bottom:14px;}
+  .A .rankcard{background:linear-gradient(160deg,#58cc02,#46a302);border:none;color:#fff;text-align:center;border-bottom:5px solid #3d8b00;}
+  .A .rankcard .pj{font-size:46px;font-weight:900;line-height:1;letter-spacing:-1px;}
+  .A .rankcard .tier{font-weight:800;font-size:13px;opacity:.95;margin-top:4px;letter-spacing:.5px;}
+  .A .rankcard .meta{font-size:11.5px;opacity:.9;margin-top:8px;background:rgba(255,255,255,.18);display:inline-block;padding:4px 10px;border-radius:999px;}
+  .A h3.sec{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#a99877;margin:4px 4px 10px;}
+  .A .path{display:flex;flex-direction:column;gap:0;align-items:center;}
+  .A .node{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;border:none;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.18);position:relative;}
+  .A .node.done{background:#ffc800;box-shadow:0 5px 0 #e0a800;}
+  .A .node.now{background:#58cc02;box-shadow:0 5px 0 #3d8b00;animation:bob 1.3s var(--ease) infinite;}
+  .A .node.lock{background:#e7ddca;color:#b6a98a;box-shadow:0 5px 0 #d6cab2;}
+  .A .connector{width:5px;height:20px;background:#e7ddca;border-radius:3px;margin:5px 0;}
+  .A .nodelbl{font-size:11px;font-weight:700;color:#7a6c52;margin:6px 0 2px;}
+  .A .cta{display:block;width:100%;text-align:center;background:#58cc02;color:#fff;font-weight:800;border:none;border-bottom:4px solid #3d8b00;border-radius:14px;padding:13px;font-size:15px;letter-spacing:.3px;}
+  .A .scanrow{display:flex;align-items:center;gap:12px;background:#fff;border:2px dashed #1cb0f6;border-radius:16px;padding:12px;}
+  .A .scanrow .ic{width:44px;height:44px;border-radius:12px;background:#e8f7ff;display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .A .liga{display:flex;align-items:center;gap:12px;}
+  .A .ligaemb{width:46px;height:46px;border-radius:12px;background:linear-gradient(160deg,#34e0c0,#11b894);display:flex;align-items:center;justify-content:center;font-size:24px;}
+  .A .navbar{background:#fff;border-top:2px solid #efe3cd;}
+  .A .nav i{color:#bbae93;}
+  .A .nav i.on{color:#58cc02;}
+  .A .scanbtn{background:#1cb0f6;color:#fff;}
+
+  /* ===================== B · LOL "RANKED" ===================== */
+  .B .screen{background:radial-gradient(120% 80% at 50% -10%,#16263a 0%,#0a0e16 55%,#070a11 100%);color:#dce6f2;}
+  .B .statusbar{color:#aebccf;}
+  .B .topbar{display:flex;justify-content:space-between;align-items:center;padding:6px 16px 10px;}
+  .B .tb-l{display:flex;gap:8px;}
+  .B .chip{font-size:13px;font-weight:800;background:rgba(255,255,255,.05);border:1px solid #233247;border-radius:999px;padding:5px 10px;display:flex;gap:5px;align-items:center;}
+  .B .chip.fire{color:#ff9f43;} .B .chip.gem{color:#38bdf8;} .B .chip.xp{color:#a7f3d0;}
+  .B .greet{padding:2px 4px 10px;}
+  .B .greet .hi{font-size:18px;font-weight:800;}
+  .B .greet .ot{font-size:12.5px;color:#8da0b6;margin-top:2px;}
+  .B .greet .ot b{color:#f0b232;}
+  /* rank emblem */
+  .B .rankhero{position:relative;margin:6px 0 14px;padding:18px 14px 16px;border-radius:20px;text-align:center;
+              background:linear-gradient(165deg,rgba(240,178,50,.14),rgba(56,189,248,.06));border:1px solid #2b3a52;overflow:hidden;}
+  .B .rankhero::before{content:"";position:absolute;inset:-40% 30% auto;height:200px;background:radial-gradient(closest-side,rgba(240,178,50,.25),transparent);filter:blur(6px);}
+  .B .emblem{width:104px;height:104px;margin:0 auto 6px;position:relative;display:flex;align-items:center;justify-content:center;}
+  .B .hex{width:100%;height:100%;background:linear-gradient(160deg,#7fd7ff,#2f8fd0);clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+         display:flex;align-items:center;justify-content:center;box-shadow:0 0 26px rgba(56,189,248,.45);}
+  .B .hex .inner{width:84%;height:84%;background:linear-gradient(160deg,#0e1a28,#0a1420);clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);display:flex;align-items:center;justify-content:center;font-size:40px;}
+  .B .pj{font-size:44px;font-weight:900;letter-spacing:-1px;line-height:1;background:linear-gradient(90deg,#fff,#cfe6ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .B .tier{font-weight:900;letter-spacing:2px;color:#7fd7ff;font-size:13px;margin-top:3px;}
+  .B .ascenso{margin-top:12px;}
+  .B .ascbar{height:9px;border-radius:999px;background:#13202f;overflow:hidden;border:1px solid #243549;}
+  .B .ascbar i{display:block;height:100%;width:64%;background:linear-gradient(90deg,#38bdf8,#22d3a8);}
+  .B .asclbl{display:flex;justify-content:space-between;font-size:11px;color:#8da0b6;margin-top:6px;font-weight:700;}
+  .B .asclbl b{color:#f0b232;}
+  .B .panel{background:rgba(255,255,255,.035);border:1px solid #223145;border-radius:16px;padding:14px;margin-bottom:13px;}
+  .B .ttl{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .B .ttl h3{margin:0;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#8da0b6;}
+  .B .ttl .more{font-size:11px;color:#38bdf8;font-weight:700;}
+  .B .mision .m-top{display:flex;gap:11px;align-items:center;}
+  .B .mision .mboss{width:50px;height:50px;border-radius:12px;background:linear-gradient(160deg,#3a1d4d,#221035);border:1px solid #5a3b73;display:flex;align-items:center;justify-content:center;font-size:26px;}
+  .B .mision .mt{font-weight:800;font-size:14.5px;}
+  .B .mision .ms{font-size:11.5px;color:#8da0b6;margin-top:2px;}
+  .B .prog{height:8px;border-radius:999px;background:#13202f;margin:12px 0 12px;overflow:hidden;border:1px solid #243549;}
+  .B .prog i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#f0b232,#ffd277);}
+  .B .cta{display:block;width:100%;text-align:center;background:linear-gradient(90deg,#38bdf8,#22d3a8);color:#04121a;font-weight:900;border:none;border-radius:12px;padding:13px;font-size:14.5px;letter-spacing:.3px;box-shadow:0 8px 22px rgba(56,189,248,.25);}
+  .B .scanrow{display:flex;align-items:center;gap:12px;}
+  .B .scanrow .ic{width:46px;height:46px;border-radius:12px;background:linear-gradient(160deg,#22d3a8,#0e9c7a);display:flex;align-items:center;justify-content:center;font-size:22px;color:#04121a;}
+  .B .scanrow .st{font-weight:800;font-size:14px;} .B .scanrow .ss{font-size:11px;color:#8da0b6;}
+  .B .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center;}
+  .B .med{font-size:11px;color:#8da0b6;font-weight:700;}
+  .B .medico{width:38px;height:38px;border-radius:10px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid #243549;background:#0f1a27;}
+  .B .medico.gold{background:linear-gradient(160deg,#f7d774,#d99e21);color:#3a2700;border:none;box-shadow:0 0 14px rgba(240,178,50,.5);}
+  .B .navbar{background:rgba(8,12,18,.92);border-top:1px solid #1c2738;backdrop-filter:blur(8px);}
+  .B .nav i{color:#5d6c80;} .B .nav i.on{color:#38bdf8;}
+  .B .scanbtn{background:linear-gradient(160deg,#22d3a8,#0e9c7a);color:#04121a;border-color:#0a0e16;}
+
+  /* ===================== C · HÍBRIDO "MODERNO" ===================== */
+  .C .screen{background:#f3f4fa;color:#191c2b;}
+  .C .statusbar{color:#5b6072;}
+  .C .topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 18px 8px;}
+  .C .chip{font-size:13px;font-weight:800;background:#fff;border:1px solid #e7e9f3;border-radius:999px;padding:5px 10px;display:flex;gap:5px;align-items:center;box-shadow:0 2px 6px rgba(30,30,60,.04);}
+  .C .chip.fire{color:#ff7a00;} .C .chip.gem{color:#6c5ce7;}
+  .C .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(160deg,#6c5ce7,#8e7bff);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:800;}
+  .C .greet{padding:6px 4px 12px;}
+  .C .greet h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.4px;}
+  .C .greet p{margin:3px 0 0;font-size:13px;color:#6b7184;}
+  .C .greet p b{color:#6c5ce7;}
+  .C .rankcard{background:linear-gradient(135deg,#3b2c8f,#6c5ce7 60%,#8e7bff);border-radius:22px;padding:18px;color:#fff;position:relative;overflow:hidden;margin-bottom:14px;box-shadow:0 16px 30px rgba(108,92,231,.28);}
+  .C .rankcard::after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.10);}
+  .C .rankcard .lbl{font-size:11.5px;opacity:.9;font-weight:700;letter-spacing:.4px;text-transform:uppercase;}
+  .C .rankcard .row2{display:flex;align-items:flex-end;justify-content:space-between;margin-top:4px;}
+  .C .rankcard .pj{font-size:48px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+  .C .rankcard .tier{text-align:right;}
+  .C .rankcard .tier .b{font-weight:900;font-size:15px;}
+  .C .rankcard .tier .s{font-size:11px;opacity:.85;}
+  .C .rankcard .bar{height:7px;border-radius:999px;background:rgba(255,255,255,.22);margin-top:14px;overflow:hidden;}
+  .C .rankcard .bar i{display:block;height:100%;width:62%;background:#ffd24a;}
+  .C .rankcard .barlbl{font-size:11px;opacity:.92;margin-top:7px;}
+  .C .card{background:#fff;border-radius:18px;padding:15px;margin-bottom:13px;box-shadow:0 6px 18px rgba(30,30,60,.06);}
+  .C h3.sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:#9aa0b4;margin:6px 4px 9px;display:flex;justify-content:space-between;}
+  .C h3.sec span{color:#6c5ce7;}
+  .C .mision .mt{display:flex;gap:12px;align-items:center;}
+  .C .mision .mi{width:48px;height:48px;border-radius:14px;background:linear-gradient(160deg,#ffe39a,#ffb020);display:flex;align-items:center;justify-content:center;font-size:24px;}
+  .C .mision .mt b{font-size:15px;} .C .mision .mt p{margin:2px 0 0;font-size:12px;color:#6b7184;}
+  .C .prog{height:8px;border-radius:999px;background:#eef0f7;margin:13px 0;overflow:hidden;}
+  .C .prog i{display:block;height:100%;width:50%;background:linear-gradient(90deg,#6c5ce7,#8e7bff);}
+  .C .cta{display:block;width:100%;text-align:center;background:#6c5ce7;color:#fff;font-weight:800;border:none;border-radius:13px;padding:13px;font-size:14.5px;}
+  .C .scanrow{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#11151f,#222a3d);border-radius:18px;padding:14px;color:#fff;margin-bottom:13px;}
+  .C .scanrow .ic{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .C .scanrow .st{font-weight:800;font-size:14px;} .C .scanrow .ss{font-size:11.5px;opacity:.8;}
+  .C .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;text-align:center;}
+  .C .medico{width:42px;height:42px;border-radius:12px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:19px;background:#f0f1f8;}
+  .C .medico.gold{background:linear-gradient(160deg,#ffe08a,#ffb020);box-shadow:0 5px 14px rgba(255,176,32,.4);}
+  .C .med{font-size:10.5px;color:#8990a4;font-weight:700;}
+  .C .navbar{background:#fff;border-top:1px solid #eaecf4;}
+  .C .nav i{color:#b3b8c9;} .C .nav i.on{color:#6c5ce7;}
+  .C .scanbtn{background:#6c5ce7;color:#fff;}
+
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .fireanim{display:inline-block;animation:pulse 1.1s var(--ease) infinite;}
+
+  @media(max-width:520px){
+    .phone{height:760px;}
+    header.intro h1{font-size:21px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="intro">
+    <h1>🎓 Puntaje Nacional — Home del estudiante</h1>
+    <p>3 conceptos del mismo home, mobile-first. Mismo contenido, distinta alma. La idea es que elijas y mezclemos
+       ("la B con el camino de la A", etc.). Inspiración: Duolingo + juegos tipo LoL. Mascota: <b>nutrIA</b> 🦦.</p>
+    <div class="legend">
+      <span><b>A</b> · Aventura (Duolingo)</span>
+      <span><b>B</b> · Ranked (LoL) — <b>mi favorita</b></span>
+      <span><b>C</b> · Híbrido moderno</span>
+    </div>
+  </header>
+
+  <div class="row">
+
+    <!-- ============ A ============ -->
+    <div class="concept A">
+      <div class="tag">
+        <h2>A · Aventura 🗺️</h2>
+        <div class="sub">Cálido y adictivo tipo Duolingo. La nutrIA te guía, racha al frente y el día es un "camino" de pasos.</div>
+      </div>
+      <div class="phone">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+          <div class="scroll"><div class="pad">
+            <div class="topbar">
+              <span class="chip fire"><span class="fireanim">🔥</span> 12</span>
+              <span class="chip gem">💎 340</span>
+              <span class="chip">🦦 nv.5</span>
+            </div>
+            <div class="greet">
+              <div class="otter">🦦</div>
+              <div class="bubble">¡Hola, <b>Martina</b>! Hoy te quedan <b>3 pasos</b> para tu meta de hoy. ¡Vamos que se puede! 💪</div>
+            </div>
+            <div class="card rankcard">
+              <div class="pj">742</div>
+              <div class="tier">PUNTAJE PROYECTADO · PLATINO</div>
+              <div class="meta">▲ +28 esta semana · meta 850</div>
+            </div>
+            <h3 class="sec">Tu camino de hoy</h3>
+            <div class="card">
+              <div class="path">
+                <div class="node done">✓</div><div class="connector"></div>
+                <div class="node done">✓</div><div class="connector"></div>
+                <div class="node now">📐</div>
+                <div class="nodelbl">Funciones cuadráticas</div>
+                <div class="connector"></div>
+                <div class="node lock">🔒</div><div class="connector"></div>
+                <div class="node lock">🏁</div>
+              </div>
+              <button class="cta" style="margin-top:14px">Continuar (2/4)</button>
+            </div>
+            <div class="card scanrow">
+              <div class="ic">📸</div>
+              <div><div style="font-weight:800;font-size:14px">Escanea tu libro</div>
+                   <div style="font-size:11.5px;color:#9b8c6e">Resolviste la pág. 127 → corrige al toque</div></div>
+            </div>
+            <h3 class="sec">Liga Esmeralda</h3>
+            <div class="card liga">
+              <div class="ligaemb">💚</div>
+              <div style="flex:1"><div style="font-weight:800">Vas 3º de 30</div>
+                   <div style="font-size:11.5px;color:#9b8c6e">Top 7 sube a Diamante · quedan 2 días</div></div>
+              <div style="font-weight:900;color:#11b894">1.240<br><span style="font-size:10px;font-weight:700">XP</span></div>
+            </div>
+          </div></div>
+          <div class="navbar nav">
+            <i class="on"><span class="ic">🏠</span>Inicio</i>
+            <i><span class="ic">🎯</span>Practicar</i>
+            <i><span class="scanbtn">📸</span></i>
+            <i><span class="ic">🏆</span>Ligas</i>
+            <i><span class="ic">🦦</span>Perfil</i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ B ============ -->
+    <div class="concept B">
+      <div class="tag">
+        <h2>B · Ranked ⚔️</h2>
+        <div class="sub">Oscuro, premium y "gamer" tipo LoL. Tu puntaje es un RANGO con emblema; estudiar = escalar de tier.</div>
+        <span class="fav">★ MI FAVORITA</span>
+      </div>
+      <div class="phone">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+          <div class="scroll"><div class="pad">
+            <div class="topbar">
+              <div class="tb-l">
+                <span class="chip fire"><span class="fireanim">🔥</span> 12</span>
+                <span class="chip xp">⚡ 1.240</span>
+              </div>
+              <span class="chip gem">💎 340</span>
+            </div>
+            <div class="greet">
+              <div class="hi">¡Buena, Martina! 👋</div>
+              <div class="ot">🦦 nutrIA: hoy derrotamos a <b>Funciones Cuadráticas</b>.</div>
+            </div>
+            <div class="rankhero">
+              <div class="emblem"><div class="hex"><div class="inner">📊</div></div></div>
+              <div class="pj">742</div>
+              <div class="tier">PLATINO II</div>
+              <div class="ascenso">
+                <div class="ascbar"><i></i></div>
+                <div class="asclbl"><span>Puntaje proyectado</span><span><b>+58</b> para Diamante</span></div>
+              </div>
+            </div>
+            <div class="panel mision">
+              <div class="ttl"><h3>Misión de hoy</h3><span class="more">ver plan ▸</span></div>
+              <div class="m-top">
+                <div class="mboss">👾</div>
+                <div><div class="mt">Jefe: Funciones Cuadráticas</div>
+                     <div class="ms">Tu kryptonita en M1 · 78% falla aquí</div></div>
+              </div>
+              <div class="prog"><i></i></div>
+              <button class="cta">Atacar (2/4) ⚔️</button>
+            </div>
+            <div class="panel scanrow">
+              <div class="ic">📸</div>
+              <div style="flex:1"><div class="st">Escanear libro</div>
+                   <div class="ss">Sube tus respuestas → corrección + XP</div></div>
+              <div style="color:#f0b232;font-weight:900;font-size:13px">+50⚡</div>
+            </div>
+            <div class="panel">
+              <div class="ttl"><h3>Maestría por eje</h3><span class="more">todos ▸</span></div>
+              <div class="grid">
+                <div><div class="medico gold">🥇</div><div class="med">Álgebra</div></div>
+                <div><div class="medico gold">🥇</div><div class="med">Números</div></div>
+                <div><div class="medico">🥈</div><div class="med">Geom.</div></div>
+                <div><div class="medico">🥉</div><div class="med">Prob.</div></div>
+                <div><div class="medico">🔒</div><div class="med">Datos</div></div>
+              </div>
+            </div>
+          </div></div>
+          <div class="navbar nav">
+            <i class="on"><span class="ic">🏠</span>Inicio</i>
+            <i><span class="ic">🎯</span>Practicar</i>
+            <i><span class="scanbtn">📸</span></i>
+            <i><span class="ic">🏆</span>Ligas</i>
+            <i><span class="ic">🦦</span>Perfil</i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ C ============ -->
+    <div class="concept C">
+      <div class="tag">
+        <h2>C · Híbrido moderno ✨</h2>
+        <div class="sub">Limpio y premium (tipo app fintech), con gamificación elegante. Serio para el apoderado, cool para el alumno.</div>
+      </div>
+      <div class="phone">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+          <div class="scroll"><div class="pad">
+            <div class="topbar">
+              <span class="chip fire"><span class="fireanim">🔥</span> 12 días</span>
+              <span class="chip gem">💎 340</span>
+              <span class="ava">M</span>
+            </div>
+            <div class="greet">
+              <h2>Hola, Martina 👋</h2>
+              <p>🦦 nutrIA: vas <b>+28 pts</b> esta semana. Sigue así y llegas a tu meta.</p>
+            </div>
+            <div class="rankcard">
+              <div class="lbl">Tu puntaje proyectado</div>
+              <div class="row2">
+                <div class="pj">742</div>
+                <div class="tier"><div class="b">PLATINO II</div><div class="s">▲ subiendo</div></div>
+              </div>
+              <div class="bar"><i></i></div>
+              <div class="barlbl">58 pts para <b>Diamante</b> · meta PACE 850</div>
+            </div>
+            <h3 class="sec">Misión de hoy <span>2/4</span></h3>
+            <div class="card mision">
+              <div class="mt">
+                <div class="mi">📐</div>
+                <div style="flex:1"><b>Funciones cuadráticas</b><p>3 ejercicios + 1 TestTAC · ~15 min</p></div>
+              </div>
+              <div class="prog"><i></i></div>
+              <button class="cta">Continuar</button>
+            </div>
+            <div class="scanrow">
+              <div class="ic">📸</div>
+              <div style="flex:1"><div class="st">Escanear mi libro</div>
+                   <div class="ss">Foto a la hoja → corrección instantánea</div></div>
+              <div style="font-size:20px">›</div>
+            </div>
+            <h3 class="sec">Maestría por eje <span>ver todo</span></h3>
+            <div class="card">
+              <div class="grid">
+                <div><div class="medico gold">🥇</div><div class="med">Álgebra</div></div>
+                <div><div class="medico gold">🥇</div><div class="med">Números</div></div>
+                <div><div class="medico">🥈</div><div class="med">Geom.</div></div>
+                <div><div class="medico">🥉</div><div class="med">Prob.</div></div>
+                <div><div class="medico">🔒</div><div class="med">Datos</div></div>
+              </div>
+            </div>
+          </div></div>
+          <div class="navbar nav">
+            <i class="on"><span class="ic">🏠</span>Inicio</i>
+            <i><span class="ic">🎯</span>Practicar</i>
+            <i><span class="scanbtn">📸</span></i>
+            <i><span class="ic">🏆</span>Ligas</i>
+            <i><span class="ava" style="width:22px;height:22px;font-size:11px">M</span>Perfil</i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

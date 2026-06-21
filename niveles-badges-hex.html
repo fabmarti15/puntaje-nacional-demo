@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — Insignias hexagonales</title>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#fff8ec;color:#473c2e;padding:26px 16px 80px;}
+  .wrap{max-width:980px;margin:0 auto;}
+  h1{text-align:center;font-size:23px;margin:0 0 4px;font-weight:800;}
+  .lead{text-align:center;color:#9b8c6e;font-size:13.5px;max-width:640px;margin:0 auto 22px;line-height:1.5;}
+  .lead b{color:#46a302;}
+  .scale{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:16px;}
+  .lvl{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;cursor:pointer;padding:12px 6px;border-radius:16px;border:2px solid transparent;}
+  .lvl:hover{background:#fff;border-color:#efe3cd;}
+  .lvl.cur{background:#fff;border-color:#9fe06a;box-shadow:0 6px 0 rgba(70,163,2,.12);}
+  .hexwrap{position:relative;filter:drop-shadow(0 5px 6px rgba(0,0,0,.22));}
+  .hexwrap.glow{filter:drop-shadow(0 0 12px var(--g,#ffcf5e)) drop-shadow(0 5px 6px rgba(0,0,0,.22));}
+  .hex{width:86px;height:98px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+       background:linear-gradient(155deg,var(--c1),var(--c2));display:flex;align-items:center;justify-content:center;}
+  .hexin{width:74px;height:84px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+       background:linear-gradient(155deg,rgba(255,255,255,.35),rgba(0,0,0,.30));display:flex;align-items:center;justify-content:center;}
+  .hexin svg{width:36px;height:36px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4));}
+  .crown{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:18px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3));}
+  .lname{font-weight:800;font-size:12.5px;line-height:1.15;}
+  .you{font-size:9.5px;font-weight:800;color:#fff;background:#46a302;padding:2px 8px;border-radius:999px;}
+  .note{margin:24px auto 0;background:#fff;border:2px dashed #d9cdb2;border-radius:16px;padding:14px 18px;font-size:12.5px;color:#6b5e46;line-height:1.55;}
+  .note b{color:#46a302;}
+  @keyframes shimmer{0%,100%{filter:drop-shadow(0 0 8px var(--g)) drop-shadow(0 5px 6px rgba(0,0,0,.22));}50%{filter:drop-shadow(0 0 18px var(--g)) drop-shadow(0 5px 6px rgba(0,0,0,.22));}}
+  .hexwrap.top{animation:shimmer 2.2s ease-in-out infinite;}
+
+  #tipbox{position:fixed;max-width:240px;background:#473c2e;color:#fff;font-size:12.5px;line-height:1.4;padding:9px 12px;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .12s;z-index:999;text-align:center;}
+  #tipbox.show{opacity:1;}
+  #tipbox::after{content:"";position:absolute;left:var(--ax,50%);transform:translateX(-50%);top:100%;border:7px solid transparent;border-top-color:#473c2e;}
+  #tipbox.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#473c2e;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🛡️ Insignias hexagonales — escalera de Puntaje</h1>
+  <p class="lead">Todas con la <b>misma forma</b>, escalando material + símbolo + brillo. <b>Toca</b> cada una. La 🟢 marca a Martina. (Hexágono con clip-path + símbolo SVG = livianito.)</p>
+
+  <div class="scale">
+    <!-- 1 Inicial -->
+    <div class="lvl tip" data-tip="Puntaje Inicial: ¡el comienzo de tu viaje!">
+      <div class="hexwrap"><div class="hex" style="--c1:#d3e6bd;--c2:#8fb567"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-7"/><path d="M12 14c-1-3-4-4-7-4 0 4 3 5 7 4z"/><path d="M12 13c1-2.6 4-4.5 8-4.5 0 4-3 6-8 4.5z"/></svg>
+      </div></div></div><div class="lname">Puntaje Inicial</div></div>
+
+    <!-- 2 Regular -->
+    <div class="lvl tip" data-tip="Puntaje Regular: ya tomaste ritmo.">
+      <div class="hexwrap"><div class="hex" style="--c1:#ddd2ba;--c2:#a08e6a"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 1l1.8 8.2L22 11l-8.2 1.8L12 21l-1.8-8.2L2 11l8.2-1.8z"/></svg>
+      </div></div></div><div class="lname">Puntaje Regular</div></div>
+
+    <!-- 3 Sólido -->
+    <div class="lvl tip" data-tip="Puntaje Sólido: base firme y constante.">
+      <div class="hexwrap"><div class="hex" style="--c1:#ecbd80;--c2:#b9772f"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l8 3v6c0 5-3.5 8.6-8 10.5C7.5 19.6 4 16 4 11V5z"/></svg>
+      </div></div></div><div class="lname">Puntaje Sólido</div></div>
+
+    <!-- 4 Notable (TÚ) -->
+    <div class="lvl cur tip" data-tip="Estás aquí: Puntaje Notable. ¡Vas muy bien!">
+      <div class="hexwrap"><div class="hex" style="--c1:#f6d590;--c2:#cf9530"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.4 6.8L12 17.8 5.9 21.2l1.4-6.8L1.2 9.7l6.9-.7z"/></svg>
+      </div></div></div><div class="lname">Puntaje Notable</div><span class="you">TÚ</span></div>
+
+    <!-- 5 Brillante -->
+    <div class="lvl tip" data-tip="Puntaje Brillante: tu próximo nivel.">
+      <div class="hexwrap"><div class="hex" style="--c1:#eef2f7;--c2:#9fb0c2"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l2.6 6 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 19.2l1.4-6.3L3 8.6l6.4-.6z"/><path d="M19 3l.7 1.8L21.5 5.5 19.7 6.2 19 8l-.7-1.8L16.5 5.5 18.3 4.8z"/></svg>
+      </div></div></div><div class="lname">Puntaje Brillante</div></div>
+
+    <!-- 6 Magnífico -->
+    <div class="lvl tip" data-tip="Puntaje Magnífico: rendimiento que destaca.">
+      <div class="hexwrap"><div class="hex" style="--c1:#a6c6f2;--c2:#3f6fc0"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2c4 4 6 7 6 10.2A6 6 0 116 12.2c0-2 .8-3.3 2-4.6.2 1.9 1 2.9 2 3.1 0-2.6-1-4.7 2-8.7z"/></svg>
+      </div></div></div><div class="lname">Puntaje Magnífico</div></div>
+
+    <!-- 7 Mundial -->
+    <div class="lvl tip" data-tip="Puntaje Mundial: entre los mejores.">
+      <div class="hexwrap"><div class="hex" style="--c1:#8fe9d2;--c2:#1ba588"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>
+      </div></div></div><div class="lname">Puntaje Mundial</div></div>
+
+    <!-- 8 Sobrenatural -->
+    <div class="lvl tip" data-tip="Puntaje Sobrenatural: ya es otro nivel.">
+      <div class="hexwrap"><div class="hex" style="--c1:#cda9f2;--c2:#7b46c8"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 5c4 0 7 3 7 7s-3 6-6.5 6-5.5-2.2-5.5-4.5 1.8-3.5 3.5-3.5 2.6 1.2 2.6 2.6"/></svg>
+      </div></div></div><div class="lname">Puntaje Sobrenatural</div></div>
+
+    <!-- 9 Titánico -->
+    <div class="lvl tip" data-tip="Puntaje Titánico: fuerza imparable.">
+      <div class="hexwrap"><div class="hex" style="--c1:#abb1f0;--c2:#4a52c8"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M13 2L4 14h6l-1 8 10-13h-7z"/></svg>
+      </div></div></div><div class="lname">Puntaje Titánico</div></div>
+
+    <!-- 10 Extraterrestre -->
+    <div class="lvl tip" data-tip="Puntaje Extraterrestre: de otro planeta 👽.">
+      <div class="hexwrap glow" style="--g:#cf86f0"><div class="hex" style="--c1:#d59cf0;--c2:#9326c0"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><ellipse cx="12" cy="15" rx="9" ry="3.4"/><path d="M7 14c.6-3.4 2.6-5.5 5-5.5s4.4 2.1 5 5.5"/><circle cx="9" cy="6" r="1.2" fill="#fff" stroke="none"/></svg>
+      </div></div></div><div class="lname">Puntaje Extraterrestre</div></div>
+
+    <!-- 11 Mítico -->
+    <div class="lvl tip" data-tip="Puntaje Mítico: leyenda viviente.">
+      <div class="hexwrap glow" style="--g:#f08bb0"><div class="hex" style="--c1:#f3a7c4;--c2:#d23f78"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13c6 0 10-2.5 13-8 0 7-3.5 12-9 13"/><path d="M5 17c4.5 0 8-1.2 10-4.5"/></svg>
+      </div></div></div><div class="lname">Puntaje Mítico</div></div>
+
+    <!-- 12 Divino -->
+    <div class="lvl tip" data-tip="Puntaje Divino: la elite absoluta.">
+      <div class="hexwrap glow top" style="--g:#ffcf5e"><div class="hex" style="--c1:#ffe7a0;--c2:#e6a81e"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><g><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.5" y1="4.5" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.5" y2="19.5"/><line x1="19.5" y1="4.5" x2="17.7" y2="6.3"/><line x1="6.3" y1="17.7" x2="4.5" y2="19.5"/></g><circle cx="12" cy="12" r="4.5" fill="#fff" stroke="none"/></svg>
+      </div></div></div><div class="lname">Puntaje Divino</div></div>
+
+    <!-- 13 Nacional -->
+    <div class="lvl tip" data-tip="Puntaje Nacional: la cima. El nombre ES tu marca = la meta máxima.">
+      <div class="hexwrap glow top" style="--g:#ffd24a"><span class="crown">👑</span><div class="hex" style="--c1:#fff0c0;--c2:#f0a81e"><div class="hexin">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M3 7l4.2 3.5L12 3l4.8 7.5L21 7l-1.8 13H4.8z"/><circle cx="12" cy="15" r="1.6" fill="#caa015"/></svg>
+      </div></div></div><div class="lname" style="color:#b07b00">Puntaje Nacional</div></div>
+
+  </div>
+
+  <div class="note">💡 Insignias coherentes (misma forma, escala el material/color/símbolo y los top brillan ✨). Hechas con CSS clip-path + SVG = pesan poquísimo. Dime: ¿colores OK?, ¿algún símbolo cambiamos?, ¿el de Puntaje Nacional te gusta así (corona + laurel)?</div>
+</div>
+
+<div id="tipbox"></div>
+<script>
+(function(){
+  var box=document.getElementById('tipbox');var t;
+  function place(el){box.style.left='0px';box.style.top='0px';box.classList.remove('below');
+    var r=el.getBoundingClientRect();var bw=box.offsetWidth,bh=box.offsetHeight;var cx=r.left+r.width/2;
+    var left=Math.min(Math.max(8,cx-bw/2),window.innerWidth-bw-8);var top=r.top-bh-12;
+    if(top<8){top=r.bottom+12;box.classList.add('below');}
+    box.style.left=left+'px';box.style.top=top+'px';box.style.setProperty('--ax',(cx-left)+'px');}
+  function show(el){box.textContent=el.getAttribute('data-tip');box.classList.add('show');place(el);clearTimeout(t);}
+  function hide(){box.classList.remove('show');}
+  document.querySelectorAll('.tip').forEach(function(el){
+    el.addEventListener('mouseenter',function(){show(el);});
+    el.addEventListener('mouseleave',hide);
+    el.addEventListener('click',function(e){e.stopPropagation();show(el);clearTimeout(t);t=setTimeout(hide,3000);});
+  });
+  document.addEventListener('click',hide);window.addEventListener('scroll',hide,true);
+})();
+</script>
+</body>
+</html>

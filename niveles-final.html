@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional</title>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#15161c;color:#473c2e;padding:18px 12px 40px;display:flex;justify-content:center;}
+  .wrap{width:412px;max-width:100%;background:#fff8ec;border-radius:28px;padding:16px 16px 28px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .navback{font-size:14px;font-weight:800;color:#9b8c6e;cursor:pointer;margin:2px 2px 10px;}
+  h1{text-align:center;font-size:22px;margin:0 0 4px;font-weight:800;}
+  .lead{text-align:center;color:#9b8c6e;font-size:13px;max-width:620px;margin:0 auto 20px;line-height:1.5;}
+  .lead b{color:#46a302;}
+
+  /* hero nivel actual */
+  .hero{background:#fff;border:2px solid #efe3cd;border-bottom-width:6px;border-radius:22px;padding:18px;display:flex;align-items:center;gap:16px;margin-bottom:22px;}
+  .hero .img{width:96px;height:96px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+  .hero .img img{max-width:100%;max-height:100%;filter:saturate(1.38) drop-shadow(0 0 16px #9fdc4a) drop-shadow(0 6px 8px rgba(0,0,0,.14));animation:a-float 3s ease-in-out infinite;}
+  .hero .lname{font-size:24px;font-weight:900;color:#46a302;letter-spacing:-.4px;}
+  .hero .pos{display:inline-block;font-size:12px;font-weight:800;color:#b07b00;background:#fff3d1;border:1.5px solid #ffe49e;padding:4px 11px;border-radius:999px;margin-top:5px;}
+  .hero .pr{height:9px;border-radius:999px;background:#eee3cc;overflow:hidden;margin-top:11px;}
+  .hero .pr i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#58cc02,#46a302);}
+  .hero .prl{font-size:11px;color:#9b8c6e;font-weight:700;margin-top:6px;}
+
+  .h3{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:#a99877;margin:0 4px 12px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px;}
+  .lvl{background:#fff;border:2px solid #efe3cd;border-radius:18px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;position:relative;}
+  .lvl .img{height:86px;display:flex;align-items:center;justify-content:center;position:relative;}
+  .lvl .img img{max-width:84px;max-height:84px;filter:saturate(1.32) drop-shadow(0 0 7px var(--g,transparent)) drop-shadow(0 4px 5px rgba(0,0,0,.14));will-change:transform;}
+  .lvl .nm{font-weight:800;font-size:12.5px;text-align:center;line-height:1.1;}
+  .lvl.cur{border-color:#9fe06a;border-width:3px;box-shadow:0 6px 0 rgba(70,163,2,.12);}
+  .lvl.cur .nm{color:#2f8b00;}
+  .lvl.cur .img img{filter:saturate(1.42) drop-shadow(0 0 16px var(--g)) drop-shadow(0 6px 8px rgba(0,0,0,.16));}
+  .lvl.locked .img img{filter:grayscale(.62) opacity(.5)!important;animation:none!important;}
+  .lvl.locked .nm{color:#bcae93;}
+  .spk{position:absolute;width:8px;height:8px;background:#fff;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%);animation:tw 1.8s ease-in-out infinite;pointer-events:none;}
+  .tag{position:absolute;top:8px;right:8px;font-size:9.5px;font-weight:800;border-radius:999px;padding:2px 7px;}
+  .tag.you{background:#46a302;color:#fff;} .tag.lock{background:#f0e7d2;color:#b1a587;}
+  .tag.done{background:#fff3d1;color:#b07b00;}
+
+  .note{margin:22px auto 0;background:#fff;border:2px dashed #d9cdb2;border-radius:16px;padding:14px 18px;font-size:12.5px;color:#6b5e46;line-height:1.55;}
+  .note b{color:#46a302;}
+  @keyframes a-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes a-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @keyframes a-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+  @keyframes a-wiggle{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
+  @keyframes a-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+  @keyframes a-tilt{0%,100%{transform:rotate(0) translateY(0)}50%{transform:rotate(4deg) translateY(-2px)}}
+  @keyframes a-rock{0%,100%{transform:translateX(-3px) rotate(-2deg)}50%{transform:translateX(3px) rotate(2deg)}}
+  @keyframes a-pulse{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.05) translateY(-2px)}}
+  @keyframes a-nod{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-3deg)}}
+  @keyframes a-drift{0%,100%{transform:translate(0,0)}50%{transform:translate(3px,-4px)}}
+  @keyframes tw{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1)}}
+  .an0{animation:a-breathe 3.4s ease-in-out infinite}
+  .an1{animation:a-bob 2.8s ease-in-out infinite}
+  .an2{animation:a-sway 3.6s ease-in-out infinite;transform-origin:50% 92%}
+  .an3{animation:a-wiggle 2.4s ease-in-out infinite}
+  .an4{animation:a-float 2.8s ease-in-out infinite}
+  .an5{animation:a-tilt 3.2s ease-in-out infinite}
+  .an6{animation:a-rock 3.8s ease-in-out infinite}
+  .an7{animation:a-pulse 3s ease-in-out infinite}
+  .an8{animation:a-nod 3.3s ease-in-out infinite}
+  .an9{animation:a-drift 3.5s ease-in-out infinite}
+  .an10{animation:a-sway 3.1s ease-in-out infinite;transform-origin:50% 92%}
+
+  #tipbox{position:fixed;max-width:240px;background:#473c2e;color:#fff;font-size:12.5px;line-height:1.4;padding:9px 12px;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .12s;z-index:999;text-align:center;}
+  #tipbox.show{opacity:1;}
+  #tipbox::after{content:"";position:absolute;left:var(--ax,50%);transform:translateX(-50%);top:100%;border:7px solid transparent;border-top-color:#473c2e;}
+  #tipbox.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#473c2e;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="navback" onclick="location.href='perfil.html'">‹ Volver</div>
+  <h1>Niveles</h1>
+  <p class="lead">Subes de nivel por tu <b>esfuerzo</b> y tu <b>progreso</b>.</p>
+
+  <div class="h3">Tu nivel actual</div>
+  <div class="hero">
+    <div class="img"><img src="criaturas/05_notable.webp" alt="Puntaje Notable"></div>
+    <div style="flex:1">
+      <div class="lname">Puntaje Notable</div>
+      <span class="pos">🇨🇱 Le ganas al 82% de Chile que va por Medicina</span>
+      <div class="pr"><i></i></div>
+      <div class="prl">Te faltan <b>480 XP</b> para <b>Puntaje Brillante</b></div>
+    </div>
+  </div>
+
+  <div class="h3">Toda la escalera</div>
+  <div class="grid" id="g"></div>
+
+</div>
+
+<div id="tipbox"></div>
+<script>
+const L=[
+ ["01_inicial","Puntaje Inicial","Puntaje Inicial — todo gran puntaje empezó justo aquí. ¡Bienvenido a tu viaje!"],
+ ["02_regular","Puntaje Regular","Puntaje Regular — ya agarraste el ritmo. La constancia hace la diferencia."],
+ ["03_bueno","Puntaje Bueno","Puntaje Bueno — vas tomando vuelo y se nota el trabajo."],
+ ["04_solido","Puntaje Sólido","Puntaje Sólido — base firme: lo que aprendes ya no se te olvida."],
+ ["05_notable","Puntaje Notable","¡Aquí estás! Puntaje Notable — le ganas a la mayoría. Vas como avión 🚀"],
+ ["06_brillante","Puntaje Brillante","Puntaje Brillante — tu próximo salto. Te falta poquito."],
+ ["09_sobrenatural","Puntaje Sobrenatural","Puntaje Sobrenatural — esto ya no es normal, es talento puro."],
+ ["10_titanico","Puntaje Titánico","Puntaje Titánico — fuerza imparable. Pocos llegan hasta acá."],
+ ["11_extraterrestre","Puntaje Extraterrestre","Puntaje Extraterrestre — de otro planeta. La PAES te queda chica."],
+ ["12_mitico","Puntaje Mítico","Puntaje Mítico — leyenda viva. Te van a recordar."],
+ ["13_divino","Puntaje Divino","Puntaje Divino — tocas el cielo. Casi nadie llega tan alto."],
+ ["14_nacional","Puntaje Nacional","Puntaje Nacional — la cima absoluta, el Olimpo del esfuerzo. El máximo nivel 👑","svg"]
+];
+const CUR=4; // Notable
+const GLOW=["#f3a9c6","#ff8a76","#ffb15c","#ffd34d","#9fdc4a","#7fd07a","#56d6c0","#6fb6f0","#9aa6f0","#bd8ae6","#f08ab0","#ffd24a"];
+document.getElementById("g").innerHTML=L.map((x,i)=>{
+  const locked=i>CUR;
+  const cls=["lvl", i===CUR?"cur":"", locked?"locked":""].join(" ");
+  const tag = i===CUR?'<span class="tag you">TÚ</span>' : (locked?'<span class="tag lock">🔒</span>':'<span class="tag done">✓</span>');
+  const anim = locked?"":("an"+i);
+  const spk = i===CUR ? '<span class="spk" style="top:4px;left:16px"></span><span class="spk" style="top:22px;right:10px;width:6px;height:6px;animation-delay:.6s"></span><span class="spk" style="bottom:4px;left:26px;width:7px;height:7px;animation-delay:1.1s"></span>' : '';
+  return `<div class="${cls}" style="--g:${GLOW[i]}" data-tip="${x[2]}">${tag}
+    <div class="img">${spk}<img class="${anim}" src="criaturas/${x[0]}.${x[3]||'webp'}" alt="${x[1]}" style="animation-delay:${(i%6)*0.18}s"></div>
+    <div class="nm">${x[1]}</div></div>`;
+}).join("");
+
+(function(){
+  var box=document.getElementById('tipbox');var t;
+  function place(el){box.style.left='0px';box.style.top='0px';box.classList.remove('below');
+    var r=el.getBoundingClientRect();var bw=box.offsetWidth,bh=box.offsetHeight;var cx=r.left+r.width/2;
+    var left=Math.min(Math.max(8,cx-bw/2),window.innerWidth-bw-8);var top=r.top-bh-12;
+    if(top<8){top=r.bottom+12;box.classList.add('below');}
+    box.style.left=left+'px';box.style.top=top+'px';box.style.setProperty('--ax',(cx-left)+'px');}
+  function show(el){box.textContent=el.getAttribute('data-tip');box.classList.add('show');place(el);clearTimeout(t);}
+  function hide(){box.classList.remove('show');}
+  document.querySelectorAll('[data-tip]').forEach(function(el){
+    el.addEventListener('mouseenter',function(){show(el);});
+    el.addEventListener('mouseleave',hide);
+    el.addEventListener('click',function(e){e.stopPropagation();show(el);clearTimeout(t);t=setTimeout(hide,3000);});
+  });
+  document.addEventListener('click',hide);window.addEventListener('scroll',hide,true);
+})();
+</script>
+</body>
+</html>

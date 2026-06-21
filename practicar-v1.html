@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — Practicar (3 conceptos)</title>
+<style>
+  :root{ --ease:cubic-bezier(.2,.8,.2,1);
+    --cream:#fff8ec; --ink:#473c2e; --line:#efe3cd; --muted:#9b8c6e; --soft:#a99877;
+    --green:#58cc02; --greenD:#3d8b00; --gold:#ffc800; --goldD:#e0a800;
+    --blue:#1cb0f6; --red:#ff4b4b; --redD:#d63a3a; --fire:#ff7a00; }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:#0c0d12;color:#e8eaf0;}
+  .wrap{max-width:1380px;margin:0 auto;padding:28px 18px 80px;}
+  header.intro{text-align:center;margin-bottom:8px;}
+  header.intro h1{font-size:26px;margin:0 0 6px;font-weight:800;letter-spacing:-.3px;}
+  header.intro p{margin:0 auto;max-width:740px;color:#9aa1b2;font-size:14px;line-height:1.5;}
+  header.intro p b{color:#fff;}
+  .legend{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 26px;}
+  .legend span{font-size:12px;color:#aeb4c4;background:#171922;border:1px solid #262a38;padding:6px 12px;border-radius:999px;}
+  .legend b{color:#fff;}
+  .row{display:flex;gap:34px;justify-content:center;align-items:flex-start;flex-wrap:wrap;}
+  .concept{display:flex;flex-direction:column;align-items:center;gap:14px;width:392px;max-width:100%;}
+  .concept .tag{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-height:70px;}
+  .concept .tag h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.2px;}
+  .concept .tag .sub{font-size:12.5px;color:#9aa1b2;max-width:340px;line-height:1.45;}
+  .fav{display:inline-block;margin-top:2px;font-size:11px;font-weight:800;color:#0c0d12;background:linear-gradient(90deg,#ffd24a,#ffb020);padding:3px 10px;border-radius:999px;letter-spacing:.3px;}
+
+  /* ---------- phone shell ---------- */
+  .phone{width:390px;max-width:100%;height:812px;border-radius:46px;padding:12px;position:relative;
+         box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;background:#05060a;}
+  .screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;background:var(--cream);color:var(--ink);}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:40;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;color:#5b4e3c;z-index:30;}
+  .scroll{flex:1;overflow-y:auto;position:relative;}
+  .scroll::-webkit-scrollbar{display:none;}
+  .pad{padding:6px 16px 24px;}
+
+  /* ---------- top session HUD ---------- */
+  .hud{display:flex;align-items:center;gap:10px;padding:6px 16px 10px;}
+  .hud .close{font-size:22px;color:#c7b89c;font-weight:800;line-height:1;cursor:pointer;}
+  .pbar{flex:1;height:14px;border-radius:999px;background:#ece1cb;overflow:hidden;position:relative;}
+  .pbar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#7fe03a,var(--green));border-radius:999px;transition:width .5s var(--ease);}
+  .hearts{display:flex;gap:2px;font-size:15px;}
+  .hearts .h{transition:transform .3s var(--ease),opacity .3s;}
+  .hearts .h.lost{opacity:.25;filter:grayscale(1);}
+  .timer{font-size:12px;font-weight:800;color:#b6a98a;}
+
+  /* ---------- boss banner ---------- */
+  .boss{display:flex;align-items:center;gap:11px;background:#fff;border:2px solid var(--line);border-bottom-width:5px;border-radius:18px;padding:11px 12px;margin:2px 0 14px;position:relative;}
+  .boss .ava{width:50px;height:50px;border-radius:14px;background:linear-gradient(160deg,#6a2fae,#3a1d4d);display:flex;align-items:center;justify-content:center;font-size:27px;flex:0 0 auto;position:relative;box-shadow:0 4px 0 #2a1338;}
+  .boss .ava.hit{animation:shakeBoss .4s;}
+  .boss .meta{flex:1;min-width:0;}
+  .boss .meta .nm{font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:6px;}
+  .boss .meta .nm .lvl{font-size:10px;font-weight:800;color:#fff;background:#8a3ffb;padding:1px 6px;border-radius:999px;}
+  .boss .hpwrap{height:11px;border-radius:999px;background:#f0e7d6;overflow:hidden;margin-top:7px;border:1px solid #e6dac2;}
+  .boss .hp{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff7a7a,var(--red));border-radius:999px;transition:width .7s var(--ease);}
+  .boss .hplbl{font-size:10.5px;color:var(--muted);font-weight:700;margin-top:4px;}
+  .boss .otter{position:absolute;right:-4px;bottom:-10px;font-size:22px;transform:rotate(8deg);}
+
+  /* ---------- difficulty + question ---------- */
+  .diff{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:800;border-radius:999px;padding:5px 11px;letter-spacing:.2px;}
+  .diff.f{background:#e9f9d9;color:#3d8b00;border:1.5px solid #c9eaa0;}
+  .diff.m{background:#fff3d1;color:#b07b00;border:1.5px solid #ffe49e;}
+  .diff.d{background:#ffe2e2;color:#d63a3a;border:1.5px solid #ffc0c0;}
+  .diff .xp{opacity:.85;}
+  .qmeta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 12px;}
+  .qmeta .tac{font-size:11px;font-weight:700;color:var(--soft);}
+  .qtext{font-size:17px;font-weight:800;line-height:1.4;letter-spacing:-.2px;margin:2px 2px 6px;}
+  .qsub{font-size:13px;color:#6b5e46;margin:0 2px 14px;line-height:1.4;}
+  .qsub .fn{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-weight:800;color:var(--ink);background:#fdf6e8;border:1px solid var(--line);border-radius:7px;padding:1px 6px;}
+
+  .alts{display:flex;flex-direction:column;gap:10px;}
+  .alt{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:15px;padding:13px 14px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .08s,border-color .15s,background .15s;}
+  .alt:active{transform:scale(.98);}
+  .alt .key{width:28px;height:28px;border-radius:8px;background:#f3ecdc;color:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:0 0 auto;}
+  .alt .val{flex:1;}
+  .alt .mk{font-size:18px;opacity:0;transition:opacity .2s;}
+  .alt.sel{border-color:var(--blue);background:#eef9ff;}
+  .alt.correct{border-color:var(--green);background:#eafbe0;color:#2f7a00;}
+  .alt.correct .key{background:var(--green);color:#fff;}
+  .alt.correct .mk{opacity:1;}
+  .alt.wrong{border-color:var(--red);background:#ffeeee;color:#c0392b;}
+  .alt.wrong .key{background:var(--red);color:#fff;}
+  .alt.wrong .mk{opacity:1;}
+  .alt.disabled{pointer-events:none;}
+  .alt.dim{opacity:.5;}
+
+  /* ---------- nutrIA hint ---------- */
+  .hintbtn{display:flex;align-items:center;gap:9px;width:100%;background:#eef9ff;border:2px dashed var(--blue);border-radius:14px;padding:11px 13px;margin-top:14px;cursor:pointer;font-weight:800;color:#0f87c4;font-size:13.5px;}
+  .hintbtn .ot{font-size:20px;}
+  .hintbtn .cost{margin-left:auto;font-size:11px;font-weight:800;color:#0f87c4;background:#d4efff;padding:3px 8px;border-radius:999px;}
+  .hintbox{background:#fff;border:2px solid #bfe9ff;border-radius:14px;padding:12px 13px;margin-top:10px;display:none;}
+  .hintbox.show{display:block;animation:pop .3s var(--ease);}
+  .hintbox .hb-top{display:flex;gap:9px;align-items:flex-start;}
+  .hintbox .ot{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 auto;box-shadow:0 3px 0 #7c5a2c;}
+  .hintbox .htxt{font-size:13px;color:#3e4a55;line-height:1.45;font-weight:600;}
+  .hintbox .more{font-size:11.5px;font-weight:800;color:#0f87c4;margin-top:8px;cursor:pointer;}
+
+  /* ---------- bottom feedback sheet ---------- */
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:2px solid var(--line);border-radius:22px 22px 0 0;
+         padding:14px 16px 18px;transform:translateY(110%);transition:transform .35s var(--ease);z-index:25;box-shadow:0 -10px 30px rgba(0,0,0,.12);}
+  .sheet.show{transform:translateY(0);}
+  .sheet.ok{background:#eafbe0;border-color:#bfe88f;}
+  .sheet.bad{background:#ffeeee;border-color:#ffc3c3;}
+  .sheet .res{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;}
+  .sheet.ok .res{color:#2f7a00;}
+  .sheet.bad .res{color:#c0392b;}
+  .sheet .res .xpwin{margin-left:auto;font-size:13px;font-weight:900;}
+  .sheet .exp{font-size:13px;color:#4a4234;line-height:1.5;margin:9px 0 0;font-weight:600;}
+  .sheet .exp .ot{font-weight:800;}
+  .sheet .exp .fn{font-family:"SF Mono",ui-monospace,Menlo,monospace;background:rgba(0,0,0,.05);border-radius:6px;padding:1px 5px;font-weight:700;}
+  .cta{display:block;width:100%;text-align:center;color:#fff;font-weight:800;border:none;border-radius:14px;padding:14px;font-size:15px;letter-spacing:.3px;margin-top:12px;cursor:pointer;}
+  .cta.green{background:var(--green);border-bottom:4px solid var(--greenD);}
+  .cta.red{background:var(--red);border-bottom:4px solid var(--redD);}
+
+  /* footer CTA when no answer yet */
+  .footcta{position:absolute;left:0;right:0;bottom:0;padding:12px 16px 18px;background:linear-gradient(180deg,transparent,var(--cream) 30%);}
+  .footcta .cta.ghost{background:#e7ddca;color:#b0a081;border-bottom:4px solid #d6cab2;}
+
+  /* ---------- end screen ---------- */
+  .end{position:absolute;inset:0;background:linear-gradient(180deg,#fff8ec,#fff);z-index:50;display:none;flex-direction:column;padding:24px 20px;overflow-y:auto;}
+  .end.show{display:flex;animation:fade .4s;}
+  .end h2{text-align:center;font-size:24px;font-weight:900;margin:6px 0 2px;color:var(--green);}
+  .end .chest{font-size:74px;text-align:center;margin:10px 0 2px;animation:bob 1.4s var(--ease) infinite;}
+  .end .sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px;font-weight:600;}
+  .stat{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;padding:13px 14px;margin-bottom:10px;}
+  .stat .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto;}
+  .stat .ic.xp{background:#fff3d1;} .stat .ic.fire{background:#ffe7cf;} .stat .ic.acc{background:#e9f9d9;}
+  .stat .nm{font-size:12px;font-weight:800;color:var(--soft);text-transform:uppercase;letter-spacing:.4px;}
+  .stat .v{font-size:20px;font-weight:900;color:var(--ink);}
+  .levelup{background:linear-gradient(160deg,#58cc02,#46a302);color:#fff;border:none;border-bottom:5px solid #3d8b00;border-radius:18px;padding:16px;text-align:center;margin:6px 0 12px;}
+  .levelup .k{font-size:11px;font-weight:800;letter-spacing:.6px;opacity:.92;text-transform:uppercase;}
+  .levelup .lv{font-size:30px;font-weight:900;margin:4px 0 2px;}
+  .levelup .pos{font-size:12.5px;font-weight:800;background:rgba(255,255,255,.2);display:inline-block;padding:4px 11px;border-radius:999px;}
+  .levelup .real{font-size:11px;opacity:.9;margin-top:8px;}
+  .bossleft{background:#fff;border:2px dashed #d9b3e8;border-radius:14px;padding:11px 13px;font-size:12.5px;font-weight:700;color:#7a3fae;display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+  .bossleft .hpmini{flex:1;height:9px;border-radius:999px;background:#f0e7d6;overflow:hidden;}
+  .bossleft .hpmini i{display:block;height:100%;width:18%;background:var(--red);}
+
+  /* defeat overlay */
+  .defeat{position:absolute;inset:0;background:rgba(40,20,30,.92);z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;color:#fff;}
+  .defeat.show{display:flex;animation:fade .3s;}
+  .defeat .em{font-size:64px;}
+  .defeat h3{font-size:22px;font-weight:900;margin:8px 0 4px;}
+  .defeat p{font-size:13.5px;color:#e9cdd8;margin:0 0 18px;line-height:1.5;max-width:280px;}
+  .defeat .free{font-size:11.5px;color:#9ad6a0;font-weight:800;margin-top:10px;}
+
+  /* combo flag */
+  .combo{position:absolute;top:54px;right:18px;background:var(--fire);color:#fff;font-weight:900;font-size:13px;padding:4px 11px;border-radius:999px;z-index:28;box-shadow:0 4px 12px rgba(255,122,0,.45);opacity:0;transform:scale(.6) translateY(8px);transition:all .3s var(--ease);}
+  .combo.show{opacity:1;transform:scale(1) translateY(0);}
+
+  /* xp float */
+  .xpfloat{position:absolute;left:50%;top:46%;transform:translateX(-50%);font-weight:900;font-size:26px;color:var(--gold);text-shadow:0 2px 0 var(--goldD);z-index:45;opacity:0;pointer-events:none;}
+  .xpfloat.go{animation:floatup 1s var(--ease);}
+
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes pop{0%{transform:scale(.95);opacity:0}100%{transform:scale(1);opacity:1}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @keyframes shakeBoss{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px) rotate(-4deg)}40%{transform:translateX(5px) rotate(4deg)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+  @keyframes shakeH{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  @keyframes floatup{0%{opacity:0;transform:translateX(-50%) translateY(10px) scale(.8)}25%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-60px) scale(1.2)}}
+  .shake{animation:shakeH .4s;}
+
+  /* ===== static concept tweaks ===== */
+  .clean .boss{display:none;}
+  .clean .qtext{font-size:18px;}
+  .arena .vs{display:flex;align-items:stretch;gap:8px;margin:2px 0 14px;}
+  .arena .fighter{flex:1;background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;padding:10px;text-align:center;}
+  .arena .fighter .f-ava{font-size:30px;}
+  .arena .fighter .f-nm{font-size:11.5px;font-weight:800;margin:2px 0 6px;}
+  .arena .fighter .f-hp{height:9px;border-radius:999px;background:#f0e7d6;overflow:hidden;}
+  .arena .fighter .f-hp i{display:block;height:100%;}
+  .arena .fighter.me .f-hp i{width:80%;background:var(--green);}
+  .arena .fighter.foe .f-hp i{width:55%;background:var(--red);}
+  .arena .vsbadge{align-self:center;font-weight:900;color:var(--soft);font-size:13px;}
+  .arena .combo2{display:inline-block;background:var(--fire);color:#fff;font-weight:900;font-size:12px;padding:3px 10px;border-radius:999px;margin-bottom:8px;}
+
+  @media(max-width:520px){
+    .phone{height:780px;}
+    header.intro h1{font-size:21px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="intro">
+    <h1>🎯 Practicar — sesión de estudio (3 conceptos)</h1>
+    <p>Selección múltiple PAES <b>Matemática M1 · funciones cuadráticas</b>. Duolingo + vibra LoL, look limpio "A".
+       Dificultad <b>IRT real</b> + XP ponderado, <b>corazones sin bloqueo</b>, pistas progresivas de <b>nutrIA</b> 🦦.
+       <b>La favorita es interactiva</b> — respóndela: toca alternativas, pide pista, llega al cofre.</p>
+    <div class="legend">
+      <span><b>1</b> · Duelo (jefe) — <b>mi favorita · INTERACTIVA</b></span>
+      <span><b>2</b> · Camino limpio (Duolingo puro)</span>
+      <span><b>3</b> · Arena (versus)</span>
+    </div>
+  </header>
+
+  <div class="row">
+
+    <!-- ============================================================= -->
+    <!-- ============ CONCEPTO 1 · DUELO (INTERACTIVO) =============== -->
+    <!-- ============================================================= -->
+    <div class="concept">
+      <div class="tag">
+        <h2>1 · Duelo ⚔️</h2>
+        <div class="sub">La sesión ES la pelea contra tu kryptonita. Aciertas → le pegas al jefe; fallas → pierdes un corazón (pero nunca te bloquea). nutrIA es tu aliada.</div>
+        <span class="fav">★ MI FAVORITA · pruébala</span>
+      </div>
+      <div class="phone">
+        <div class="screen" id="duelo">
+          <div class="notch"></div>
+          <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+
+          <div class="hud">
+            <span class="close">✕</span>
+            <div class="pbar"><i id="pbar"></i></div>
+            <div class="hearts" id="hearts">
+              <span class="h">❤️</span><span class="h">❤️</span><span class="h">❤️</span><span class="h">❤️</span><span class="h">❤️</span>
+            </div>
+          </div>
+
+          <div class="combo" id="combo">🔥 Combo x2</div>
+          <div class="xpfloat" id="xpfloat">+50 XP</div>
+
+          <div class="scroll"><div class="pad">
+
+            <div class="boss">
+              <div class="ava" id="bossava">👾</div>
+              <div class="meta">
+                <div class="nm">Funciones Cuadráticas <span class="lvl">JEFE</span></div>
+                <div class="hpwrap"><span class="hp" id="bosshp"></span></div>
+                <div class="hplbl" id="bosshplbl">Tu kryptonita en M1 · vida 100%</div>
+              </div>
+              <div class="otter">🦦</div>
+            </div>
+
+            <div class="qmeta">
+              <span class="diff d" id="diffbadge">🔴 Difícil <span class="xp">· +50 XP</span></span>
+              <span class="tac" id="qcount">Pregunta 1 de 3</span>
+            </div>
+
+            <div class="qtext" id="qtext"></div>
+            <div class="qsub" id="qsub"></div>
+
+            <div class="alts" id="alts"></div>
+
+            <div class="hintbtn" id="hintbtn">
+              <span class="ot">🦦</span> Pídele una pista a nutrIA
+              <span class="cost" id="hintcost">−5 💎</span>
+            </div>
+            <div class="hintbox" id="hintbox">
+              <div class="hb-top">
+                <div class="ot">🦦</div>
+                <div class="htxt" id="hinttext"></div>
+              </div>
+              <div class="more" id="hintmore">Dame otra pista más fuerte ▸</div>
+            </div>
+
+          </div></div>
+
+          <!-- footer cta (before answering) -->
+          <div class="footcta" id="footcta">
+            <button class="cta ghost" id="checkbtn">Elige una alternativa</button>
+          </div>
+
+          <!-- feedback sheet -->
+          <div class="sheet" id="sheet">
+            <div class="res"><span id="resicon">✅</span><span id="restext">¡Correcto!</span><span class="xpwin" id="reswin">+50 XP</span></div>
+            <div class="exp" id="expl"></div>
+            <button class="cta green" id="nextbtn">Seguir ▸</button>
+          </div>
+
+          <!-- defeat overlay -->
+          <div class="defeat" id="defeat">
+            <div class="em">😼</div>
+            <h3>¡El jefe te dio vuelta!</h3>
+            <p>Te quedaste sin corazones. Pero esto es entrenamiento — nadie te saca de aquí.</p>
+            <button class="cta green" id="retrybtn" style="max-width:240px">Reintentar la pelea</button>
+            <div class="free">∞ Reintentos gratis · aquí se viene a aprender</div>
+          </div>
+
+          <!-- end screen -->
+          <div class="end" id="end">
+            <div class="chest">🎁</div>
+            <h2>¡Sesión completada!</h2>
+            <div class="sub">Le bajaste la vida al jefe. Vuelve mañana a rematarlo 😼</div>
+
+            <div class="levelup">
+              <div class="k">Tu nivel en Matemática M1</div>
+              <div class="lv">😎 Crack</div>
+              <div class="pos">🇨🇱 Top 12% de Chile</div>
+              <div class="real">📄 Tu mejor ensayo real: 742 pts · sin promesas</div>
+            </div>
+
+            <div class="bossleft">
+              <span>👾 Jefe al</span>
+              <div class="hpmini"><i id="endhp"></i></div>
+              <span id="endhppct">18%</span>
+            </div>
+
+            <div class="stat"><div class="ic xp">⚡</div><div style="flex:1"><div class="nm">XP ganado</div></div><div class="v" id="endxp">+0</div></div>
+            <div class="stat"><div class="ic fire">🔥</div><div style="flex:1"><div class="nm">Racha</div></div><div class="v">13 días</div></div>
+            <div class="stat"><div class="ic acc">🎯</div><div style="flex:1"><div class="nm">Precisión</div></div><div class="v" id="endacc">100%</div></div>
+
+            <button class="cta green" id="restartbtn" style="margin-top:6px">Otra sesión</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- ============ CONCEPTO 2 · CAMINO LIMPIO ===================== -->
+    <!-- ============================================================= -->
+    <div class="concept">
+      <div class="tag">
+        <h2>2 · Camino limpio 🛤️</h2>
+        <div class="sub">Duolingo puro: barra continua + corazones, sin jefe. Máximo foco en la pregunta, calma y aire. Menos intimidante.</div>
+      </div>
+      <div class="phone">
+        <div class="screen clean">
+          <div class="notch"></div>
+          <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+          <div class="hud">
+            <span class="close">✕</span>
+            <div class="pbar"><i style="width:33%"></i></div>
+            <div class="hearts">
+              <span class="h">❤️</span><span class="h">❤️</span><span class="h">❤️</span><span class="h">❤️</span><span class="h lost">❤️</span>
+            </div>
+          </div>
+          <div class="scroll"><div class="pad" style="padding-top:18px">
+            <div class="qmeta">
+              <span class="diff d">🔴 Difícil <span class="xp">· +50 XP</span></span>
+              <span class="tac">1 / 3 · 👾 jefe al final</span>
+            </div>
+            <div class="qtext">¿Cuál es el vértice de la función?</div>
+            <div class="qsub"><span class="fn">f(x) = x² − 6x + 5</span></div>
+            <div class="alts">
+              <div class="alt"><span class="key">A</span><span class="val">(3, −4)</span><span class="mk">✓</span></div>
+              <div class="alt"><span class="key">B</span><span class="val">(−3, −4)</span><span class="mk"></span></div>
+              <div class="alt"><span class="key">C</span><span class="val">(3, 4)</span><span class="mk"></span></div>
+              <div class="alt"><span class="key">D</span><span class="val">(6, 5)</span><span class="mk"></span></div>
+            </div>
+            <div class="hintbtn"><span class="ot">🦦</span> Pídele una pista a nutrIA <span class="cost">−5 💎</span></div>
+          </div></div>
+          <div class="footcta"><button class="cta ghost">Elige una alternativa</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- ============ CONCEPTO 3 · ARENA (VERSUS) ==================== -->
+    <!-- ============================================================= -->
+    <div class="concept">
+      <div class="tag">
+        <h2>3 · Arena 🥊</h2>
+        <div class="sub">Cara a cara: nutrIA (tu vida = corazones) contra el jefe, dos barras enfrentadas estilo "versus". El combo manda. La más gamer.</div>
+      </div>
+      <div class="phone">
+        <div class="screen arena">
+          <div class="notch"></div>
+          <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+          <div class="hud">
+            <span class="close">✕</span>
+            <div class="pbar"><i style="width:33%"></i></div>
+            <div class="timer">⏱ 0:42</div>
+          </div>
+          <div class="scroll"><div class="pad" style="padding-top:10px">
+            <div class="vs">
+              <div class="fighter me">
+                <div class="f-ava">🦦</div>
+                <div class="f-nm">Tú + nutrIA</div>
+                <div class="f-hp"><i></i></div>
+              </div>
+              <div class="vsbadge">VS</div>
+              <div class="fighter foe">
+                <div class="f-ava">👾</div>
+                <div class="f-nm">Cuadráticas</div>
+                <div class="f-hp"><i></i></div>
+              </div>
+            </div>
+            <div style="text-align:center"><span class="combo2">🔥 Combo x3 · ¡imparable!</span></div>
+            <div class="qmeta">
+              <span class="diff m">🟡 Media <span class="xp">· +25 XP</span></span>
+              <span class="tac">Golpe 2 de 3</span>
+            </div>
+            <div class="qtext">¿Cuáles son los ceros de la función?</div>
+            <div class="qsub"><span class="fn">f(x) = x² − 6x + 5</span></div>
+            <div class="alts">
+              <div class="alt"><span class="key">A</span><span class="val">x = 1 y x = 5</span><span class="mk">✓</span></div>
+              <div class="alt"><span class="key">B</span><span class="val">x = −1 y x = −5</span><span class="mk"></span></div>
+              <div class="alt"><span class="key">C</span><span class="val">x = 2 y x = 3</span><span class="mk"></span></div>
+              <div class="alt"><span class="key">D</span><span class="val">x = 0 y x = 6</span><span class="mk"></span></div>
+            </div>
+            <div class="hintbtn"><span class="ot">🦦</span> nutrIA, ¡dame un combo! <span class="cost">−5 💎</span></div>
+          </div></div>
+          <div class="footcta"><button class="cta green">Atacar ⚔️</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ================= CONCEPTO 1 · DUELO — lógica ================= */
+const QUESTIONS = [
+  {
+    diff:'d', diffLabel:'🔴 Difícil', xp:50,
+    q:'¿Cuál es el vértice de la función?',
+    fn:'f(x) = x² − 6x + 5',
+    alts:['(3, −4)','(−3, −4)','(3, 4)','(6, 5)'],
+    correct:0, damage:35,
+    hints:[
+      'El vértice está en x = −b ÷ (2a). Acá a = 1 y b = −6, así que fíjate en ese cálculo primero.',
+      'x = 6 ÷ 2 = 3. Ahora reemplaza x = 3 en f(x) para sacar la coordenada y. ¡Ese par es el vértice!'
+    ],
+    exp:'El vértice se ubica en <span class="fn">x = −b/2a = 6/2 = 3</span>. Reemplazando: <span class="fn">f(3) = 9 − 18 + 5 = −4</span>. → Vértice <span class="fn">(3, −4)</span>.'
+  },
+  {
+    diff:'m', diffLabel:'🟡 Media', xp:25,
+    q:'¿Cuáles son los ceros (raíces) de la función?',
+    fn:'f(x) = x² − 6x + 5',
+    alts:['x = 1 y x = 5','x = −1 y x = −5','x = 2 y x = 3','x = 0 y x = 6'],
+    correct:0, damage:25,
+    hints:[
+      'Busca dos números que multiplicados den 5 y sumados den 6. Esos son la clave.',
+      'Factoriza: (x − 1)(x − 5) = 0. Cada paréntesis igualado a cero te da una raíz.'
+    ],
+    exp:'Factorizamos <span class="fn">x² − 6x + 5 = (x − 1)(x − 5)</span>. Igualando a cero: <span class="fn">x = 1</span> y <span class="fn">x = 5</span>.'
+  },
+  {
+    diff:'d', diffLabel:'🔴 Difícil', xp:50,
+    q:'La parábola abre hacia arriba. ¿Cuál es su valor mínimo?',
+    fn:'f(x) = x² − 6x + 5',
+    alts:['−4','5','3','No tiene mínimo'],
+    correct:0, damage:35,
+    hints:[
+      'Si abre hacia arriba (a > 0), el punto más bajo es el vértice. ¿Qué parte del vértice es el "valor" mínimo?',
+      'El mínimo es la coordenada y del vértice. Ya vimos que el vértice es (3, −4)…'
+    ],
+    exp:'Como <span class="fn">a > 0</span> la parábola abre hacia arriba, así que el mínimo es la coordenada y del vértice: <span class="fn">−4</span>.'
+  }
+];
+
+let idx=0, hearts=5, hintsUsed=0, xpTotal=0, combo=0, correctCount=0, bossHP=100, answered=false;
+
+const $ = id => document.getElementById(id);
+const altsEl=$('alts'), sheet=$('sheet'), endEl=$('end'), defeatEl=$('defeat');
+
+function renderQuestion(){
+  answered=false; hintsUsed=0;
+  const Q=QUESTIONS[idx];
+  $('qtext').textContent=Q.q;
+  $('qsub').innerHTML='<span class="fn">'+Q.fn+'</span>';
+  $('qcount').textContent='Pregunta '+(idx+1)+' de '+QUESTIONS.length;
+  const db=$('diffbadge');
+  db.className='diff '+Q.diff;
+  db.innerHTML=Q.diffLabel+' <span class="xp">· +'+Q.xp+' XP</span>';
+  // alternatives
+  altsEl.innerHTML='';
+  Q.alts.forEach((txt,i)=>{
+    const d=document.createElement('div');
+    d.className='alt';
+    d.innerHTML='<span class="key">'+'ABCD'[i]+'</span><span class="val">'+txt+'</span><span class="mk">✓</span>';
+    d.onclick=()=>answer(i,d);
+    altsEl.appendChild(d);
+  });
+  // reset hint + sheet
+  $('hintbox').classList.remove('show');
+  $('hintmore').style.display='block';
+  $('footcta').style.display='block';
+  $('checkbtn').textContent='Elige una alternativa';
+  sheet.className='sheet';
+  // progress bar
+  $('pbar').style.width=((idx)/QUESTIONS.length*100)+'%';
+}
+
+function answer(i, el){
+  if(answered) return;
+  answered=true;
+  const Q=QUESTIONS[idx];
+  $('footcta').style.display='none';
+  document.querySelectorAll('#alts .alt').forEach((a,j)=>{
+    a.classList.add('disabled');
+    if(j===Q.correct) a.classList.add('correct');
+    else if(j===i) a.classList.add('wrong');
+    else a.classList.add('dim');
+  });
+
+  if(i===Q.correct){
+    correctCount++; combo++;
+    const win=Q.xp + (combo>=2? (combo-1)*5 : 0); // combo bonus
+    xpTotal+=win;
+    bossHP=Math.max(0, bossHP-Q.damage);
+    updateBoss(true);
+    floatXP('+'+win+' XP');
+    if(combo>=2) showCombo();
+    $('pbar').style.width=((idx+1)/QUESTIONS.length*100)+'%';
+    sheet.className='sheet ok show';
+    $('resicon').textContent='✅';
+    $('restext').textContent= combo>=3 ? '¡Imparable! 🔥' : '¡Correcto!';
+    $('reswin').textContent='+'+win+' XP';
+    $('expl').innerHTML='<span class="ot">🦦 nutrIA:</span> '+Q.exp;
+    $('nextbtn').className='cta green';
+    $('nextbtn').textContent = (idx<QUESTIONS.length-1)?'Seguir ▸':'Terminar la sesión ▸';
+  } else {
+    combo=0;
+    loseHeart();
+    updateBoss(false);
+    sheet.className='sheet bad show';
+    $('resicon').textContent='💔';
+    $('restext').textContent='Casi… el jefe te pegó';
+    $('reswin').textContent='−1 ❤️';
+    $('expl').innerHTML='<span class="ot">🦦 nutrIA:</span> '+Q.exp;
+    $('nextbtn').className='cta red';
+    $('nextbtn').textContent='Entendí, seguir ▸';
+    if(hearts<=0){
+      setTimeout(()=>{ sheet.className='sheet'; defeatEl.classList.add('show'); }, 1400);
+    }
+  }
+}
+
+function updateBoss(hit){
+  $('bosshp').style.width=bossHP+'%';
+  $('bosshplbl').textContent='Tu kryptonita en M1 · vida '+bossHP+'%';
+  if(hit){
+    const a=$('bossava'); a.classList.remove('hit'); void a.offsetWidth; a.classList.add('hit');
+    a.textContent = bossHP<=25 ? '😵' : '👾';
+  }
+}
+
+function loseHeart(){
+  const hs=document.querySelectorAll('#hearts .h');
+  if(hearts>0){ hearts--; const h=hs[hearts]; h.classList.add('lost'); }
+  const hbox=$('hearts'); hbox.classList.remove('shake'); void hbox.offsetWidth; hbox.classList.add('shake');
+}
+
+function showCombo(){
+  const c=$('combo'); c.textContent='🔥 Combo x'+combo;
+  c.classList.add('show');
+  setTimeout(()=>c.classList.remove('show'),1500);
+}
+function floatXP(t){
+  const f=$('xpfloat'); f.textContent=t;
+  f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
+}
+
+/* hint */
+$('hintbtn').onclick=()=>{
+  if(answered) return;
+  const Q=QUESTIONS[idx];
+  $('hintbox').classList.add('show');
+  $('hinttext').textContent=Q.hints[0];
+  hintsUsed=1;
+  $('hintmore').style.display = Q.hints.length>1 ? 'block':'none';
+};
+$('hintmore').onclick=()=>{
+  const Q=QUESTIONS[idx];
+  if(Q.hints[1]){ $('hinttext').textContent=Q.hints[1]; $('hintmore').style.display='none'; hintsUsed=2; }
+};
+
+/* next */
+$('nextbtn').onclick=()=>{
+  sheet.className='sheet';
+  if(idx<QUESTIONS.length-1){ idx++; renderQuestion(); document.querySelector('#duelo .scroll').scrollTop=0; }
+  else showEnd();
+};
+
+function showEnd(){
+  $('endxp').textContent='+'+xpTotal;
+  $('endacc').textContent=Math.round(correctCount/QUESTIONS.length*100)+'%';
+  $('endhp').style.width=bossHP+'%';
+  $('endhppct').textContent=bossHP+'%';
+  endEl.classList.add('show');
+}
+
+/* retry / restart */
+$('retrybtn').onclick=()=>{ resetAll(); defeatEl.classList.remove('show'); };
+$('restartbtn').onclick=()=>{ resetAll(); endEl.classList.remove('show'); };
+function resetAll(){
+  idx=0; hearts=5; xpTotal=0; combo=0; correctCount=0; bossHP=100;
+  document.querySelectorAll('#hearts .h').forEach(h=>h.classList.remove('lost'));
+  updateBoss(false); $('bossava').textContent='👾';
+  renderQuestion();
+}
+
+/* init */
+updateBoss(false);
+renderQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#15161c;color:#473c2e;padding:24px 14px 70px;}
+  .head{text-align:center;color:#e8eaf0;margin-bottom:14px;}
+  .head h1{font-size:20px;margin:0 0 5px;font-weight:800;}
+  .head p{margin:0 auto;max-width:520px;color:#9aa1b2;font-size:12.5px;line-height:1.5;}
+  .phone{width:392px;max-width:100%;margin:0 auto;border-radius:46px;padding:12px;background:#05060a;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;position:relative;}
+  .screen{position:relative;border-radius:36px;overflow:hidden;background:#fff8ec;height:812px;display:flex;flex-direction:column;}
+  .notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:40;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;color:#5b4e3c;flex:0 0 auto;}
+  .scroll{flex:1;overflow-y:auto;overflow-x:hidden;}
+  .pad{padding:4px 14px 18px;}
+
+  /* header */
+  .hdr{display:flex;align-items:center;gap:10px;padding:6px 2px 8px;}
+  .hdr .bk{font-size:24px;cursor:pointer;color:#9b8c6e;line-height:1;}
+  .hdr .t{font-size:18px;font-weight:800;flex:1;}
+  .ring{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #efe3cd;border-bottom-width:4px;border-radius:16px;padding:9px 12px;margin:2px 0 12px;}
+  .ring .c{position:relative;width:46px;height:46px;flex:0 0 auto;}
+  .ring .c svg{transform:rotate(-90deg);}
+  .ring .c b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#46a302;}
+  .ring .tx b{font-size:14px;font-weight:900;display:block;}
+  .ring .tx span{font-size:11px;color:#9b8c6e;font-weight:700;}
+  .ring .pts{margin-left:auto;text-align:right;}
+  .ring .pts b{font-size:14px;font-weight:900;color:#b07b00;display:block;}
+  .ring .pts span{font-size:10px;color:#9b8c6e;font-weight:700;}
+
+  /* banner destacados */
+  .star-banner{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fff4d6,#fff9ec);border:2px solid #ffdf9b;border-bottom-width:4px;border-radius:14px;padding:9px 12px;margin:0 0 12px;font-size:11.5px;color:#8a6a14;font-weight:700;line-height:1.35;}
+  .star-banner b{color:#a87a00;}
+  .star-banner .se{font-size:18px;flex:0 0 auto;}
+
+  /* recién obtenidos */
+  h3.sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#a99877;margin:16px 4px 9px;display:flex;justify-content:space-between;align-items:center;}
+  h3.sec .ct{color:#bcae93;font-weight:800;font-size:11px;letter-spacing:0;}
+  .recent{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;}
+  .recent::-webkit-scrollbar{display:none;}
+  .rc{flex:0 0 auto;width:118px;border-radius:16px;padding:12px 10px;text-align:center;position:relative;overflow:hidden;cursor:pointer;color:#fff;}
+  .rc .ic{font-size:30px;}
+  .rc .nm{font-size:11.5px;font-weight:800;line-height:1.15;margin-top:5px;}
+  .rc .rw{font-size:10px;font-weight:800;margin-top:5px;opacity:.95;}
+  .rc::before{content:"";position:absolute;top:0;left:-60%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:sweep 3.2s ease-in-out infinite;}
+  @keyframes sweep{0%{left:-60%}55%,100%{left:130%}}
+
+  /* grilla logros */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .lg{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:16px;padding:11px 10px 10px;position:relative;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;min-height:148px;}
+  .lg .ic{font-size:30px;line-height:1;margin-bottom:6px;}
+  .lg .nm{font-weight:800;font-size:12.5px;line-height:1.12;}
+  .lg .how{font-size:10px;color:#9b8c6e;margin-top:3px;line-height:1.25;flex:1;}
+  .lg .bar{height:6px;border-radius:999px;background:#eee3cc;margin-top:7px;overflow:hidden;}
+  .lg .bar i{display:block;height:100%;border-radius:999px;}
+  .lg .prn{font-size:9.5px;color:#9b8c6e;font-weight:700;margin-top:3px;}
+  .lg .foot{display:flex;align-items:center;gap:5px;margin-top:7px;flex-wrap:wrap;}
+  .rar{font-size:8.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px;border-radius:999px;padding:2px 7px;}
+  .rw{font-size:9.5px;font-weight:800;color:#46a302;background:#eaf7dd;border-radius:999px;padding:2px 7px;}
+  .got{position:absolute;top:9px;right:9px;font-size:13px;}
+  .lock{position:absolute;top:9px;right:9px;font-size:12px;opacity:.5;}
+  /* distintivo destacado */
+  .star{position:absolute;top:8px;left:8px;font-size:13px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15));}
+  .lg.feat{box-shadow:0 0 0 2px #ffdf9b inset;}
+
+  /* rareza */
+  .r-comun{border-color:#e4d8bd;} .r-comun .bar i{background:#a7997a;}
+  .r-comun .rar{background:#efe6d2;color:#9b8a66;}
+  .r-raro{border-color:#9bd9fb;} .r-raro .bar i{background:#1cb0f6;}
+  .r-raro .rar{background:#e3f4ff;color:#1283c4;}
+  .r-epico{border-color:#cdb4f3;} .r-epico .bar i{background:#7a4ddb;}
+  .r-epico .rar{background:#f2e9ff;color:#6a39d0;}
+  .r-leg{border-color:#ffd34d;background:linear-gradient(160deg,#fffdf4,#fff7df);} .r-leg .bar i{background:linear-gradient(90deg,#ffc800,#ffa600);}
+  .r-leg .rar{background:linear-gradient(90deg,#ffd34d,#ffb300);color:#7a4a00;}
+  .r-leg::after{content:"";position:absolute;top:0;left:-70%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg);animation:sweep 4.5s ease-in-out infinite;pointer-events:none;}
+  .lg.locked{opacity:.62;}
+  .lg.locked .ic{filter:grayscale(.7);}
+  .lg.secret .ic{filter:none;}
+
+  /* modal detalle */
+  .ov{position:absolute;inset:0;background:rgba(20,15,8,.55);backdrop-filter:blur(2px);display:none;align-items:flex-end;justify-content:center;z-index:60;}
+  .ov.show{display:flex;}
+  .sheet{background:#fff8ec;width:100%;border-radius:24px 24px 0 0;padding:18px 18px 22px;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.9,.3,1);max-height:88%;overflow-y:auto;}
+  .ov.show .sheet{transform:translateY(0);}
+  .grab{width:42px;height:5px;border-radius:999px;background:#e0d4ba;margin:0 auto 12px;}
+  .dbig{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 4px;position:relative;}
+  .dbig .dstar{position:absolute;top:-2px;right:6px;font-size:22px;}
+  .drib{display:block;text-align:center;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+  .dnm{text-align:center;font-size:19px;font-weight:900;letter-spacing:-.3px;}
+  .dfeat{text-align:center;font-size:10.5px;font-weight:800;color:#a87a00;background:#fff4d6;border:1.5px solid #ffdf9b;border-radius:999px;padding:4px 12px;width:fit-content;margin:8px auto 0;}
+  .dhow{text-align:center;font-size:13px;color:#7a6c52;margin:6px 16px 0;line-height:1.45;}
+  .dbar{height:9px;border-radius:999px;background:#eee3cc;margin:14px 0 5px;overflow:hidden;}
+  .dbar i{display:block;height:100%;border-radius:999px;}
+  .dpr{text-align:center;font-size:12px;color:#9b8c6e;font-weight:700;}
+  .drew{background:#fff;border:2px solid #efe3cd;border-radius:16px;padding:12px 14px;margin:14px 0;}
+  .drew .rt{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#a99877;margin-bottom:8px;}
+  .drow{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:#473c2e;padding:4px 0;}
+  .drow .e{font-size:18px;width:24px;text-align:center;}
+  .drow small{color:#9b8c6e;font-weight:600;font-size:11px;}
+  .btn{display:block;width:100%;text-align:center;font-weight:800;border-radius:14px;padding:13px;font-size:15px;cursor:pointer;border:none;}
+  .btn.sh{background:#25d366;color:#fff;border-bottom:4px solid #1aa34a;}
+  .btn.go{background:#58cc02;color:#fff;border-bottom:4px solid #3d8b00;}
+  .btn.gh{background:#fff;color:#473c2e;border:2px solid #efe3cd;margin-top:9px;}
+  .dlock{text-align:center;background:#fdf6e8;border:1.5px dashed #d9cdb2;border-radius:14px;padding:11px;font-size:12px;color:#9b8c6e;font-weight:700;margin-top:6px;}
+
+  /* popup desbloqueo */
+  .cele{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,rgba(58,44,143,.78),rgba(10,8,30,.88));display:none;align-items:center;justify-content:center;z-index:80;overflow:hidden;}
+  .cele.show{display:flex;}
+  .celebox{width:300px;max-width:86%;background:#fff8ec;border-radius:26px;padding:20px 18px 18px;text-align:center;position:relative;transform:scale(.7);opacity:0;}
+  .cele.show .celebox{animation:pop .5s cubic-bezier(.18,1.3,.4,1) forwards;}
+  @keyframes pop{to{transform:scale(1);opacity:1;}}
+  .celebox .otter{font-size:62px;display:inline-block;animation:cheer .9s ease-out;}
+  @keyframes cheer{0%{transform:translateY(20px) rotate(-12deg) scale(.6);}55%{transform:translateY(-6px) rotate(8deg) scale(1.08);}100%{transform:translateY(0) rotate(0) scale(1);}}
+  .celebox .ttl{font-size:13px;font-weight:900;letter-spacing:.5px;color:#7a4ddb;text-transform:uppercase;margin-top:2px;}
+  .celebox .crib{display:inline-block;font-size:9.5px;font-weight:900;text-transform:uppercase;letter-spacing:1px;border-radius:999px;padding:3px 11px;margin:7px 0 4px;}
+  .celebox .cic{font-size:46px;margin:2px 0;animation:cheer 1s .1s ease-out both;}
+  .celebox .cnm{font-size:18px;font-weight:900;letter-spacing:-.3px;}
+  .celebox .quote{font-size:12px;color:#7a6c52;font-style:italic;margin:6px 10px 0;line-height:1.4;}
+  .celebox .rews{display:flex;justify-content:center;gap:8px;margin:14px 0 4px;flex-wrap:wrap;}
+  .rpill{background:#fff;border:2px solid #efe3cd;border-radius:12px;padding:7px 11px;font-size:12px;font-weight:900;color:#473c2e;}
+  .rpill small{display:block;font-size:8.5px;color:#9b8c6e;font-weight:700;letter-spacing:.3px;}
+  .conf{position:absolute;width:9px;height:14px;top:-20px;border-radius:2px;opacity:0;}
+  .cele.show .conf{animation:fall 2.2s ease-in forwards;}
+  @keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(560px) rotate(540deg)}}
+
+  /* navbar */
+  .navbar{display:flex;justify-content:space-around;align-items:center;height:74px;background:#fff;border-top:2px solid #efe3cd;flex:0 0 auto;}
+  .nav i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#bbae93;cursor:pointer;flex:1;}
+  .nav i.on{color:#58cc02;} .nav .ic{font-size:20px;}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+
+      <div class="scroll">
+        <div class="pad">
+          <div class="hdr"><div class="bk" onclick="location.href='perfil.html'">‹</div><div class="t">Tus logros</div><div style="font-size:18px">🦦</div></div>
+
+          <!-- resumen -->
+          <div class="ring">
+            <div class="c">
+              <svg width="46" height="46"><circle cx="23" cy="23" r="19" fill="none" stroke="#eee3cc" stroke-width="6"/><circle id="rgC" cx="23" cy="23" r="19" fill="none" stroke="#58cc02" stroke-width="6" stroke-linecap="round" stroke-dasharray="119" stroke-dashoffset="119"/></svg>
+              <b id="rgT">0%</b>
+            </div>
+            <div class="tx"><b id="cnt">0 / 0</b><span>logros desbloqueados</span></div>
+            <div class="pts"><b id="xpsum">0 XP</b><span>de tus logros</span></div>
+          </div>
+
+          <!-- banner destacados -->
+          <div class="star-banner"><span class="se">⭐</span><div>Los logros <b>destacados</b> dan más XP y 💎: activa tu libro, haz tu diagnóstico, mantén la racha, ayuda en la comunidad y comparte tu avance.</div></div>
+
+          <!-- recién obtenidos -->
+          <h3 class="sec">✨ Recién obtenidos</h3>
+          <div class="recent" id="recent"></div>
+
+          <!-- secciones (todas visibles) -->
+          <div id="sections"></div>
+        </div>
+      </div>
+
+      <!-- modal detalle -->
+      <div class="ov" id="ov" onclick="if(event.target===this)closeSheet()">
+        <div class="sheet" id="sheet"></div>
+      </div>
+
+      <!-- popup desbloqueo -->
+      <div class="cele" id="cele" onclick="if(event.target===this)closeCele()">
+        <div class="celebox" id="celebox"></div>
+      </div>
+
+      <div class="navbar nav">
+        <i onclick="location.href='home.html'"><span class="ic">🏠</span>Inicio</i>
+        <i onclick="location.href='practicar-v5.html'"><span class="ic">🎯</span>Practicar</i>
+        <i onclick="location.href='escanear-v1.html'"><span class="ic">📷</span>Escanear</i>
+        <i onclick="alert('Ligas: próximamente 🏆')"><span class="ic">🏆</span>Ligas</i>
+        <i class="on" onclick="location.href='perfil.html'"><span class="ic">🦦</span>Perfil</i>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ====== CATÁLOGO DEFINITIVO (v1) ======
+   Detalle y migración en Ideas/06_logros-catalogo-final.md
+   Sistema: XP→nivel/criatura · 💎 gemas · medallas por tema 🥉🥈🥇 · liga semanal · plan adaptativo.
+   Sin duelos · sin prometer puntaje · gratis = ADN · español neutro.
+   feat:true = DESTACADO (⭐) → los 9 loops que mueven el B2C:
+   1 escanear/activar libro · 2 diagnóstico · 3 racha · 4 dominar temas · 5 subir nivel ·
+   6 liga · 7 comunidad (preguntar+ayudar) · 8 compartir/referir · 9 completar plan. */
+const RAR={comun:{l:"Común",c:"r-comun"},raro:{l:"Raro",c:"r-raro"},epico:{l:"Épico",c:"r-epico"},leg:{l:"Legendario",c:"r-leg"}};
+const A=[
+ // ===== 📕 LIBRO Y ESCANEO — el foso (KPI#1) =====
+ {sec:"libro",ic:"📕",nm:"Libro activado",how:"Activa el código de tu libro y desbloquea su versión digital",rar:"comun",xp:200,gem:25,cur:1,tot:1,recent:true,feat:true},
+ {sec:"libro",ic:"📷",nm:"Primer escaneo",how:"Escanea tu primera hoja de respuestas del libro",rar:"comun",xp:150,gem:15,cur:1,tot:1,recent:true,feat:true},
+ {sec:"libro",ic:"🦅",nm:"Ojo de halcón",how:"Escanea 10 hojas de respuestas",rar:"raro",xp:280,gem:30,cur:4,tot:10,feat:true},
+ {sec:"libro",ic:"🔄",nm:"Del papel a la pantalla",how:"Escanea hojas en 7 días distintos",rar:"raro",xp:300,gem:30,cur:3,tot:7,feat:true},
+ {sec:"libro",ic:"💯",nm:"Sin una mancha",how:"Consigue una hoja escaneada 100% correcta",rar:"epico",xp:450,gem:45,cur:0,tot:1},
+ {sec:"libro",ic:"📚",nm:"Biblioteca activa",how:"Activa 3 libros distintos",rar:"epico",xp:550,gem:65,cur:1,tot:3,feat:true},
+ // ===== 🔥 CONSTANCIA — diagnóstico · racha · liga =====
+ {sec:"const",ic:"🧭",nm:"Conoce tu nivel",how:"Completa tu diagnóstico inicial",rar:"comun",xp:150,gem:15,cur:1,tot:1,feat:true},
+ {sec:"const",ic:"🏅",nm:"Primera meta",how:"Cumple tu meta semanal por primera vez",rar:"comun",xp:100,gem:10,cur:1,tot:1,recent:true},
+ {sec:"const",ic:"🔥",nm:"Racha de 7",how:"Estudia 7 días seguidos",rar:"comun",xp:120,gem:12,cur:7,tot:7,feat:true},
+ {sec:"const",ic:"⚡",nm:"Racha de 30",how:"Estudia 30 días seguidos",rar:"raro",xp:280,gem:28,cur:12,tot:30,feat:true},
+ {sec:"const",ic:"🛡️",nm:"Desafío 21 días",how:"Completa el desafío de 21 días seguidos",rar:"raro",xp:300,gem:30,cur:12,tot:21},
+ {sec:"const",ic:"🏆",nm:"Subes a Liga Rubí",how:"Termina la semana en la liga Rubí (sobre Esmeralda)",rar:"raro",xp:260,gem:26,cur:0,tot:1,feat:true},
+ {sec:"const",ic:"👑",nm:"Racha de 100",how:"Estudia 100 días seguidos",rar:"leg",xp:1000,gem:120,cos:"Llama eterna de nutrIA",cur:12,tot:100},
+ // ===== 📐 MATEMÁTICA M1 =====
+ {sec:"m1",ic:"🧮",nm:"Calculista novato",how:"Lleva tu primer tema de Matemática M1 a plata 🥈",rar:"comun",xp:80,gem:8,cur:1,tot:1},
+ {sec:"m1",ic:"🔢",nm:"El don de los números",how:"Lleva tu primer tema de M1 a oro 🥇 (domínalo y mantenlo)",rar:"raro",xp:200,gem:20,cur:0,tot:1},
+ {sec:"m1",ic:"💪",nm:"A prueba de difíciles",how:"Acierta 15 preguntas difíciles de M1",rar:"raro",xp:250,gem:25,cur:6,tot:15},
+ {sec:"m1",ic:"📐",nm:"Eje conquistado",how:"Domina (🥇) todos los temas de un eje de M1",rar:"epico",xp:450,gem:45,cur:2,tot:6},
+ {sec:"m1",ic:"♾️",nm:"Calculadora humana",how:"Domina (🥇) todos los temas de M1",rar:"epico",xp:600,gem:60,cur:3,tot:20},
+ // ===== 📈 MATEMÁTICA M2 (electiva) =====
+ {sec:"m2",ic:"📈",nm:"Aspirante a la electiva",how:"Lleva tu primer tema de M2 a plata 🥈",rar:"comun",xp:80,gem:8,cur:0,tot:1},
+ {sec:"m2",ic:"➗",nm:"Cálculo fino",how:"Lleva tu primer tema de M2 a oro 🥇",rar:"raro",xp:200,gem:20,cur:0,tot:1},
+ {sec:"m2",ic:"⛰️",nm:"Sin miedo a lo difícil",how:"Acierta 12 preguntas difíciles de M2",rar:"raro",xp:250,gem:25,cur:0,tot:12},
+ {sec:"m2",ic:"📊",nm:"Eje de la electiva",how:"Domina (🥇) un eje completo de M2",rar:"epico",xp:450,gem:45,cur:0,tot:5},
+ {sec:"m2",ic:"🧠",nm:"Mente maestra del cálculo",how:"Domina (🥇) todos los temas de M2",rar:"epico",xp:600,gem:60,cur:0,tot:16},
+ // ===== 📖 LENGUAJE (Competencia Lectora) =====
+ {sec:"leng",ic:"📝",nm:"Aspirante a poeta",how:"Lleva tu primer tema de Lenguaje a plata 🥈",rar:"comun",xp:80,gem:8,cur:1,tot:1},
+ {sec:"leng",ic:"📖",nm:"El don de las palabras",how:"Lleva tu primer tema de Lenguaje a oro 🥇",rar:"raro",xp:200,gem:20,cur:0,tot:1},
+ {sec:"leng",ic:"🔎",nm:"Lectura crítica",how:"Acierta 20 preguntas difíciles de comprensión lectora",rar:"raro",xp:250,gem:25,cur:11,tot:20},
+ {sec:"leng",ic:"📰",nm:"Todo tipo de texto",how:"Domina (🥇) un eje completo de Lenguaje",rar:"epico",xp:450,gem:45,cur:1,tot:5},
+ {sec:"leng",ic:"🖋️",nm:"Pluma maestra",how:"Domina (🥇) todos los temas de Lenguaje",rar:"epico",xp:600,gem:60,cur:2,tot:15},
+ // ===== 🏛️ HISTORIA =====
+ {sec:"hist",ic:"📜",nm:"Joven ilustrado",how:"Lleva tu primer tema de Historia a plata 🥈",rar:"comun",xp:80,gem:8,cur:1,tot:1},
+ {sec:"hist",ic:"🏛️",nm:"El don de la cultura",how:"Lleva tu primer tema de Historia a oro 🥇",rar:"raro",xp:200,gem:20,cur:0,tot:1},
+ {sec:"hist",ic:"🗳️",nm:"Conciencia ciudadana",how:"Acierta 20 preguntas difíciles de Formación Ciudadana",rar:"raro",xp:250,gem:25,cur:5,tot:20},
+ {sec:"hist",ic:"🗺️",nm:"Eje de la historia",how:"Domina (🥇) un eje completo de Historia",rar:"epico",xp:450,gem:45,cur:0,tot:5},
+ {sec:"hist",ic:"🌍",nm:"Memoria de los pueblos",how:"Domina (🥇) todos los temas de Historia",rar:"epico",xp:600,gem:60,cur:1,tot:15},
+ // ===== 🧬 BIOLOGÍA =====
+ {sec:"bio",ic:"🔬",nm:"Ratón de laboratorio",how:"Lleva tu primer tema de Biología a plata 🥈",rar:"comun",xp:80,gem:8,cur:1,tot:1},
+ {sec:"bio",ic:"🧬",nm:"Código de la vida",how:"Lleva tu primer tema de Biología a oro 🥇",rar:"raro",xp:200,gem:20,cur:0,tot:1},
+ {sec:"bio",ic:"🧪",nm:"Método científico",how:"Acierta 15 preguntas difíciles de Biología",rar:"raro",xp:250,gem:25,cur:4,tot:15},
+ {sec:"bio",ic:"🌱",nm:"Ecosistema dominado",how:"Domina (🥇) un eje completo de Biología",rar:"epico",xp:450,gem:45,cur:0,tot:5},
+ {sec:"bio",ic:"🦠",nm:"Sabio de la vida",how:"Domina (🥇) todos los temas de Biología",rar:"epico",xp:600,gem:60,cur:1,tot:14},
+ // ===== ⚗️ QUÍMICA =====
+ {sec:"qui",ic:"⚗️",nm:"Aprendiz de alquimista",how:"Lleva tu primer tema de Química a plata 🥈",rar:"comun",xp:80,gem:8,cur:0,tot:1},
+ {sec:"qui",ic:"💥",nm:"Reacción en cadena",how:"Lleva tu primer tema de Química a oro 🥇",rar:"raro",xp:200,gem:20,cur:0,tot:1},
+ {sec:"qui",ic:"⚖️",nm:"Equilibrio perfecto",how:"Acierta 15 preguntas difíciles de Química",rar:"raro",xp:250,gem:25,cur:0,tot:15},
+ {sec:"qui",ic:"📋",nm:"Tabla dominada",how:"Domina (🥇) un eje completo de Química",rar:"epico",xp:450,gem:45,cur:0,tot:5},
+ {sec:"qui",ic:"🧫",nm:"Maestro de los elementos",how:"Domina (🥇) todos los temas de Química",rar:"epico",xp:600,gem:60,cur:0,tot:13},
+ // ===== ⚛️ FÍSICA =====
+ {sec:"fis",ic:"🍎",nm:"Aprendiz de Newton",how:"Lleva tu primer tema de Física a plata 🥈",rar:"comun",xp:80,gem:8,cur:0,tot:1},
+ {sec:"fis",ic:"🧲",nm:"Fuerza dominada",how:"Lleva tu primer tema de Física a oro 🥇",rar:"raro",xp:200,gem:20,cur:0,tot:1},
+ {sec:"fis",ic:"🚀",nm:"Velocidad de escape",how:"Acierta 15 preguntas difíciles de Física",rar:"raro",xp:250,gem:25,cur:0,tot:15},
+ {sec:"fis",ic:"⚛️",nm:"Eje del universo",how:"Domina (🥇) un eje completo de Física",rar:"epico",xp:450,gem:45,cur:0,tot:5},
+ {sec:"fis",ic:"🔭",nm:"Sabio del universo",how:"Domina (🥇) todos los temas de Física",rar:"epico",xp:600,gem:60,cur:0,tot:13},
+ // ===== 🤝 COMUNIDAD — preguntar + AYUDAR =====
+ {sec:"com",ic:"🙋",nm:"Preguntando se aprende",how:"Publica 5 dudas en la Comunidad",rar:"comun",xp:120,gem:12,cur:5,tot:5,feat:true},
+ {sec:"com",ic:"🤝",nm:"Primera ayuda",how:"Responde tu primera duda de otro estudiante",rar:"comun",xp:120,gem:12,cur:1,tot:1,feat:true},
+ {sec:"com",ic:"🧑‍🏫",nm:"Ayudante",how:"Responde 50 dudas de otros en la Comunidad",rar:"raro",xp:280,gem:28,cur:7,tot:50,feat:true},
+ {sec:"com",ic:"💡",nm:"Mejor respuesta",how:"Consigue que marquen 10 de tus respuestas como útiles",rar:"raro",xp:250,gem:25,cur:3,tot:10},
+ {sec:"com",ic:"🎓",nm:"Maestro de la comunidad",how:"Responde 250 dudas de otros en la Comunidad",rar:"epico",xp:600,gem:60,cur:7,tot:250,feat:true},
+ // ===== 🏆 HITOS Y SECRETOS =====
+ {sec:"hito",ic:"⭐",nm:"Tu criatura evoluciona",how:"Sube al nivel Notable (5º de tu escalera)",rar:"raro",xp:250,gem:25,cur:5,tot:5},
+ {sec:"hito",ic:"👑",nm:"Criatura suprema",how:"Llega al nivel Puntaje Nacional, la cima de tu escalera",rar:"leg",xp:1000,gem:120,cos:"Aura dorada de nutrIA",cur:5,tot:12},
+ {sec:"hito",ic:"🗺️",nm:"Ruta finalizada",how:"Completa todas las sesiones de un plan",rar:"raro",xp:300,gem:30,cur:4,tot:8,feat:true},
+ {sec:"hito",ic:"📲",nm:"Comparte tu perfil",how:"Comparte tu perfil de estudiante",rar:"comun",xp:120,gem:12,cur:0,tot:1,feat:true},
+ {sec:"hito",ic:"👥",nm:"Invita a un amigo",how:"Invita a alguien que se sume a Puntaje Nacional",rar:"raro",xp:300,gem:40,cur:0,tot:1,feat:true},
+ {sec:"hito",ic:"🗻",nm:"La cima es un lugar solitario",how:"Domina el 100% de tu plan de estudio",rar:"leg",xp:1000,gem:120,cos:"Marco legendario del carnet",cur:9,tot:24},
+ {sec:"hito",ic:"🌙",nm:"Ave nocturna",how:"Estudia pasada la medianoche",rar:"raro",xp:150,gem:15,cur:0,tot:1,secret:true},
+ {sec:"hito",ic:"🦦",nm:"nutrIA tiene hambre",how:"Toca a nutrIA 10 veces seguidas",rar:"comun",xp:80,gem:8,cur:0,tot:1,secret:true}
+];
+A.forEach(a=>a.done=a.cur>=a.tot);
+
+const SECTIONS=[
+ ["libro","📕 Libro y escaneo"],
+ ["const","🔥 Constancia"],
+ ["m1","📐 Matemática M1"],
+ ["m2","📈 Matemática M2"],
+ ["leng","📖 Lenguaje"],
+ ["hist","🏛️ Historia"],
+ ["bio","🧬 Biología"],
+ ["qui","⚗️ Química"],
+ ["fis","⚛️ Física"],
+ ["com","🤝 Comunidad"],
+ ["hito","🏆 Hitos y secretos"]
+];
+
+/* resumen */
+function renderTop(){
+  const done=A.filter(a=>a.done).length, tot=A.length;
+  const xp=A.filter(a=>a.done).reduce((s,a)=>s+a.xp,0);
+  const pct=Math.round(done/tot*100);
+  document.getElementById("cnt").textContent=done+" / "+tot;
+  document.getElementById("rgT").textContent=pct+"%";
+  document.getElementById("xpsum").textContent="+"+xp.toLocaleString("es-CL")+" XP";
+  document.getElementById("rgC").setAttribute("stroke-dashoffset", 119-(119*pct/100));
+}
+
+/* recién obtenidos */
+const RGRAD={comun:"linear-gradient(160deg,#b6a888,#8d7d5c)",raro:"linear-gradient(160deg,#3cc0fb,#1283c4)",epico:"linear-gradient(160deg,#9a6cf0,#6a39d0)",leg:"linear-gradient(160deg,#ffcf45,#ff9d00)"};
+function renderRecent(){
+  const r=A.filter(a=>a.recent&&a.done);
+  document.getElementById("recent").innerHTML=r.map(a=>{const i=A.indexOf(a);return `<div class="rc" style="background:${RGRAD[a.rar]}" onclick="showCele(A[${i}])">
+    ${a.feat?'<div style="position:absolute;top:7px;left:8px;font-size:13px">⭐</div>':''}
+    <div class="ic">${a.ic}</div><div class="nm">${a.nm}</div><div class="rw">+${a.xp} XP · +${a.gem}💎</div></div>`;}).join("");
+}
+
+/* card de un logro */
+function cardHTML(a){
+  const i=A.indexOf(a);
+  const hidden=a.secret&&!a.done;
+  const cls=["lg",RAR[a.rar].c, a.done?"obtained":"locked", a.secret?"secret":"", (a.feat&&!hidden)?"feat":""].join(" ");
+  const ic= hidden?"❓":a.ic;
+  const nm= hidden?"Logro secreto":a.nm;
+  const how= hidden?"Sigue practicando para descubrirlo 👀":a.how;
+  const rarLbl= hidden?"???":RAR[a.rar].l;
+  const corner= a.done?'<span class="got">✅</span>':'<span class="lock">🔒</span>';
+  const star= (a.feat&&!hidden)?'<span class="star">⭐</span>':'';
+  let mid="";
+  if(!a.done && !hidden) mid=`<div class="bar"><i style="width:${Math.round(a.cur/a.tot*100)}%"></i></div><div class="prn">${a.cur} / ${a.tot}</div>`;
+  const rw= a.done?`<span class="rw">+${a.xp} XP</span>`:"";
+  return `<div class="${cls}" onclick="openSheet(${i})">${star}${corner}
+    <div class="ic">${ic}</div><div class="nm">${nm}</div><div class="how">${how}</div>
+    ${mid}
+    <div class="foot"><span class="rar">${rarLbl}</span>${rw}</div></div>`;
+}
+
+/* secciones (todas siempre visibles) */
+function renderSections(){
+  const ord={leg:0,epico:1,raro:2,comun:3};
+  document.getElementById("sections").innerHTML=SECTIONS.map(s=>{
+    let list=A.filter(a=>a.sec===s[0]);
+    const done=list.filter(a=>a.done).length;
+    // destacados primero, luego obtenidos, luego por rareza
+    list=list.slice().sort((a,b)=>(b.done-a.done)||((b.feat?1:0)-(a.feat?1:0))||(ord[a.rar]-ord[b.rar]));
+    return `<h3 class="sec">${s[1]}<span class="ct">${done}/${list.length}</span></h3>
+      <div class="grid">${list.map(cardHTML).join("")}</div>`;
+  }).join("");
+}
+
+/* modal detalle */
+const TINT={comun:"#efe6d2",raro:"#e3f4ff",epico:"#f2e9ff",leg:"linear-gradient(160deg,#fff2c9,#ffe28f)"};
+const RCOL={comun:"#9b8a66",raro:"#1283c4",epico:"#6a39d0",leg:"#b07b00"};
+function openSheet(i){
+  const a=A[i], hidden=a.secret&&!a.done;
+  const ic=hidden?"❓":a.ic, nm=hidden?"Logro secreto":a.nm, how=hidden?"Este logro está oculto. ¡Sigue explorando la plataforma para revelarlo!":a.how;
+  let body=`<div class="grab"></div>
+    <div class="dbig" style="background:${TINT[a.rar]}">${ic}${(a.feat&&!hidden)?'<span class="dstar">⭐</span>':''}</div>
+    <span class="drib" style="color:${RCOL[a.rar]}">${hidden?"Logro secreto":RAR[a.rar].l}</span>
+    <div class="dnm">${nm}</div>
+    ${(a.feat&&!hidden)?'<div class="dfeat">⭐ Logro destacado</div>':''}
+    <div class="dhow">${how}</div>`;
+  if(!hidden){
+    if(!a.done) body+=`<div class="dbar"><i style="width:${Math.round(a.cur/a.tot*100)}%;background:${RCOL[a.rar]}"></i></div><div class="dpr">${a.cur} / ${a.tot}</div>`;
+    body+=`<div class="drew"><div class="rt">Recompensa</div>
+      <div class="drow"><span class="e">⚡</span><div>+${a.xp} XP <small>· suma a tu escalera de Puntaje</small></div></div>
+      <div class="drow"><span class="e">💎</span><div>+${a.gem} gemas <small>· para cosméticos y recargas</small></div></div>
+      ${a.cos?`<div class="drow"><span class="e">🎀</span><div>${a.cos} <small>· cosmético exclusivo</small></div></div>`:""}
+    </div>`;
+    if(a.done) body+=`<button class="btn sh" onclick="alert('Compartir este logro por WhatsApp 🟢')">📲 Compartir este logro</button>`;
+    else body+=`<div class="dlock">🔒 Aún bloqueado · te falta poco</div>`;
+  } else {
+    body+=`<div class="dlock">🔒 Logro secreto · descúbrelo practicando</div>`;
+  }
+  body+=`<button class="btn gh" onclick="closeSheet()">Cerrar</button>`;
+  document.getElementById("sheet").innerHTML=body;
+  document.getElementById("ov").classList.add("show");
+}
+function closeSheet(){document.getElementById("ov").classList.remove("show");}
+
+/* popup desbloqueo (celebración) */
+const QUOTE={comun:"¡Bien ahí! Un paso más en tu camino. 🦦",raro:"¡Eso no lo logra cualquiera! 🦦💙",epico:"¡Épico! nutrIA está orgullosa de ti. 🦦💜",leg:"¡LEGENDARIO! Esto casi nadie lo consigue. 🦦👑"};
+const CRIB={comun:"#9b8a66",raro:"#1283c4",epico:"#7a4ddb",leg:"#b07b00"};
+const CRIBG={comun:"#efe6d2",raro:"#e3f4ff",epico:"#f2e9ff",leg:"linear-gradient(90deg,#ffd34d,#ffb300)"};
+function showCele(a){
+  const conf=Array.from({length:22},(_,k)=>{
+    const cols=["#58cc02","#1cb0f6","#ffc800","#ff4b4b","#7a4ddb","#ff7a00"];
+    const x=Math.round(Math.random()*100), c=cols[k%6], d=(Math.random()*0.6).toFixed(2), r=(Math.random()*40-20).toFixed(0);
+    return `<div class="conf" style="left:${x}%;background:${c};animation-delay:${d}s;transform:rotate(${r}deg)"></div>`;
+  }).join("");
+  document.getElementById("celebox").innerHTML=`${conf}
+    <div class="otter">🦦</div>
+    <div class="ttl">¡Logro desbloqueado!</div>
+    <span class="crib" style="background:${CRIBG[a.rar]};color:${a.rar==='leg'?'#7a4a00':CRIB[a.rar]}">${RAR[a.rar].l}</span>
+    <div class="cic">${a.ic}</div>
+    <div class="cnm">${a.nm}</div>
+    <div class="quote">${QUOTE[a.rar]}</div>
+    <div class="rews">
+      <div class="rpill">+${a.xp}<small>XP A TU ESCALERA</small></div>
+      <div class="rpill">+${a.gem}<small>GEMAS 💎</small></div>
+      ${a.cos?`<div class="rpill">🎀<small>${a.cos.toUpperCase()}</small></div>`:""}
+    </div>
+    <button class="btn sh" style="margin-top:6px" onclick="alert('Compartir por WhatsApp 🟢')">📲 Compartir mi logro</button>
+    <button class="btn gh" onclick="closeCele()">¡Genial!</button>`;
+  document.getElementById("cele").classList.add("show");
+}
+function closeCele(){document.getElementById("cele").classList.remove("show");}
+
+renderTop(); renderRecent(); renderSections();
+</script>
+</body>
+</html>

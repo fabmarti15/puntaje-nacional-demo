@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — 5 ideas de "rango"</title>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#fff8ec;color:#473c2e;padding:26px 16px 70px;}
+  .wrap{max-width:1180px;margin:0 auto;}
+  h1{text-align:center;font-size:24px;margin:0 0 4px;font-weight:800;}
+  .lead{text-align:center;color:#9b8c6e;font-size:14px;max-width:640px;margin:0 auto 26px;line-height:1.5;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+  .opt{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:20px;padding:18px;position:relative;}
+  .opt .num{position:absolute;top:-12px;left:18px;background:#473c2e;color:#fff;font-weight:800;font-size:12px;padding:4px 11px;border-radius:999px;}
+  .opt .fav{position:absolute;top:-12px;right:18px;background:linear-gradient(90deg,#ffd24a,#ffb020);color:#3a2700;font-weight:800;font-size:11px;padding:4px 11px;border-radius:999px;}
+  .opt h2{font-size:16px;margin:8px 0 2px;font-weight:800;}
+  .opt .vibe{font-size:12.5px;color:#9b8c6e;line-height:1.45;margin-bottom:14px;min-height:34px;}
+  .demo{background:#fdf6e8;border:1.5px solid #efe3cd;border-radius:16px;padding:16px;text-align:center;}
+  .pj{font-size:40px;font-weight:900;letter-spacing:-1px;line-height:1;color:#46a302;}
+  .small{font-size:11.5px;color:#9b8c6e;font-weight:700;margin-top:6px;}
+  .barT{height:9px;background:#eee3cc;border-radius:999px;overflow:hidden;margin:12px 0 6px;}
+  .barT i{display:block;height:100%;background:linear-gradient(90deg,#58cc02,#46a302);}
+  /* ladder pips */
+  .ladder{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+  .pip{font-size:10.5px;font-weight:700;color:#b6a98a;background:#f1e7d2;padding:3px 8px;border-radius:999px;}
+  .pip.on{background:#46a302;color:#fff;}
+  .pip.top{background:linear-gradient(90deg,#ffd24a,#ffb020);color:#3a2700;}
+  .badgeBig{font-size:30px;}
+  .tierName{font-weight:900;font-size:15px;margin-top:6px;}
+  .tierName.green{color:#46a302;}
+  .grow{display:flex;gap:6px;justify-content:center;align-items:center;font-size:20px;margin-top:8px;}
+  .grow span{opacity:.3;} .grow span.on{opacity:1;transform:scale(1.25);}
+  .arche{display:inline-flex;align-items:center;gap:8px;background:#f3e7ff;border:1.5px solid #e0d2ff;color:#7a4ddb;font-weight:800;font-size:14px;padding:8px 14px;border-radius:999px;margin-top:6px;}
+  .pct{font-size:34px;font-weight:900;color:#46a302;}
+  .pctbar{height:14px;border-radius:999px;background:#eee3cc;position:relative;margin:12px 0 4px;overflow:hidden;}
+  .pctbar i{position:absolute;left:0;top:0;bottom:0;width:88%;background:linear-gradient(90deg,#ffd24a,#58cc02);}
+  .pctbar b{position:absolute;left:88%;top:-3px;transform:translateX(-50%);font-size:16px;}
+  .note{max-width:760px;margin:26px auto 0;background:#fff;border:2px dashed #d9cdb2;border-radius:16px;padding:14px 18px;font-size:13px;color:#6b5e46;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🏆 5 ideas para el "rango" (en vez de Platino/Diamante)</h1>
+  <p class="lead">Tu puntaje proyectado por IRT es 742. Estas son 5 formas distintas de mostrarlo y darle identidad. Mira cuál te tinca (o mezclamos).</p>
+
+  <div class="grid">
+
+    <!-- 1 -->
+    <div class="opt">
+      <span class="num">1</span>
+      <h2>Minimalista — el número manda</h2>
+      <div class="vibe">Sin nombres de rango. Solo tu puntaje, tu meta y el próximo hito. Lo más limpio, serio y honesto.</div>
+      <div class="demo">
+        <div class="pj">742</div>
+        <div class="small">PUNTAJE PROYECTADO</div>
+        <div class="barT"><i style="width:82%"></i></div>
+        <div class="small">▲ +28 esta semana · faltan 8 pts para tu récord (750)</div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="opt">
+      <span class="num">2</span><span class="fav">★ mi favorita</span>
+      <h2>Camino a "Puntaje Nacional"</h2>
+      <div class="vibe">La escalada hasta la cima, que se llama literalmente <b>Puntaje Nacional</b>. La marca es la meta máxima. Aspiracional.</div>
+      <div class="demo">
+        <div class="pj">742</div>
+        <div class="tierName green">CRACK</div>
+        <div class="ladder">
+          <span class="pip">Aprendiz</span><span class="pip">Cadete</span>
+          <span class="pip on">Crack</span><span class="pip">Pro</span>
+          <span class="pip">Élite</span><span class="pip top">P. Nacional</span>
+        </div>
+        <div class="small" style="margin-top:10px">Te faltan 58 pts para subir a <b>Pro</b></div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="opt">
+      <span class="num">3</span>
+      <h2>Crecimiento natural 🌱</h2>
+      <div class="vibe">Metáfora de crecer (aprovecha el "Semilla" que ya usan). Cálido y wholesome, calza con "achicar la brecha".</div>
+      <div class="demo">
+        <div class="pj">742</div>
+        <div class="tierName" style="color:#2e9e5b">🌿 Brote</div>
+        <div class="grow"><span class="on">🌱</span><span class="on">🌿</span><span>🪴</span><span>🌳</span><span>🌲</span></div>
+        <div class="small" style="margin-top:8px">Semilla › <b>Brote</b> › Planta › Árbol › Bosque</div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="opt">
+      <span class="num">4</span>
+      <h2>Arquetipo / tu "clase"</h2>
+      <div class="vibe">En vez de metales, eres un personaje con identidad por materia. Pura personalidad (tu idea del "carnet").</div>
+      <div class="demo">
+        <div class="arche">⚡ Crack de Mate · nv.5</div>
+        <div class="small" style="margin-top:12px">Puntaje proyectado <b>742</b></div>
+        <div class="barT"><i style="width:62%"></i></div>
+        <div class="small">340 XP para <b>nv.6 · "Crack de Mate"</b></div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="opt">
+      <span class="num">5</span>
+      <h2>Tu lugar real en Chile 🇨🇱</h2>
+      <div class="vibe">Sin nombres inventados: tu posición real. Competitivo, motivador y muestra el músculo psicométrico (datos reales).</div>
+      <div class="demo">
+        <div class="pct">Top 12%</div>
+        <div class="small">de Chile en Matemática M1 · puntaje 742</div>
+        <div class="pctbar"><i></i><b>🦦</b></div>
+        <div class="small">Mejor que el 88% de quienes rinden M1</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note">
+    💡 <b>Mi recomendación:</b> base <b>#2 (Camino a "Puntaje Nacional")</b> porque la cima es tu propia marca = súper aspiracional;
+    el <b>número grande de #1</b> siempre visible (claridad); y un toque de <b>#5 (Top % de Chile)</b> como dato "wow" real.
+    Mezclables. ¿Cuál te late?
+  </div>
+</div>
+</body>
+</html>

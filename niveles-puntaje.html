@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional — Niveles "Puntaje" (Hattrick) + Palmarés</title>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#fff8ec;color:#473c2e;padding:26px 16px 80px;}
+  .wrap{max-width:960px;margin:0 auto;}
+  h1{text-align:center;font-size:23px;margin:0 0 4px;font-weight:800;}
+  .lead{text-align:center;color:#9b8c6e;font-size:13.5px;max-width:640px;margin:0 auto 8px;line-height:1.5;}
+  .lead b{color:#46a302;}
+  .h3{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:#a99877;margin:26px 4px 12px;}
+
+  .scale{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px;}
+  .lvl{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;cursor:pointer;padding:10px 6px;border-radius:16px;border:2px solid transparent;}
+  .lvl:hover{background:#fff;border-color:#efe3cd;}
+  .lvl.cur{background:#fff;border-color:#9fe06a;box-shadow:0 6px 0 rgba(70,163,2,.12);}
+  .badge{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:29px;
+         background:radial-gradient(circle at 35% 28%,var(--c1),var(--c2));border:3px solid #fff;
+         box-shadow:0 4px 10px rgba(0,0,0,.16),inset 0 -3px 7px rgba(0,0,0,.18);position:relative;}
+  .badge.glow{box-shadow:0 0 18px var(--g,#ffcf5e),0 4px 10px rgba(0,0,0,.18),inset 0 -3px 7px rgba(0,0,0,.15);}
+  .badge .crown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:18px;}
+  .lname{font-weight:800;font-size:12.5px;line-height:1.15;}
+  .lsub{font-size:10px;color:#a99877;font-weight:700;}
+  .you{font-size:9.5px;font-weight:800;color:#fff;background:#46a302;padding:2px 8px;border-radius:999px;}
+
+  /* palmarés */
+  .palm{background:#fff;border:2px solid #efe3cd;border-bottom-width:5px;border-radius:20px;padding:18px;}
+  .palmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+  .trophy{border:1.5px solid #efe3cd;border-radius:14px;padding:13px;text-align:center;background:#fdf6e8;}
+  .trophy.locked{opacity:.55;filter:grayscale(.6);}
+  .ticon{font-size:30px;}
+  .tname{font-weight:800;font-size:12.5px;margin-top:6px;}
+  .tdesc{font-size:10.5px;color:#9b8c6e;margin-top:2px;line-height:1.3;}
+  .tbar{height:6px;border-radius:999px;background:#eee3cc;margin-top:8px;overflow:hidden;}
+  .tbar i{display:block;height:100%;background:#46a302;}
+  .got{display:inline-block;margin-top:8px;font-size:9.5px;font-weight:800;color:#b07b00;background:#fff3d1;border:1px solid #ffe49e;padding:2px 8px;border-radius:999px;}
+
+  .note{margin:24px auto 0;background:#fff;border:2px dashed #d9cdb2;border-radius:16px;padding:14px 18px;font-size:12.5px;color:#6b5e46;line-height:1.55;}
+  .note b{color:#46a302;}
+
+  #tipbox{position:fixed;max-width:240px;background:#473c2e;color:#fff;font-size:12.5px;line-height:1.4;padding:9px 12px;border-radius:11px;box-shadow:0 8px 24px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .12s;z-index:999;text-align:center;}
+  #tipbox.show{opacity:1;}
+  #tipbox::after{content:"";position:absolute;left:var(--ax,50%);transform:translateX(-50%);top:100%;border:7px solid transparent;border-top-color:#473c2e;}
+  #tipbox.below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:#473c2e;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎚️ Niveles "Puntaje" (estilo Hattrick) + Palmarés</h1>
+  <p class="lead">Subes por <b>esfuerzo + progreso</b> (no por puntaje bruto). Fondo amable, cima épica. <b>Toca</b> cada nivel para ver su info. La 🟢 marca dónde va Martina.</p>
+
+  <div class="h3">La escalera de Puntaje</div>
+  <div class="scale">
+    <div class="lvl tip" data-tip="Puntaje Inicial: ¡bienvenido! Aquí parte tu viaje."><div class="badge" style="--c1:#cfe3b8;--c2:#9cc06e">🌱</div><div class="lname">Puntaje Inicial</div><div class="lsub">el comienzo</div></div>
+    <div class="lvl tip" data-tip="Puntaje Regular: ya tomaste ritmo de estudio."><div class="badge" style="--c1:#e7e0cf;--c2:#b5a987">✨</div><div class="lname">Puntaje Regular</div><div class="lsub">tomando ritmo</div></div>
+    <div class="lvl tip" data-tip="Puntaje Sólido: base firme, vas constante."><div class="badge" style="--c1:#f0c98f;--c2:#c8893f">🔷</div><div class="lname">Puntaje Sólido</div><div class="lsub">base firme</div></div>
+    <div class="lvl cur tip" data-tip="Estás aquí: Puntaje Notable. ¡Vas muy bien, sigue así!"><div class="badge" style="--c1:#f6d79b;--c2:#d39a45">⭐</div><div class="lname">Puntaje Notable</div><div class="you">TÚ</div></div>
+    <div class="lvl tip" data-tip="Puntaje Brillante: tu próximo nivel. ¡Estás cerca!"><div class="badge" style="--c1:#eef2f6;--c2:#aab8c6">💫</div><div class="lname">Puntaje Brillante</div><div class="lsub">siguiente</div></div>
+    <div class="lvl tip" data-tip="Puntaje Magnífico: rendimiento que destaca."><div class="badge" style="--c1:#bcd6f5;--c2:#5c8fd6">🔥</div><div class="lname">Puntaje Magnífico</div><div class="lsub"></div></div>
+    <div class="lvl tip" data-tip="Puntaje Mundial: entre los mejores."><div class="badge" style="--c1:#aef0e0;--c2:#27b89a">🌍</div><div class="lname">Puntaje Mundial</div><div class="lsub"></div></div>
+    <div class="lvl tip" data-tip="Puntaje Sobrenatural: ya es otro nivel."><div class="badge" style="--c1:#d9c2f5;--c2:#8a5cd6">🌀</div><div class="lname">Puntaje Sobrenatural</div><div class="lsub"></div></div>
+    <div class="lvl tip" data-tip="Puntaje Titánico: fuerza imparable."><div class="badge" style="--c1:#c3c8f7;--c2:#5b63d6">⚡</div><div class="lname">Puntaje Titánico</div><div class="lsub"></div></div>
+    <div class="lvl tip" data-tip="Puntaje Extraterrestre: de otro planeta 👽."><div class="badge glow" style="--c1:#e6c2f5;--c2:#a23fd0;--g:#cf86f0">👽</div><div class="lname">Puntaje Extraterrestre</div><div class="lsub"></div></div>
+    <div class="lvl tip" data-tip="Puntaje Mítico: leyenda viviente."><div class="badge glow" style="--c1:#f7c8d6;--c2:#d64f86;--g:#f08bb0">🐉</div><div class="lname">Puntaje Mítico</div><div class="lsub"></div></div>
+    <div class="lvl tip" data-tip="Puntaje Divino: la elite absoluta."><div class="badge glow" style="--c1:#ffe9a8;--c2:#e8b023;--g:#ffcf5e">😇</div><div class="lname">Puntaje Divino</div><div class="lsub"></div></div>
+    <div class="lvl tip" data-tip="Puntaje Nacional: la cima. El nombre es tu marca = la meta máxima."><div class="badge glow" style="--c1:#fff0c0;--c2:#f0a81e;--g:#ffd24a"><span class="crown">👑</span>🏆</div><div class="lname" style="color:#b07b00">Puntaje Nacional</div><div class="lsub">la cima 🏆</div></div>
+  </div>
+
+  <div class="h3">Tus logros (en el perfil) — coleccionas al subir 🏆</div>
+  <div class="palm">
+    <div class="palmgrid">
+      <div class="trophy"><div class="ticon">🥇</div><div class="tname">Llegaste a Notable</div><div class="tdesc">Subiste tu 4º nivel</div><span class="got">✓ obtenido</span></div>
+      <div class="trophy"><div class="ticon">🔥</div><div class="tname">Racha de 7</div><div class="tdesc">7 días seguidos</div><span class="got">✓ obtenido</span></div>
+      <div class="trophy"><div class="ticon">🎯</div><div class="tname">100 preguntas</div><div class="tdesc">Respondiste 100</div><span class="got">✓ obtenido</span></div>
+      <div class="trophy"><div class="ticon">📕</div><div class="tname">Libro conectado</div><div class="tdesc">Tu 1er escaneo</div><span class="got">✓ obtenido</span></div>
+      <div class="trophy locked"><div class="ticon">🏆</div><div class="tname">Maestro de M1</div><div class="tdesc">Domina todos los temas</div><div class="tbar"><i style="width:60%"></i></div></div>
+      <div class="trophy locked"><div class="ticon">🔥</div><div class="tname">Racha de 30</div><div class="tdesc">12/30 días</div><div class="tbar"><i style="width:40%"></i></div></div>
+      <div class="trophy locked"><div class="ticon">💎</div><div class="tname">Cazador de difíciles</div><div class="tdesc">Acierta 50 difíciles</div><div class="tbar"><i style="width:30%"></i></div></div>
+      <div class="trophy locked"><div class="ticon">😇</div><div class="tname">Puntaje Divino</div><div class="tdesc">Llega al nivel máximo</div><div class="tbar"><i style="width:15%"></i></div></div>
+    </div>
+  </div>
+
+  <div class="note">💡 <b>Cómo funciona:</b> el nivel sube por <b>esfuerzo + progreso</b> (constancia, misiones, temas dominados, tu mejora). Cada subida te da una <b>copa/medalla</b> al palmarés (estilo Duolingo). Badges en CSS/emoji (livianos); si quieres los paso a SVG puro a pixel. Nombres/emojis 100% ajustables.</div>
+</div>
+
+<div id="tipbox"></div>
+<script>
+(function(){
+  var box=document.getElementById('tipbox');var t;
+  function place(el){box.style.left='0px';box.style.top='0px';box.classList.remove('below');
+    var r=el.getBoundingClientRect();var bw=box.offsetWidth,bh=box.offsetHeight;var cx=r.left+r.width/2;
+    var left=Math.min(Math.max(8,cx-bw/2),window.innerWidth-bw-8);var top=r.top-bh-12;
+    if(top<8){top=r.bottom+12;box.classList.add('below');}
+    box.style.left=left+'px';box.style.top=top+'px';box.style.setProperty('--ax',(cx-left)+'px');}
+  function show(el){box.textContent=el.getAttribute('data-tip');box.classList.add('show');place(el);clearTimeout(t);}
+  function hide(){box.classList.remove('show');}
+  document.querySelectorAll('.tip').forEach(function(el){
+    el.addEventListener('mouseenter',function(){show(el);});
+    el.addEventListener('mouseleave',hide);
+    el.addEventListener('click',function(e){e.stopPropagation();show(el);clearTimeout(t);t=setTimeout(hide,3000);});
+  });
+  document.addEventListener('click',hide);window.addEventListener('scroll',hide,true);
+})();
+</script>
+</body>
+</html>

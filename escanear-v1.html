@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Puntaje Nacional</title>
+<style>
+  :root{ --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+    --cream:#fff8ec; --ink:#473c2e; --line:#efe3cd; --muted:#9b8c6e; --soft:#a99877;
+    --green:#58cc02; --greenD:#3d8b00; --gold:#ffc800; --goldD:#e0a800;
+    --blue:#1cb0f6; --blueD:#0f87c4; --red:#ff4b4b; --redD:#d63a3a; --fire:#ff7a00; }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#0c0d12;color:#e8eaf0;}
+  .wrap{max-width:900px;margin:0 auto;padding:26px 18px 70px;display:flex;flex-direction:column;align-items:center;}
+  header.intro{text-align:center;margin-bottom:14px;}
+  header.intro h1{font-size:23px;margin:0 0 6px;font-weight:800;letter-spacing:-.3px;}
+  header.intro p{margin:0 auto;max-width:680px;color:#9aa1b2;font-size:13px;line-height:1.55;}
+  header.intro p b{color:#fff;}
+
+  .phone{width:390px;max-width:100%;height:820px;border-radius:46px;padding:12px;position:relative;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 2px #2a2e3c inset;background:#05060a;}
+  .screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;background:var(--cream);color:var(--ink);}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;background:#05060a;border-radius:0 0 16px 16px;z-index:80;}
+  .statusbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:11px 22px 4px;font-size:12.5px;font-weight:700;color:#5b4e3c;z-index:30;}
+  .statusbar.light{color:#fff;}
+
+  .layer{position:absolute;inset:0;display:none;flex-direction:column;}
+  .layer.show{display:flex;animation:fadeIn .35s;}
+
+  /* ===================== CÁMARA ===================== */
+  #camLayer{background:radial-gradient(120% 90% at 50% 30%,#23262f,#0b0c11 90%);}
+  .camtop{position:absolute;top:42px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:20;}
+  .cambtn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;cursor:pointer;}
+  .campill{font-size:12.5px;font-weight:800;color:#fff;background:rgba(0,0,0,.4);padding:7px 14px;border-radius:999px;transition:.3s;display:flex;align-items:center;gap:6px;}
+  .campill.ok{background:rgba(88,204,2,.92);}
+  .campill .pdot{width:8px;height:8px;border-radius:50%;background:var(--fire);animation:blink 1s infinite;}
+  .campill.ok .pdot{background:#fff;animation:none;}
+
+  .frame{position:absolute;left:34px;right:34px;top:108px;bottom:250px;}
+  .paper{position:absolute;inset:0;border-radius:6px;background:#f7f1e6;box-shadow:0 18px 50px rgba(0,0,0,.55);transform:rotate(-1.2deg) scale(.97);transition:transform .6s var(--spring),box-shadow .4s;opacity:.96;overflow:hidden;}
+  .frame.ok .paper{transform:rotate(0deg) scale(1);}
+  .paper .ph{position:absolute;top:9px;left:12px;right:12px;display:flex;gap:14px;font-size:7px;font-weight:800;color:#b8ac92;letter-spacing:3px;}
+  .ghostcol{flex:1;display:flex;flex-direction:column;gap:5.5px;}
+  .ghostrow{display:flex;align-items:center;gap:4px;}
+  .ghostrow .gn{font-size:6px;color:#c9bda3;width:7px;font-weight:800;}
+  .ghostrow i{width:7px;height:7px;border-radius:50%;border:1px solid #cabd9f;}
+  .ghostrow i.mk{background:#8a7c5f;border-color:#8a7c5f;}
+  .cnr{position:absolute;width:30px;height:30px;border:4px solid var(--gold);transition:border-color .35s,transform .35s;z-index:6;}
+  .frame.ok .cnr{border-color:var(--green);transform:scale(1.05);}
+  .cnr.tl{top:-6px;left:-6px;border-right:0;border-bottom:0;border-radius:8px 0 0 0;}
+  .cnr.tr{top:-6px;right:-6px;border-left:0;border-bottom:0;border-radius:0 8px 0 0;}
+  .cnr.bl{bottom:-6px;left:-6px;border-right:0;border-top:0;border-radius:0 0 0 8px;}
+  .cnr.br{bottom:-6px;right:-6px;border-left:0;border-top:0;border-radius:0 0 8px 0;}
+  .scanline{position:absolute;left:2px;right:2px;height:34px;top:0;z-index:7;background:linear-gradient(180deg,transparent,rgba(88,204,2,.32));border-bottom:2px solid var(--green);opacity:0;border-radius:6px;}
+  .frame.ok .scanline{opacity:1;animation:scan 1.6s var(--ease) infinite;}
+
+  .camnutria{display:flex;align-items:center;gap:9px;background:rgba(15,12,8,.6);backdrop-filter:blur(8px);border-radius:14px;padding:9px 12px;width:calc(100% - 32px);}
+  .camnutria .ot{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;box-shadow:0 3px 0 #7c5a2c;}
+  .camnutria span{font-size:12px;font-weight:600;color:#fff;line-height:1.35;}
+  .cambottom{position:absolute;left:0;right:0;bottom:26px;display:flex;flex-direction:column;align-items:center;gap:11px;z-index:20;}
+  .pagetag{font-size:11.5px;font-weight:800;color:#fff;background:rgba(0,0,0,.4);padding:5px 12px;border-radius:999px;transition:.3s;}
+  .pagetag.ok{background:rgba(28,176,246,.92);}
+  .shutter{width:72px;height:72px;border-radius:50%;border:5px solid rgba(255,255,255,.5);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.25s;}
+  .shutter i{width:54px;height:54px;border-radius:50%;background:#fff;transition:.2s;display:block;}
+  .shutter.ready{border-color:var(--green);animation:shutterPulse 1.1s var(--ease) infinite;}
+  .shutter.ready i{background:var(--green);}
+  .shutter:active i{transform:scale(.9);}
+  .webalt{font-size:11px;font-weight:700;color:#cbd0db;text-decoration:underline;cursor:pointer;opacity:.85;}
+  .flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:70;pointer-events:none;}
+  .flash.go{animation:flash .45s var(--ease);}
+
+  /* ===================== PROCESANDO ===================== */
+  #procLayer{background:linear-gradient(180deg,#fff8ec,#fff);align-items:center;justify-content:center;padding:30px;text-align:center;}
+  .procdoc{width:118px;height:150px;border-radius:10px;background:#fff;border:2px solid var(--line);box-shadow:0 14px 34px rgba(0,0,0,.12);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:9px;padding:16px 13px;}
+  .procdoc .r{display:flex;gap:5px;}
+  .procdoc .r i{width:9px;height:9px;border-radius:50%;border:1.5px solid #d8cdb3;}
+  .procdoc .r i.on{background:var(--green);border-color:var(--green);animation:popdot .3s var(--spring) both;}
+  .procdoc .pscan{position:absolute;left:0;right:0;height:40px;top:-40px;background:linear-gradient(180deg,transparent,rgba(28,176,246,.28));border-bottom:2.5px solid var(--blue);animation:pscan 1.4s var(--ease) infinite;}
+  .procotter{font-size:54px;margin:18px 0 2px;animation:bob 1.3s var(--ease) infinite;}
+  .proctitle{font-size:18px;font-weight:900;color:var(--ink);}
+  .procstep{font-size:13px;font-weight:700;color:var(--muted);margin-top:5px;height:18px;transition:.2s;}
+  .procbar{width:200px;max-width:70%;height:10px;border-radius:999px;background:#ece1cb;overflow:hidden;margin-top:16px;}
+  .procbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7fe03a,var(--green));border-radius:999px;transition:width .4s var(--ease);}
+
+  /* ===================== RESULTADO ===================== */
+  #resLayer{background:var(--cream);}
+  .scroll{flex:1;overflow-y:auto;}
+  .scroll::-webkit-scrollbar{display:none;}
+  .rpad{padding:46px 16px 28px;}
+  .reshead{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .reshead .rx{font-size:22px;color:#c7b89c;font-weight:800;cursor:pointer;line-height:1;}
+  .bookpill{flex:1;font-size:11.5px;font-weight:800;color:var(--blueD);background:#eaf7ff;border:1.5px solid #bfe9ff;border-radius:999px;padding:6px 12px;text-align:center;}
+
+  .hero{display:flex;align-items:center;gap:16px;background:#fff;border:2px solid var(--line);border-bottom-width:5px;border-radius:20px;padding:16px;margin-bottom:13px;}
+  .ring{position:relative;width:96px;height:96px;flex:0 0 auto;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .rt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring .rt b{font-size:27px;font-weight:900;color:var(--ink);line-height:1;}
+  .ring .rt small{font-size:11px;font-weight:800;color:var(--soft);}
+  .herotxt .ot{font-size:15px;}
+  .herotxt h2{margin:0 0 4px;font-size:17px;font-weight:900;color:var(--green);}
+  .herotxt p{margin:0;font-size:12.5px;font-weight:600;color:#5a4f3d;line-height:1.4;}
+
+  .statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:6px;}
+  .scard{background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:15px;padding:11px 6px;text-align:center;}
+  .scard .v{font-size:18px;font-weight:900;line-height:1;}
+  .scard .v.xp{color:var(--goldD);} .scard .v.gem{color:var(--blueD);} .scard .v.fire{color:var(--fire);}
+  .scard .k{font-size:10px;font-weight:800;color:var(--soft);text-transform:uppercase;letter-spacing:.4px;margin-top:5px;}
+
+  h3.sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--soft);margin:20px 4px 9px;display:flex;justify-content:space-between;align-items:center;}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:10.5px;font-weight:700;color:var(--soft);margin:0 2px 11px;align-items:center;}
+  .legend span{display:flex;align-items:center;gap:4px;}
+  .legend i{width:11px;height:11px;border-radius:4px;display:inline-block;}
+  .legend i.ok{background:#bfe88f;} .legend i.bad{background:#ffc3c3;} .legend i.skip{background:#e6dcc6;}
+  .legend i.dd{border-radius:50%;width:8px;height:8px;background:var(--gold);}
+
+  .bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;}
+  .bub{position:relative;aspect-ratio:1;border-radius:16px;background:#fff;border:2px solid var(--line);border-bottom-width:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .08s;}
+  .bub:active{transform:scale(.93);}
+  .bub .n{position:absolute;top:5px;left:8px;font-size:10px;font-weight:800;color:var(--soft);}
+  .bub .m{font-size:23px;font-weight:900;line-height:1;}
+  .bub .ddot{position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;}
+  .bub .yu{position:absolute;bottom:5px;font-size:9px;font-weight:800;color:var(--soft);}
+  .bub.ok{background:#eafbe0;border-color:#bfe88f;} .bub.ok .m{color:#3d8b00;}
+  .bub.bad{background:#ffeeee;border-color:#ffc3c3;} .bub.bad .m{color:#d63a3a;}
+  .bub.skip{background:#f5efe2;border-color:#e6dcc6;} .bub.skip .m{color:#b6a98a;}
+  .ddot.f{background:var(--green);} .ddot.m{background:var(--gold);} .ddot.d{background:var(--red);}
+
+  .topics{display:flex;flex-direction:column;gap:9px;}
+  .topic{display:flex;align-items:center;gap:11px;background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:15px;padding:11px 13px;cursor:pointer;}
+  .topic .ic{width:38px;height:38px;border-radius:11px;background:#ffe2e2;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;}
+  .topic .tn{font-size:13.5px;font-weight:800;color:var(--ink);}
+  .topic .ts{font-size:11px;font-weight:600;color:var(--muted);}
+  .topic .go{margin-left:auto;font-size:18px;color:var(--soft);}
+
+  .cta{display:block;width:100%;text-align:center;color:#fff;font-weight:800;border:none;border-radius:14px;padding:14px;font-size:15px;letter-spacing:.2px;margin-top:12px;cursor:pointer;}
+  .cta.green{background:var(--green);border-bottom:4px solid var(--greenD);} .cta.green:active{transform:translateY(2px);border-bottom-width:2px;}
+  .cta.outline{background:#fff;color:var(--blueD);border:2px solid var(--blue);border-bottom-width:4px;}
+  .cta.blue{background:var(--blue);border-bottom:4px solid var(--blueD);}
+  .cta .sub{display:block;font-size:11px;font-weight:700;opacity:.9;margin-top:2px;}
+
+  /* ===================== DETALLE (bottom sheet) ===================== */
+  .scrim{position:absolute;inset:0;background:rgba(20,15,10,.45);z-index:45;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .scrim.show{opacity:1;pointer-events:auto;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;z-index:46;transform:translateY(102%);transition:transform .38s var(--spring);max-height:90%;display:flex;flex-direction:column;box-shadow:0 -10px 30px rgba(0,0,0,.18);}
+  .sheet.show{transform:translateY(0);}
+  .sheet .grip{width:42px;height:5px;border-radius:999px;background:#e3d9c3;margin:9px auto 2px;}
+  .sheet .shead{display:flex;align-items:center;gap:9px;padding:6px 16px 10px;border-bottom:1.5px solid var(--line);}
+  .sheet .qnum{font-size:12px;font-weight:800;color:var(--soft);}
+  .diff{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;border-radius:999px;padding:4px 10px;}
+  .diff.f{background:#e9f9d9;color:#3d8b00;} .diff.m{background:#fff3d1;color:#b07b00;} .diff.d{background:#ffe2e2;color:#d63a3a;}
+  .sheet .sx{margin-left:auto;font-size:20px;color:#c7b89c;font-weight:800;cursor:pointer;line-height:1;}
+  .sheet .sbody{overflow-y:auto;padding:14px 16px 6px;}
+  .sheet .sbody::-webkit-scrollbar{display:none;}
+
+  .verdict{display:flex;align-items:center;gap:11px;border-radius:16px;padding:11px 12px;margin-bottom:13px;}
+  .verdict.ok{background:#eafbe0;border:1.5px solid #bfe88f;} .verdict.bad{background:#fff1f1;border:1.5px solid #ffc3c3;} .verdict.skip{background:#f5efe2;border:1.5px solid #e6dcc6;}
+  .verdict .ot{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:25px;flex:0 0 auto;box-shadow:0 4px 0 #7c5a2c;position:relative;}
+  .verdict .ot .acc{position:absolute;top:-8px;right:-8px;font-size:20px;}
+  .verdict .vt{flex:1;min-width:0;}
+  .verdict .res{font-weight:900;font-size:15px;} .verdict.ok .res{color:#2f7a00;} .verdict.bad .res{color:#c0392b;} .verdict.skip .res{color:#8a7c5f;}
+  .verdict .frase{font-size:12px;font-weight:600;color:#4a4234;margin-top:2px;line-height:1.35;}
+  .verdict .xpw{font-size:13px;font-weight:900;white-space:nowrap;} .verdict.ok .xpw{color:var(--goldD);}
+
+  .qtext{font-size:15.5px;font-weight:800;line-height:1.45;margin:0 0 12px;}
+  .qfig{background:#fff;border:2px solid var(--line);border-radius:14px;padding:11px;margin:0 0 12px;display:flex;justify-content:center;}
+  .qfig svg{max-width:100%;height:auto;}
+  .qcaption{font-size:11px;color:var(--soft);font-weight:700;text-align:center;margin:-6px 0 12px;}
+  .formula{background:#fdf6e8;border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 14px;text-align:center;font-size:18px;font-weight:800;overflow-x:auto;}
+  .mq{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-weight:800;white-space:nowrap;}
+  .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .2em;}
+  .frac>.num{padding:0 .4em 1px;border-bottom:2px solid currentColor;} .frac>.den{padding:1px .4em 0;}
+  .sqrt{display:inline-flex;align-items:flex-start;vertical-align:middle;} .sqrt>.rt{font-size:1.15em;line-height:1;} .sqrt>.rad{border-top:2px solid currentColor;padding:1px 3px 0;margin-top:2px;}
+  .mq sup{font-size:.7em;}
+
+  .alts{display:flex;flex-direction:column;gap:9px;margin-bottom:6px;}
+  .alt{display:flex;align-items:center;gap:11px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:11px 12px;font-size:14px;font-weight:700;}
+  .alt .key{width:26px;height:26px;border-radius:8px;background:#f3ecdc;color:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:0 0 auto;}
+  .alt .val{flex:1;line-height:1.45;}
+  .alt .tag{font-size:10px;font-weight:800;border-radius:999px;padding:3px 8px;white-space:nowrap;}
+  .alt.correct{border-color:var(--green);background:#eafbe0;color:#2f7a00;} .alt.correct .key{background:var(--green);color:#fff;} .alt.correct .tag{background:var(--green);color:#fff;}
+  .alt.yourwrong{border-color:var(--red);background:#ffeeee;color:#c0392b;} .alt.yourwrong .key{background:var(--red);color:#fff;} .alt.yourwrong .tag{background:var(--red);color:#fff;}
+
+  .why{font-size:13px;font-weight:800;color:var(--blueD);margin:12px 0 0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .exp{font-size:12.5px;color:#4a4234;line-height:1.6;font-weight:600;margin-top:9px;background:#faf4e7;border:1px solid var(--line);border-radius:12px;padding:11px 12px;display:none;}
+  .exp.show{display:block;animation:pop .25s var(--ease);}
+  .askbtn{display:flex;align-items:center;gap:9px;width:100%;background:#eef9ff;border:2px solid var(--blue);border-bottom-width:4px;border-radius:14px;padding:11px 13px;margin-top:13px;cursor:pointer;font-weight:800;color:var(--blueD);font-size:13.5px;}
+  .askbtn .ot{font-size:20px;}
+  .snav{display:flex;gap:10px;padding:11px 16px 16px;border-top:1.5px solid var(--line);background:#fff;}
+  .snav button{flex:1;border:2px solid var(--line);border-bottom-width:4px;background:#fff;border-radius:13px;padding:11px;font-size:13px;font-weight:800;color:var(--ink);cursor:pointer;}
+  .snav button:disabled{opacity:.4;cursor:default;}
+
+  .confetti{position:absolute;inset:0;z-index:44;pointer-events:none;overflow:hidden;}
+  .confetti b{position:absolute;width:9px;height:14px;border-radius:2px;top:-20px;}
+  .toast{position:absolute;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#1f1a14;color:#fff;font-size:12.5px;font-weight:700;padding:10px 16px;border-radius:999px;opacity:0;transition:all .3s var(--ease);z-index:90;pointer-events:none;text-align:center;max-width:80%;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .demo{margin-top:22px;width:390px;max-width:100%;background:#11131a;border:1px solid #232634;border-radius:18px;padding:14px 16px;}
+  .demo .dh{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#7b86a0;margin-bottom:10px;}
+  .demo .btns{display:flex;flex-wrap:wrap;gap:8px;}
+  .demo button{background:#1b1e29;color:#cdd3e3;border:1px solid #2c3142;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer;}
+  .demo button:hover{background:#242838;}
+  .demo .note{font-size:11px;color:#6b7488;margin-top:10px;line-height:1.5;}
+
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes pop{0%{transform:scale(.92);opacity:0}100%{transform:scale(1);opacity:1}}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  @keyframes scan{0%{top:0}100%{top:calc(100% - 34px)}}
+  @keyframes pscan{0%{top:-40px}100%{top:150px}}
+  @keyframes popdot{0%{transform:scale(0)}100%{transform:scale(1)}}
+  @keyframes shutterPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  @keyframes flash{0%{opacity:0}30%{opacity:.95}100%{opacity:0}}
+  @keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(680px) rotate(var(--r));opacity:0}}
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.1s!important;}.confetti{display:none!important;}}
+  @media(max-width:430px){.phone{height:786px;}header.intro h1{font-size:19px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="phone">
+    <div class="screen" id="app">
+      <div class="notch"></div>
+      <div class="statusbar light" id="sbar"><span>9:41</span><span>📶 🔋</span></div>
+
+      <!-- ===== CÁMARA ===== -->
+      <div class="layer show" id="camLayer">
+        <div class="camtop">
+          <span class="cambtn" onclick="location.href='home.html'">✕</span>
+          <span class="campill" id="campill"><span class="pdot"></span> Alinea las esquinas de la hoja</span>
+          <span class="cambtn">⚡</span>
+        </div>
+        <div class="frame" id="frame">
+          <div class="paper"><div class="ph" id="ghost"></div></div>
+          <i class="cnr tl"></i><i class="cnr tr"></i><i class="cnr bl"></i><i class="cnr br"></i>
+          <div class="scanline"></div>
+        </div>
+        <div class="cambottom">
+          <div class="camnutria"><div class="ot">🦦</div><span id="camhint">Apunta a toda la hoja. Yo leo tus marcas. 🔎</span></div>
+          <div class="pagetag" id="pagetag">📕 Detectando página…</div>
+          <button class="shutter" id="shutter"><i></i></button>
+          <span class="webalt" id="webalt">¿Sin libro? Responde en la web</span>
+        </div>
+        <div class="flash" id="flash"></div>
+      </div>
+
+      <!-- ===== PROCESANDO ===== -->
+      <div class="layer" id="procLayer">
+        <div class="procdoc">
+          <div class="pscan"></div>
+          <div class="r"><i></i><i></i><i></i><i></i></div>
+          <div class="r"><i></i><i></i><i></i><i></i></div>
+          <div class="r"><i></i><i></i><i></i><i></i></div>
+          <div class="r"><i></i><i></i><i></i><i></i></div>
+          <div class="r"><i></i><i></i><i></i><i></i></div>
+          <div class="r"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="procotter">🦦</div>
+        <div class="proctitle">nutrIA está corrigiendo…</div>
+        <div class="procstep" id="procstep">Leyendo tus respuestas…</div>
+        <div class="procbar"><i id="procbar"></i></div>
+      </div>
+
+      <!-- ===== RESULTADO ===== -->
+      <div class="layer" id="resLayer">
+        <div class="scroll"><div class="rpad">
+          <div class="reshead">
+            <span class="rx" id="resclose">✕</span>
+            <span class="bookpill">📕 Matemática M1 · pág. 127 · Funciones cuadráticas</span>
+          </div>
+
+          <div class="hero">
+            <div class="ring">
+              <svg width="96" height="96" viewBox="0 0 96 96">
+                <circle cx="48" cy="48" r="42" fill="none" stroke="#ece1cb" stroke-width="9"/>
+                <circle id="ringfill" cx="48" cy="48" r="42" fill="none" stroke="#58cc02" stroke-width="9" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9" style="transition:stroke-dashoffset 1s var(--ease)"/>
+              </svg>
+              <div class="rt"><b id="ringscore">8/10</b><small>correctas</small></div>
+            </div>
+            <div class="herotxt">
+              <h2 id="herotitle">¡Buen trabajo! 🦦</h2>
+              <p id="herosub">Sumaste harto. Veamos las 2 que se escaparon para que no se repitan.</p>
+            </div>
+          </div>
+
+          <div class="statrow">
+            <div class="scard"><div class="v xp" id="stxp">+205</div><div class="k">⚡ XP</div></div>
+            <div class="scard"><div class="v gem" id="stgem">+63</div><div class="k">💎 Gemas</div></div>
+            <div class="scard"><div class="v fire">13 <small style="font-size:11px;color:var(--green)">+1</small></div><div class="k">🔥 Racha</div></div>
+          </div>
+
+          <h3 class="sec">Tus respuestas</h3>
+          <div class="legend">
+            <span><i class="ok"></i>Buena</span><span><i class="bad"></i>Mala</span><span><i class="skip"></i>Omitida</span>
+            <span style="margin-left:auto"><i class="dd"></i>Punto = dificultad</span>
+          </div>
+          <div class="bgrid" id="bgrid"></div>
+
+          <h3 class="sec">Temas a reforzar <span style="color:var(--soft);font-weight:700;text-transform:none;letter-spacing:0">2</span></h3>
+          <div class="topics" id="topics"></div>
+
+          <button class="cta green" id="practicebtn">Practicar lo que fallaste<span class="sub">2 temas · empieza por lo más rentable 🎯</span></button>
+          <button class="cta outline" id="rescanbtn">📸 Escanear otra hoja</button>
+        </div></div>
+        <div class="confetti" id="confetti"></div>
+      </div>
+
+      <!-- ===== DETALLE ===== -->
+      <div class="scrim" id="scrim"></div>
+      <div class="sheet" id="sheet">
+        <div class="grip"></div>
+        <div class="shead">
+          <span class="qnum" id="d_qnum">Pregunta 4 de 10</span>
+          <span class="diff" id="d_diff">🔴 Difícil · +50 XP</span>
+          <span class="sx" id="d_close">✕</span>
+        </div>
+        <div class="sbody" id="d_body"></div>
+        <div class="snav">
+          <button id="d_prev">‹ Anterior</button>
+          <button id="d_next">Siguiente ›</button>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* ---------- figuras SVG B/N (offline) ---------- */
+const FIG_PARABOLA='<svg viewBox="0 0 240 168" role="img" aria-label="Parábola que corta el eje x en 1 y 3">'
++'<g stroke="#cfc4ab" stroke-width="1"><line x1="18" y1="110" x2="226" y2="110"/><line x1="57" y1="14" x2="57" y2="160"/></g>'
++'<path d="M55 38 Q121 226 187 38" fill="none" stroke="#473c2e" stroke-width="3" stroke-linecap="round"/>'
++'<circle cx="89" cy="110" r="4" fill="#473c2e"/><circle cx="153" cy="110" r="4" fill="#473c2e"/>'
++'<text x="89" y="125" text-anchor="middle" font-size="12" font-weight="800" fill="#7a6c52">1</text>'
++'<text x="153" y="125" text-anchor="middle" font-size="12" font-weight="800" fill="#7a6c52">3</text>'
++'<text x="216" y="123" font-size="12" font-weight="800" fill="#9b8c6e">x</text>'
++'<text x="44" y="22" font-size="12" font-weight="800" fill="#9b8c6e">y</text></svg>';
+const FIG_TRIANGLE='<svg viewBox="0 0 260 196" role="img" aria-label="Triángulo ABC con DE paralelo a BC">'
++'<path d="M130 18 L35 178 L225 178 Z" fill="#f7f1e6" stroke="#473c2e" stroke-width="2.5" stroke-linejoin="round"/>'
++'<line x1="92" y1="82" x2="168" y2="82" stroke="#473c2e" stroke-width="3" stroke-dasharray="1 0"/>'
++'<text x="130" y="13" text-anchor="middle" font-size="13" font-weight="800" fill="#473c2e">A</text>'
++'<text x="26" y="190" font-size="13" font-weight="800" fill="#473c2e">B</text>'
++'<text x="230" y="190" font-size="13" font-weight="800" fill="#473c2e">C</text>'
++'<text x="78" y="86" font-size="12" font-weight="800" fill="#473c2e">D</text>'
++'<text x="174" y="86" font-size="12" font-weight="800" fill="#473c2e">E</text>'
++'<text x="103" y="52" font-size="11.5" font-weight="800" fill="#473c2e">4</text>'
++'<text x="56" y="135" font-size="11.5" font-weight="800" fill="#473c2e">6</text>'
++'<text x="152" y="52" font-size="11.5" font-weight="800" fill="#473c2e">6</text>'
++'<text x="196" y="135" font-size="11.5" font-weight="800" fill="#473c2e">?</text></svg>';
+const QF='<span class="mq">x = <span class="frac"><span class="num">−b ± <span class="sqrt"><span class="rt">√</span><span class="rad">b<sup>2</sup> − 4ac</span></span></span><span class="den">2a</span></span></span>';
+
+/* ---------- banco de la hoja (10 preguntas) ---------- */
+const XP={f:10,m:25,d:50}, GEM={f:5,m:8,d:12}, DLBL={f:'🟢 Fácil',m:'🟡 Media',d:'🔴 Difícil'};
+const Q=[
+ {diff:'f',topic:'Vértice de la parábola',correct:0,you:0,
+  q:'El vértice de la parábola <span class="mq">f(x) = x<sup>2</sup> − 6x + 5</span> tiene abscisa x igual a:',
+  alts:['3','−3','6','5'],
+  exp:'La abscisa del vértice es <span class="mq">x = −b/2a = −(−6)/(2·1) = 3</span>.'},
+ {diff:'m',topic:'Ceros de la función',correct:0,you:0,
+  q:'¿Cuáles son los ceros (raíces) de <span class="mq">f(x) = x<sup>2</sup> − 6x + 5</span>?',
+  alts:['x = 1 y x = 5','x = −1 y x = −5','x = 2 y x = 3','x = 0 y x = 6'],
+  exp:'Factorizando: <span class="mq">(x − 1)(x − 5) = 0</span>, por lo tanto x = 1 o x = 5.'},
+ {diff:'d',topic:'Función desde el gráfico',correct:0,you:0,fig:FIG_PARABOLA,caption:'La curva corta el eje x en x = 1 y x = 3.',
+  q:'Observa el gráfico de la parábola. ¿Cuál función la representa?',
+  alts:['<span class="mq">f(x) = x<sup>2</sup> − 4x + 3</span>','<span class="mq">f(x) = x<sup>2</sup> + 4x + 3</span>','<span class="mq">f(x) = −x<sup>2</sup> − 4x + 3</span>','<span class="mq">f(x) = x<sup>2</sup> − 4x − 3</span>'],
+  exp:'Las raíces son 1 y 3, así que <span class="mq">f(x) = (x − 1)(x − 3) = x<sup>2</sup> − 4x + 3</span>; abre hacia arriba, por eso el coeficiente de x² es positivo.'},
+ {diff:'m',topic:'Fórmula general',correct:0,you:1,formula:QF,
+  q:'Usando la fórmula general, ¿cuáles son las soluciones de <span class="mq">x<sup>2</sup> − 6x + 7 = 0</span>?',
+  alts:['<span class="mq">x = 3 ± <span class="sqrt"><span class="rt">√</span><span class="rad">2</span></span></span>','<span class="mq">x = 3 ± 2<span class="sqrt"><span class="rt">√</span><span class="rad">2</span></span></span>','<span class="mq">x = −3 ± <span class="sqrt"><span class="rt">√</span><span class="rad">2</span></span></span>','<span class="mq">x = <span class="frac"><span class="num">3 ± <span class="sqrt"><span class="rt">√</span><span class="rad">2</span></span></span><span class="den">2</span></span></span>'],
+  exp:'<span class="mq">x = <span class="frac"><span class="num">6 ± <span class="sqrt"><span class="rt">√</span><span class="rad">8</span></span></span><span class="den">2</span></span> = <span class="frac"><span class="num">6 ± 2<span class="sqrt"><span class="rt">√</span><span class="rad">2</span></span></span><span class="den">2</span></span> = 3 ± <span class="sqrt"><span class="rt">√</span><span class="rad">2</span></span></span>. El error típico (alternativa B) es no simplificar el 2 del numerador con el denominador.'},
+ {diff:'f',topic:'Discriminante',correct:0,you:0,
+  q:'El discriminante de <span class="mq">x<sup>2</sup> + 4x + 4 = 0</span> es:',
+  alts:['0','16','−16','8'],
+  exp:'<span class="mq">Δ = b<sup>2</sup> − 4ac = 16 − 16 = 0</span> → la ecuación tiene una única solución real.'},
+ {diff:'d',topic:'Semejanza (Tales)',correct:0,you:0,fig:FIG_TRIANGLE,
+  q:'En la figura <span class="mq">DE ∥ BC</span>. Si <span class="mq">AD = 4</span>, <span class="mq">DB = 6</span> y <span class="mq">AE = 6</span>, ¿cuánto mide <span class="mq">EC</span>?',
+  alts:['<span class="mq">EC = 9</span>','<span class="mq">EC = 4</span>','<span class="mq">EC = 6</span>','<span class="mq">EC = 15</span>'],
+  exp:'Por el teorema de Tales: <span class="mq"><span class="frac"><span class="num">AD</span><span class="den">DB</span></span> = <span class="frac"><span class="num">AE</span><span class="den">EC</span></span></span> → <span class="mq"><span class="frac"><span class="num">4</span><span class="den">6</span></span> = <span class="frac"><span class="num">6</span><span class="den">EC</span></span></span> → EC = 9.'},
+ {diff:'m',topic:'Potencias',correct:0,you:0,formula:'<span class="mq"><span class="frac"><span class="num">x<sup>3</sup> · x<sup>5</sup></span><span class="den">x<sup>2</sup></span></span></span>',
+  q:'¿Cuál es la expresión equivalente a la dada?',
+  alts:['<span class="mq">x<sup>6</sup></span>','<span class="mq">x<sup>10</sup></span>','<span class="mq">x<sup>7</sup></span>','<span class="mq">x<sup>15</sup></span>'],
+  exp:'<span class="mq">x<sup>3</sup> · x<sup>5</sup> = x<sup>8</sup></span> y <span class="mq">x<sup>8</sup> / x<sup>2</sup> = x<sup>6</sup></span>.'},
+ {diff:'f',topic:'Evaluar función',correct:0,you:0,
+  q:'Si <span class="mq">f(x) = 2x<sup>2</sup> − 1</span>, entonces <span class="mq">f(3)</span> es:',
+  alts:['17','11','35','5'],
+  exp:'<span class="mq">f(3) = 2·3<sup>2</sup> − 1 = 18 − 1 = 17</span>.'},
+ {diff:'d',topic:'Naturaleza de las raíces',correct:0,you:-1,
+  q:'¿Para qué valor de k la ecuación <span class="mq">x<sup>2</sup> − 4x + k = 0</span> tiene una <b>única</b> solución real?',
+  alts:['k = 4','k = −4','k = 2','k = 16'],
+  exp:'Una única solución ⇔ discriminante cero: <span class="mq">Δ = 16 − 4k = 0</span> → k = 4.'},
+ {diff:'m',topic:'Eje de simetría',correct:0,you:0,
+  q:'El eje de simetría de <span class="mq">f(x) = 2x<sup>2</sup> − 8x + 1</span> es la recta:',
+  alts:['x = 2','x = −2','x = 4','x = 8'],
+  exp:'<span class="mq">x = −b/2a = 8/4 = 2</span>.'}
+];
+function status(q){ if(q.you<0) return 'skip'; return q.you===q.correct?'ok':'bad'; }
+
+/* ---------- ghost de la hoja (cámara) ---------- */
+(function(){
+  let h='';
+  for(let c=0;c<2;c++){ h+='<div class="ghostcol">';
+    for(let r=0;r<10;r++){ h+='<div class="ghostrow"><span class="gn">'+(c*10+r+1)+'</span>';
+      for(let a=0;a<5;a++){ const on=Math.random()<.22?' mk':''; h+='<i class="'+on.trim()+'"></i>'; }
+      h+='</div>'; }
+    h+='</div>'; }
+  $('ghost').innerHTML=h;
+})();
+
+/* ---------- navegación de capas ---------- */
+function showLayer(id){ ['camLayer','procLayer','resLayer'].forEach(l=>$(l).classList.toggle('show',l===id));
+  $('sbar').classList.toggle('light',id==='camLayer'); closeSheet(); }
+
+/* ---------- CÁMARA ---------- */
+let aligned=false, autoShot=null;
+function enterCam(){ showLayer('camLayer'); aligned=false;
+  $('frame').classList.remove('ok'); $('campill').className='campill'; $('campill').innerHTML='<span class="pdot"></span> Alinea las esquinas de la hoja';
+  $('pagetag').className='pagetag'; $('pagetag').textContent='📕 Detectando página…'; $('shutter').classList.remove('ready'); $('camhint').textContent='Apunta a toda la hoja. Yo leo tus marcas. 🔎';
+  clearTimeout(autoShot);
+  setTimeout(()=>{ aligned=true; $('frame').classList.add('ok');
+    $('campill').className='campill ok'; $('campill').innerHTML='<span class="pdot"></span> ✓ Hoja alineada';
+    $('pagetag').className='pagetag ok'; $('pagetag').textContent='📕 Matemática M1 · pág. 127';
+    $('camhint').textContent='¡Listo! Toca el botón para corregir. ✨'; $('shutter').classList.add('ready');
+  },1500);
+}
+$('shutter').onclick=()=>{ if(!aligned) return; clearTimeout(autoShot);
+  $('flash').classList.add('go'); setTimeout(()=>$('flash').classList.remove('go'),460);
+  setTimeout(startProcessing,260); };
+$('webalt').onclick=()=>showToast('La web también corrige 👍 Con el libro es más rápido y suma más.');
+
+/* ---------- PROCESANDO ---------- */
+const STEPS=['Leyendo tus respuestas…','Comparando con la clave…','Midiendo la dificultad de cada una…','Calculando tu XP…'];
+function startProcessing(){ showLayer('procLayer');
+  const dots=document.querySelectorAll('#procLayer .r i'); dots.forEach(d=>d.classList.remove('on'));
+  $('procbar').style.width='0'; let s=0; $('procstep').textContent=STEPS[0];
+  const stepT=setInterval(()=>{ s++; if(s<STEPS.length) $('procstep').textContent=STEPS[s]; },560);
+  dots.forEach((d,i)=>setTimeout(()=>d.classList.add('on'),120+i*70));
+  setTimeout(()=>$('procbar').style.width='100%',150);
+  setTimeout(()=>{ clearInterval(stepT); showResult(); },2350);
+}
+
+/* ---------- RESULTADO ---------- */
+function showResult(){ showLayer('resLayer'); buildGrid(); buildTopics();
+  const ok=Q.filter(q=>status(q)==='ok').length;
+  $('ringscore').textContent=ok+'/'+Q.length;
+  const off=263.9*(1-ok/Q.length); setTimeout(()=>$('ringfill').setAttribute('stroke-dashoffset',off),120);
+  let xp=0,gem=0; Q.forEach(q=>{ if(status(q)==='ok'){ xp+=XP[q.diff]; gem+=GEM[q.diff]; } });
+  $('stxp').textContent='+'+xp; $('stgem').textContent='+'+gem;
+  const fails=Q.length-ok;
+  $('herotitle').textContent = ok===Q.length?'¡Hoja perfecta! 🦦👑' : (ok>=Q.length*0.6?'¡Buen trabajo! 🦦':'¡A seguir! 🦦');
+  $('herosub').textContent = ok===Q.length?'Le achuntaste a todas. nutrIA está orgullosa.' : ('Sumaste harto. Veamos '+(fails===1?'la que se escapó':'las '+fails+' que se escaparon')+' para que no se repitan.');
+  confetti(ok>=Q.length*0.6?26:12);
+}
+function buildGrid(){ const g=$('bgrid'); g.innerHTML='';
+  Q.forEach((q,i)=>{ const st=status(q); const mk=st==='ok'?'✓':(st==='bad'?'✗':'–');
+    const yu = q.you<0?'—':('tu: '+'ABCD'[q.you]);
+    const d=document.createElement('div'); d.className='bub '+st;
+    d.innerHTML='<span class="n">'+(i+1)+'</span><span class="ddot '+q.diff+'"></span><span class="m">'+mk+'</span><span class="yu">'+yu+'</span>';
+    d.onclick=()=>openSheet(i); g.appendChild(d); });
+}
+function buildTopics(){ const t=$('topics'); t.innerHTML='';
+  Q.forEach((q,i)=>{ const st=status(q); if(st==='ok') return;
+    const d=document.createElement('div'); d.className='topic'; d.onclick=()=>openSheet(i);
+    d.innerHTML='<div class="ic">'+(st==='bad'?'❌':'⚪')+'</div><div><div class="tn">'+q.topic+'</div>'
+      +'<div class="ts">Pregunta '+(i+1)+' · '+DLBL[q.diff]+(st==='skip'?' · la dejaste en blanco':' · respuesta incorrecta')+'</div></div><div class="go">›</div>';
+    t.appendChild(d); });
+}
+$('resclose').onclick=enterCam; $('rescanbtn').onclick=enterCam;
+$('practicebtn').onclick=()=>{ location.href='practicar-v5.html'; };
+
+/* ---------- DETALLE (sheet) ---------- */
+let cur=0;
+function openSheet(i){ cur=i; const q=Q[i], st=status(q);
+  $('d_qnum').textContent='Pregunta '+(i+1)+' de '+Q.length;
+  const db=$('d_diff'); db.className='diff '+q.diff; db.textContent=DLBL[q.diff]+' · +'+XP[q.diff]+' XP';
+  let v='';
+  /* veredicto nutrIA */
+  if(st==='ok'){ v+='<div class="verdict ok"><div class="ot">🦦<span class="acc">😎</span></div><div class="vt"><div class="res">¡Correcto!</div><div class="frase">'+(q.diff==='d'?'Difícil y la resolviste. Crack.':'Bien jugado.')+'</div></div><div class="xpw">+'+XP[q.diff]+' XP</div></div>'; }
+  else if(st==='bad'){ v+='<div class="verdict bad"><div class="ot">🦦<span class="acc">🤔</span></div><div class="vt"><div class="res">Incorrecto</div><div class="frase">Marcaste '+'ABCD'[q.you]+'. Tranquilo, lo vemos juntos.</div></div></div>'; }
+  else { v+='<div class="verdict skip"><div class="ot">🦦<span class="acc">👀</span></div><div class="vt"><div class="res">La dejaste en blanco</div><div class="frase">No marcaste alternativa. Aprovechemos de aprenderla.</div></div></div>'; }
+  /* enunciado */
+  v+='<div class="qtext">'+q.q+'</div>';
+  if(q.fig){ v+='<div class="qfig">'+q.fig+'</div>'; if(q.caption) v+='<div class="qcaption">'+q.caption+'</div>'; }
+  if(q.formula){ v+='<div class="formula">'+q.formula+'</div>'; }
+  /* alternativas con marcas */
+  v+='<div class="alts">';
+  q.alts.forEach((a,j)=>{ let cls='alt',tag='';
+    if(j===q.correct){ cls+=' correct'; tag='<span class="tag">Correcta</span>'; }
+    else if(j===q.you && st==='bad'){ cls+=' yourwrong'; tag='<span class="tag">Tu marca</span>'; }
+    v+='<div class="'+cls+'"><span class="key">'+'ABCD'[j]+'</span><span class="val">'+a+'</span>'+tag+'</div>'; });
+  v+='</div>';
+  /* por qué */
+  const openExp = st!=='ok';
+  v+='<span class="why" id="d_why">🦦 ¿Por qué? ▾</span>';
+  v+='<div class="exp'+(openExp?' show':'')+'" id="d_exp">'+q.exp+'</div>';
+  v+='<div class="askbtn" id="d_ask"><span class="ot">🦦</span> Pregúntale a nutrIA sobre esta pregunta</div>';
+  $('d_body').innerHTML=v; $('d_body').scrollTop=0;
+  $('d_why').onclick=()=>{ const e=$('d_exp'); e.classList.add('show'); $('d_why').textContent='🦦 nutrIA te explica:'; };
+  if(openExp) $('d_why').textContent='🦦 nutrIA te explica:';
+  $('d_ask').onclick=()=>{ showToast('Abriendo chat con nutrIA sobre la P'+(i+1)+'… 🦦'); if(typeof sendPrompt==='function'){try{sendPrompt('Pregúntale a nutrIA sobre la pregunta '+(i+1)+' de mi hoja');}catch(e){}} };
+  $('d_prev').disabled=(i===0); $('d_next').disabled=(i===Q.length-1);
+  $('scrim').classList.add('show'); $('sheet').classList.add('show');
+}
+function closeSheet(){ $('sheet').classList.remove('show'); $('scrim').classList.remove('show'); }
+$('d_close').onclick=closeSheet; $('scrim').onclick=closeSheet;
+$('d_prev').onclick=()=>{ if(cur>0) openSheet(cur-1); };
+$('d_next').onclick=()=>{ if(cur<Q.length-1) openSheet(cur+1); };
+
+/* ---------- util ---------- */
+function showToast(t){ const el=$('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(window._t); window._t=setTimeout(()=>el.classList.remove('show'),2400); }
+function confetti(n){ const layer=$('confetti'); layer.innerHTML=''; const cols=['#58cc02','#1cb0f6','#ffc800','#ff7a6b','#a06aff'];
+  for(let i=0;i<n;i++){ const b=document.createElement('b'); b.style.left=(Math.random()*100)+'%'; b.style.background=cols[Math.floor(Math.random()*cols.length)];
+    b.style.setProperty('--r',(Math.random()*720-360)+'deg'); const dur=1.2+Math.random()*0.7; b.style.animation='confettiFall '+dur+'s var(--ease) '+(Math.random()*0.3)+'s forwards';
+    if(Math.random()<0.5) b.style.borderRadius='50%'; layer.appendChild(b); setTimeout(()=>b.remove(),(dur+0.5)*1000); } }
+
+/* init */
+enterCam();
+</script>
+</body>
+</html>
