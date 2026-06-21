@@ -7,93 +7,96 @@
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(120% 80% at 50% -10%,#1b2030 0%,#0c0d12 70%);color:#e8eaf0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px 16px;}
-  .stage{display:flex;gap:34px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:920px;width:100%;}
+  .stage{display:flex;gap:34px;align-items:flex-start;justify-content:center;flex-wrap:wrap;max-width:940px;width:100%;}
 
-  /* DEVICE BOX (carga cada pantalla real) */
-  .device{position:relative;width:452px;max-width:100%;height:760px;border-radius:30px;overflow:hidden;background:#0c0d12;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 1px #2a2e3c;flex:0 0 auto;}
-  .device iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;background:#15161c;}
-  .badge{position:absolute;top:14px;left:14px;z-index:6;background:rgba(8,9,14,.72);backdrop-filter:blur(6px);border:1px solid #2c3346;color:#cdd3e3;font-size:11px;font-weight:800;letter-spacing:.4px;padding:6px 11px;border-radius:999px;}
+  /* DEVICE: carga cada pantalla real, navegable */
+  .device{position:relative;width:452px;max-width:100%;height:768px;border-radius:30px;overflow:hidden;background:#0c0d12;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 1px #2a2e3c;flex:0 0 auto;}
+  .device iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#15161c;}
+  .badge{position:absolute;top:14px;left:14px;z-index:6;background:rgba(8,9,14,.78);backdrop-filter:blur(6px);border:1px solid #2c3346;color:#cdd3e3;font-size:11px;font-weight:800;letter-spacing:.4px;padding:6px 11px;border-radius:999px;pointer-events:none;}
 
-  /* CARDS (intro B2C + cierre) sobre el device */
-  .cover{position:absolute;inset:0;z-index:5;background:linear-gradient(180deg,#fffaf0,#fff);color:#473c2e;display:flex;flex-direction:column;justify-content:center;padding:34px 28px;overflow-y:auto;transition:opacity .4s;}
+  /* COVER (intro B2C) */
+  .cover{position:absolute;inset:0;z-index:5;background:linear-gradient(180deg,#fffaf0,#fff);color:#473c2e;display:flex;flex-direction:column;justify-content:center;padding:34px 28px;transition:opacity .35s;}
   .cover.hide{opacity:0;pointer-events:none;}
-  .cover.dark{background:radial-gradient(120% 80% at 50% 0%,#1d2333,#0c0d12);color:#e8eaf0;text-align:center;align-items:center;}
-  .c-eye{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#1cb0f6;}
-  .cover.dark .c-eye{color:#9fe06a;}
-  .c-title{font-size:31px;font-weight:900;letter-spacing:-.8px;line-height:1.06;margin:9px 0 12px;color:#473c2e;}
-  .cover.dark .c-title{color:#fff;}
-  .c-body{font-size:14px;line-height:1.6;color:#5b4e3c;font-weight:500;}
-  .c-body b{color:#46a302;}
-  .tiers{display:flex;flex-direction:column;gap:8px;margin-top:18px;}
-  .tier{border:2px solid #efe3cd;border-radius:14px;padding:10px 13px;background:#fff;display:flex;align-items:center;}
-  .tier .tn{font-weight:900;font-size:14px;} .tier .ts{font-size:11.5px;color:#9b8c6e;font-weight:600;margin-top:1px;}
-  .tier .tg{margin-left:auto;font-size:12px;font-weight:800;color:#9b8c6e;}
-  .tier.mid{border-color:#bfe9a8;background:#f6fbef;} .tier.top{border-color:#ffe49e;background:linear-gradient(135deg,#fff6df,#fffdf7);} .tier.top .tg{color:#b07b00;}
-  .c-foot{margin-top:18px;font-size:12px;font-weight:800;color:#46a302;}
-  .cover.dark .c-foot{color:#9fe06a;}
+  .c-title{font-size:33px;font-weight:900;letter-spacing:-.9px;line-height:1.05;color:#46a302;}
+  .c-sub{font-size:14.5px;line-height:1.5;color:#5b4e3c;font-weight:600;margin:11px 0 22px;}
+  .tiers{display:flex;flex-direction:column;gap:11px;}
+  .tier{position:relative;border:2px solid #efe3cd;border-bottom-width:4px;border-radius:15px;padding:13px 15px;background:#fff;display:flex;align-items:center;cursor:default;transition:transform .12s;}
+  .tier:hover{transform:translateY(-2px);}
+  .tier .tn{font-weight:900;font-size:15px;} .tier .ts{font-size:11.5px;color:#9b8c6e;font-weight:600;margin-top:2px;}
+  .tier .tg{margin-left:auto;font-size:13px;font-weight:900;color:#9b8c6e;}
+  .tier.mid{border-color:#bfe9a8;background:#f6fbef;} .tier.mid .tg{color:#46a302;}
+  .tier.top{border-color:#ffe49e;background:linear-gradient(135deg,#fff6df,#fffdf7);} .tier.top .tg{color:#b07b00;}
+  .tier .pop{position:absolute;left:8px;right:8px;bottom:calc(100% + 9px);background:#473c2e;color:#fff;font-size:11.5px;line-height:1.45;padding:10px 12px;border-radius:11px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:20;font-weight:600;text-align:left;box-shadow:0 10px 28px rgba(0,0,0,.35);}
+  .tier:hover .pop{opacity:1;}
+  .tier .pop::after{content:"";position:absolute;left:34px;top:100%;border:6px solid transparent;border-top-color:#473c2e;}
+  .c-hint{margin-top:20px;font-size:12px;font-weight:800;color:#46a302;}
 
   /* PANEL */
-  .panel{width:330px;max-width:100%;flex:0 0 auto;}
-  .ptop{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#9fe06a;letter-spacing:.3px;}
-  .ptop .ott{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#caa06a,#9a7038);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 0 #7c5a2c;}
-  .pstep{font-size:11px;font-weight:800;color:#7180a0;margin-top:15px;letter-spacing:.4px;}
-  .peyebrow{font-size:11px;font-weight:800;letter-spacing:.7px;color:#8ea0c0;text-transform:uppercase;margin-top:4px;}
-  .ptitle{font-size:26px;font-weight:900;letter-spacing:-.4px;line-height:1.12;margin:5px 0 10px;color:#fff;min-height:58px;}
-  .pbody{font-size:14.5px;line-height:1.58;color:#c4cbdd;min-height:130px;}
-  .pbody b{color:#9fe06a;}
-  .pbar{height:4px;background:#262b3a;border-radius:999px;margin-top:16px;overflow:hidden;}
-  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#58cc02,#9fe06a);border-radius:999px;}
-  .pctrl{display:flex;align-items:center;gap:9px;margin-top:15px;}
-  .pctrl button{width:40px;height:40px;border-radius:50%;border:1.5px solid #313748;background:#171b27;color:#e8eaf0;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .1s;}
-  .pctrl button:hover{background:#222838;} .pctrl button:active{transform:scale(.92);}
-  .pctrl #play{background:#58cc02;border-color:#3d8b00;color:#fff;width:46px;height:46px;font-size:16px;}
-  .dots{display:flex;gap:6px;margin-left:8px;flex-wrap:wrap;align-items:center;}
+  .panel{width:340px;max-width:100%;flex:0 0 auto;padding-top:6px;}
+  .peyebrow{font-size:11px;font-weight:800;letter-spacing:.8px;color:#8ea0c0;text-transform:uppercase;}
+  .ptitle{font-size:27px;font-weight:900;letter-spacing:-.5px;line-height:1.1;margin:6px 0 6px;color:#fff;}
+  .pnote{font-size:12.5px;font-weight:700;color:#9fe06a;background:#16210f;border:1px solid #2f5a22;border-radius:10px;padding:8px 11px;margin-bottom:12px;display:none;}
+  .pnote.show{display:block;}
+  .plist{list-style:none;display:flex;flex-direction:column;gap:10px;max-height:498px;overflow:auto;padding-right:6px;}
+  .plist::-webkit-scrollbar{width:6px;} .plist::-webkit-scrollbar-thumb{background:#2c3346;border-radius:999px;}
+  .plist li{font-size:13.5px;line-height:1.45;color:#c4cbdd;}
+  .plist li b{color:#fff;font-weight:800;}
+  .pctrl{display:flex;align-items:center;gap:9px;margin-top:18px;}
+  .pctrl button{height:44px;border-radius:999px;border:1.5px solid #313748;background:#171b27;color:#e8eaf0;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s,transform .1s;padding:0 16px;}
+  .pctrl button:hover{background:#222838;} .pctrl button:active{transform:scale(.95);}
+  .pctrl #next{background:#58cc02;border-color:#3d8b00;color:#fff;}
+  .pctrl .ico{width:44px;padding:0;font-size:16px;}
+  .dots{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;align-items:center;}
   .dot2{width:8px;height:8px;border-radius:50%;background:#3a4055;cursor:pointer;transition:all .25s;}
   .dot2.on{background:#9fe06a;width:20px;border-radius:999px;}
-  .popen{display:inline-block;margin-top:16px;font-size:12px;font-weight:800;color:#9fe06a;text-decoration:none;}
+  .phelp{margin-top:14px;font-size:11.5px;color:#7180a0;font-weight:600;line-height:1.5;}
+  .phelp b{color:#aeb6cc;}
+  .popen{display:inline-block;margin-top:12px;font-size:12px;font-weight:800;color:#9fe06a;text-decoration:none;}
   .popen:hover{text-decoration:underline;}
-  @media(max-width:820px){ .ptitle{min-height:0;} .pbody{min-height:0;} .device{height:680px;} }
+  @media(max-width:860px){ .device{height:660px;} .plist{max-height:none;} }
 </style>
 </head>
 <body>
 <div class="stage">
 
   <div class="device">
-    <div class="badge" id="badge">Modelo B2C</div>
+    <div class="badge" id="badge">El modelo</div>
     <iframe id="frame" title="pantalla"></iframe>
-
-    <div class="cover" id="introcard">
-      <div class="c-eye">🦦 nutrIA · el modelo</div>
-      <div class="c-title">Gratis de verdad,<br>negocio sano</div>
-      <p class="c-body">Puntaje Nacional nace para <b>bajar la brecha</b>: el aprendizaje es <b>100% gratis</b>. El negocio está en lo difícil de copiar — el <b>libro</b> con sus hojas de respuesta y código propio, y <b>nutrIA</b>, la IA tutora. Nunca cobramos por aprender.</p>
+    <div class="cover" id="cover">
+      <div class="c-title">Gratis de verdad</div>
+      <div class="c-sub">Reducir la brecha educacional, social y económica de Latinoamérica.</div>
       <div class="tiers">
-        <div class="tier"><div><div class="tn">Free</div><div class="ts">todo digital</div></div><div class="tg">nutrIA acotada</div></div>
-        <div class="tier mid"><div><div class="tn">Plan</div><div class="ts">+ libro y hojas en PDF</div></div><div class="tg">nutrIA libre</div></div>
-        <div class="tier top"><div><div class="tn">Libro</div><div class="ts">papel + hojas impresas</div></div><div class="tg">$49.990</div></div>
+        <div class="tier">
+          <div><div class="tn">Free</div><div class="ts">todo el aprendizaje digital</div></div>
+          <div class="tg">$0</div>
+          <div class="pop">Práctica adaptativa, plan por carrera, ensayos de la semana, percentil real, racha y ligas. nutrIA con cuota diaria. Sin libro ni hojas físicas.</div>
+        </div>
+        <div class="tier mid">
+          <div><div class="tn">Plan</div><div class="ts">libro y hojas en PDF</div></div>
+          <div class="tg">$49.990<span style="font-size:10px;color:#9b8c6e">/año</span></div>
+          <div class="pop">Todo lo de Free + <b style="color:#9fe06a">nutrIA libre</b> + tu libro y las hojas de respuesta en PDF (las imprimes tú) + tu código propio ligado a tu RUT.</div>
+        </div>
+        <div class="tier top">
+          <div><div class="tn">Puntaje Nacional Pro</div><div class="ts">libro impreso + hojas impresas</div></div>
+          <div class="tg">$100.000<span style="font-size:10px;color:#b07b00">/año</span></div>
+          <div class="pop">Todo lo del Plan + libro <b>impreso</b> y hojas de respuesta <b>impresas</b> despachadas a tu casa. nutrIA libre.</div>
+        </div>
       </div>
-      <div class="c-foot">Recorramos cada pantalla ↓</div>
-    </div>
-
-    <div class="cover dark hide" id="closecard">
-      <div class="c-eye">Puntaje Nacional</div>
-      <div class="c-title">Gratis de verdad.<br>Negocio sano.</div>
-      <p class="c-body" style="color:#aeb6cc">Home · Practicar · Escanear · Perfil · Niveles · Logros.<br>Una plataforma que premia el esfuerzo real.</p>
+      <div class="c-hint">Haz clic en ▶ Siguiente para recorrer cada pantalla →</div>
     </div>
   </div>
 
   <div class="panel">
-    <div class="ptop"><span class="ott">🦦</span> nutrIA te muestra la plataforma</div>
-    <div class="pstep" id="pstep"></div>
-    <div class="peyebrow" id="peyebrow"></div>
-    <h2 class="ptitle" id="ptitle"></h2>
-    <p class="pbody" id="pbody"></p>
-    <div class="pbar"><i id="pbarfill"></i></div>
+    <div class="peyebrow" id="eyebrow">El modelo</div>
+    <h2 class="ptitle" id="ptitle">El modelo B2C</h2>
+    <div class="pnote" id="pnote"></div>
+    <ul class="plist" id="plist"></ul>
     <div class="pctrl">
-      <button id="prev" title="Anterior">◀</button>
-      <button id="play" title="Pausa/Play">❚❚</button>
-      <button id="next" title="Siguiente">▶</button>
-      <div class="dots" id="dots"></div>
+      <button class="ico" id="prev" title="Vista anterior">◀</button>
+      <button id="next">Siguiente ▶</button>
     </div>
+    <div class="dots" id="dots"></div>
+    <div class="phelp"><b>Tú navegas:</b> haz clic dentro de la pantalla, pásale el mouse por encima para ver los detalles, y usa ◀ ▶ para cambiar de vista.</div>
     <a class="popen" id="openlink" href="home.html" target="_blank">abrir esta pantalla ↗</a>
   </div>
 
@@ -101,97 +104,100 @@
 
 <script>
 (function(){
-  var STEPS=[
-    {type:"intro", badge:"Modelo B2C", eye:"El modelo", title:"Gratis de verdad, negocio sano",
-     body:"Antes de entrar: el aprendizaje es <b>100% gratis</b>. El negocio está en el <b>libro</b> (papel + hojas para escanear) y en <b>nutrIA</b>, libre con el plan. Así bajamos la brecha sin traicionar la misión.", open:"home.html", ms:9500},
-    {type:"screen", src:"home.html", badge:"1 · Home", eye:"Pantalla 1 · Home", title:"El hogar del estudiante",
-     body:"Todo en un vistazo: tu <b>nivel</b>, la <b>misión de hoy</b>, tu <b>semana</b>, tus <b>temas</b>, los <b>ensayos</b> y más. Cada sección empuja el hábito y muestra lo que más te conviene hoy.", ms:14000},
-    {type:"screen", src:"practicar-v5.html", badge:"2 · Practicar", eye:"Pantalla 2 · Practicar", title:"La sesión de estudio",
-     body:"Preguntas <b>adaptativas por dificultad (IRT)</b>, con vidas, pistas y <b>nutrIA</b> que explica tus errores en el momento. Aquí se gana el XP que te hace subir de nivel y de liga.", ms:13000},
-    {type:"screen", src:"escanear-v1.html", badge:"3 · Escanear", eye:"Pantalla 3 · Escanear el libro", title:"El puente papel ↔ app",
-     body:"El <b>foso</b>: respondes en el libro, escaneas la hoja con su ID y la <b>corregimos al instante</b>, con la explicación de cada pregunta. Lo único que nadie copia.", ms:13000},
-    {type:"screen", src:"perfil.html", badge:"4 · Perfil", eye:"Pantalla 4 · Tu perfil", title:"Tu identidad",
-     body:"Tu <b>criatura</b>, tu nivel, tus logros y tu <b>tarjeta compartible</b>. El motor viral: comparte tu avance e invita amigos. Toca la criatura y saltas a tus niveles.", ms:12500},
-    {type:"screen", src:"niveles-final.html", badge:"5 · Niveles", eye:"Pantalla 5 · Niveles", title:"Los 12 niveles",
-     body:"Tu <b>escalera de criaturas</b>, de Puntaje Inicial a <b>Puntaje Nacional</b>. Subes por tu <b>esfuerzo</b> y tu progreso — nunca por tu puntaje bruto.", ms:13500},
-    {type:"screen", src:"logros.html", badge:"6 · Logros", eye:"Pantalla 6 · Logros", title:"61 logros",
-     body:"Premian <b>aprendizaje real</b>, hábito, escanear el libro y <b>ayudar en la comunidad</b>. Rareza común→legendario, con secretos. Estatus, <b>sin pay-to-win</b>.", ms:13500},
-    {type:"close", badge:"Cierre", eye:"Puntaje Nacional", title:"Gratis de verdad. Negocio sano.",
-     body:"Recorriste Home · Practicar · Escanear · Perfil · Niveles · Logros. Una plataforma que premia el esfuerzo real.", open:"home.html", ms:7000}
-  ];
+  var ORDER=["__intro__","home.html","practicar-v5.html","escanear-v1.html","perfil.html","niveles-final.html","logros.html"];
+  var PANELS={
+    "__intro__":{badge:"El modelo", eye:"El modelo", title:"El modelo B2C", b:[
+      {k:"Aprender es gratis",v:"el 100% del aprendizaje, siempre. Esa es la misión."},
+      {k:"El negocio",v:"el papel (libro + hojas de respuesta) y nutrIA."},
+      {k:"Pasa el mouse por cada plan",v:"para ver qué incluye."}
+    ]},
+    "home.html":{badge:"Home", eye:"Vista", title:"Vista: Home", b:[
+      {k:"🔥 12 · Racha",v:"12 días seguidos estudiando: el hábito que te hace subir de nivel."},
+      {k:"💎 400 · Gemas",v:"las ganas estudiando; sirven para pistas y para repetir una racha."},
+      {k:"🛡️ 3º · Liga",v:"compites por XP cada semana; el top de la tabla sube de división."},
+      {k:"Tu nivel",v:"tu criatura y a cuánto de Chile le ganas rumbo a tu carrera."},
+      {k:"Tu misión de hoy",v:"lo que más te conviene estudiar hoy (lo elige nutrIA)."},
+      {k:"Tu semana",v:"tu racha de la semana de un vistazo."},
+      {k:"Tus temas",v:"los temas clave para tu carrera; al dominarlos, salen del home."},
+      {k:"Ensayos de la semana",v:"cortos, con ranking; te inscribes en los que quieras."},
+      {k:"Explora",v:"comunidad, clases en vivo, ensayos y plan de estudio."},
+      {k:"Lleva tu preparación a otro nivel",v:"el libro: papel + hojas para escanear."}
+    ]},
+    "practicar-v5.html":{badge:"La misión de hoy", eye:"Vista", title:"Vista: La misión de hoy",
+      note:"Se abre al tocar «Empezar misión» en el Home.", b:[
+      {k:"❤️ Corazones (vidas)",v:"tienes 1: puedes equivocarte una sola vez por racha."},
+      {k:"Si te quedas sin corazón",v:"puedes seguir gastando 💎 gemas para reintentar."},
+      {k:"💎 Gemas",v:"sirven justo para eso (reintentar) y para pedir pistas."},
+      {k:"Preguntas difíciles",v:"dan más XP; las fáciles, menos (psicometría IRT)."},
+      {k:"nutrIA",v:"te explica cada error en el momento."}
+    ]},
+    "escanear-v1.html":{badge:"El estudiante escanea", eye:"Vista", title:"Vista: El estudiante escanea", b:[
+      {k:"Papel → app",v:"respondes en el libro y escaneas la hoja con su ID."},
+      {k:"Corrección al instante",v:"con la explicación de cada pregunta."},
+      {k:"Suma a tu racha",v:"hacer la misión y escanear se sincronizan."},
+      {k:"El foso",v:"el puente físico ↔ digital que nadie copia."}
+    ]},
+    "perfil.html":{badge:"Tu perfil", eye:"Vista", title:"Vista: Tu perfil", b:[
+      {k:"Tu identidad",v:"tu criatura y nivel; subes con XP (esfuerzo), no por tu puntaje bruto."},
+      {k:"12 niveles",v:"de Puntaje Inicial a Puntaje Nacional."},
+      {k:"Sección Logros",v:"premian el aprendizaje real; muy ligados al modelo B2C."},
+      {k:"Sección Estadísticas",v:"tu resumen: rachas, ensayos, precisión…"},
+      {k:"Sección Niveles",v:"tu escalera de criaturas (toca la criatura para abrirla)."},
+      {k:"Tarjeta compartible",v:"comparte tu avance: el motor viral."}
+    ]},
+    "niveles-final.html":{badge:"Niveles", eye:"Vista", title:"Vista: Niveles", b:[
+      {k:"Subes por esfuerzo",v:"y progreso (XP), nunca por tu puntaje bruto."},
+      {k:"12 criaturas que evolucionan",v:"Inicial · Regular · Bueno · Sólido · Notable · Brillante · Sobrenatural · Titánico · Extraterrestre · Mítico · Divino · Puntaje Nacional 👑."},
+      {k:"Pasa el mouse",v:"por cada nivel para ver su descripción."}
+    ]},
+    "logros.html":{badge:"Logros", eye:"Vista", title:"Vista: Logros", b:[
+      {k:"Recién obtenidos",v:"tus últimos logros desbloqueados."},
+      {k:"📕 Libro y escaneo",v:"ej: Libro activado, Primer escaneo, Biblioteca activa."},
+      {k:"🔥 Constancia",v:"ej: Racha de 7, Desafío 21 días, Racha de 100."},
+      {k:"📚 Por materia",v:"ej: Calculista novato, El don de las palabras, A prueba de difíciles."},
+      {k:"🤝 Comunidad",v:"ej: Primera ayuda, Ayudante, Maestro de la comunidad."},
+      {k:"🏆 Hitos y secretos",v:"ej: Criatura suprema, Invita a un amigo, Ave nocturna 🤫."},
+      {k:"Rareza",v:"común → legendario; todos suman XP. Sin pay-to-win."}
+    ]}
+  };
 
-  var frame=document.getElementById('frame'), intro=document.getElementById('introcard'),
-      closec=document.getElementById('closecard'), badge=document.getElementById('badge'),
-      bar=document.getElementById('pbarfill'), openlink=document.getElementById('openlink'),
-      elStep=document.getElementById('pstep'), elEye=document.getElementById('peyebrow'),
-      elTitle=document.getElementById('ptitle'), elBody=document.getElementById('pbody'),
-      dots=document.getElementById('dots'), playBtn=document.getElementById('play');
-  var idx=0, playing=true, timer=null, N=STEPS.length, scrollToken=0, screenN=0;
+  var frame=document.getElementById('frame'), cover=document.getElementById('cover'), badge=document.getElementById('badge'),
+      elEye=document.getElementById('eyebrow'), elTitle=document.getElementById('ptitle'), elNote=document.getElementById('pnote'),
+      elList=document.getElementById('plist'), dots=document.getElementById('dots'), openlink=document.getElementById('openlink');
+  var cur=0;
 
-  STEPS.forEach(function(s){ if(s.type==='screen') screenN++; });
-  STEPS.forEach(function(s,i){ var d=document.createElement('div'); d.className='dot2'; d.onclick=function(){go(i);}; dots.appendChild(d); });
+  ORDER.forEach(function(k,i){ var d=document.createElement('div'); d.className='dot2'; d.title=PANELS[k].badge; d.onclick=function(){ showIdx(i); }; dots.appendChild(d); });
 
-  function ease(p){ return p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; }
-  function autoscroll(ms){
-    var my=++scrollToken;
+  function base(u){ if(!u) return ''; u=(''+u).split('?')[0].split('#')[0]; return u.substring(u.lastIndexOf('/')+1); }
+  function paintDots(i){ [].forEach.call(dots.children,function(d,j){ d.classList.toggle('on',j===i); }); }
+  function setPanel(key){
+    var p=PANELS[key]; if(!p) return;
+    badge.textContent=p.badge; elEye.textContent=p.eye; elTitle.textContent=p.title;
+    if(p.note){ elNote.textContent=p.note; elNote.classList.add('show'); } else { elNote.classList.remove('show'); }
+    elList.innerHTML=p.b.map(function(x){ return '<li><b>'+x.k+'</b> — '+x.v+'</li>'; }).join('');
+    openlink.style.display = key==='__intro__' ? 'none' : 'inline-block';
+    if(key!=='__intro__') openlink.href=key;
+    elList.scrollTop=0;
+  }
+  function showIdx(i){
+    i=(i+ORDER.length)%ORDER.length; cur=i; paintDots(i);
+    var key=ORDER[i];
+    if(key==='__intro__'){ cover.classList.remove('hide'); frame.style.visibility='hidden'; }
+    else{ cover.classList.add('hide'); frame.style.visibility='visible'; if(base(frame.getAttribute('src'))!==key){ frame.setAttribute('src',key); } }
+    setPanel(key);
+  }
+  frame.onload=function(){
     try{
-      var win=frame.contentWindow, doc=frame.contentDocument;
-      var sc=doc.scrollingElement||doc.documentElement||doc.body;
-      sc.scrollTop=0;
-      var max=Math.max(0,sc.scrollHeight-(frame.clientHeight||760));
-      if(max<8) return;
-      var hold=1200, dur=Math.max(2400, ms-3000), start=null;
-      function stepf(ts){
-        if(my!==scrollToken||!playing) return;
-        if(start===null) start=ts;
-        var p=(ts-start-hold)/dur; if(p<0)p=0; if(p>1)p=1;
-        sc.scrollTop=max*ease(p);
-        if(p<1) win.requestAnimationFrame(stepf);
-      }
-      win.requestAnimationFrame(stepf);
+      var key=base(frame.contentWindow.location.pathname);
+      var i=ORDER.indexOf(key);
+      if(i>0){ cur=i; paintDots(i); setPanel(key); cover.classList.add('hide'); frame.style.visibility='visible'; }
     }catch(e){}
-  }
-  frame.onload=function(){ var s=STEPS[idx]; if(s&&s.type==='screen'){ autoscroll(s.ms); } };
+  };
+  document.getElementById('next').onclick=function(){ showIdx(cur+1); };
+  document.getElementById('prev').onclick=function(){ showIdx(cur-1); };
+  document.addEventListener('keydown',function(e){ if(e.key==='ArrowRight'){showIdx(cur+1);} else if(e.key==='ArrowLeft'){showIdx(cur-1);} });
 
-  function runBar(ms){
-    bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth;
-    if(playing){ bar.style.transition='width '+ms+'ms linear'; bar.style.width='100%'; }
-  }
-  function render(){
-    var s=STEPS[idx];
-    badge.textContent=s.badge;
-    elStep.textContent='Paso '+(idx+1)+' de '+N;
-    elEye.textContent=s.eye; elTitle.textContent=s.title; elBody.innerHTML=s.body;
-    openlink.style.display = s.open?'inline-block':'none';
-    if(s.open) openlink.href=s.open; else if(s.src) { openlink.href=s.src; openlink.style.display='inline-block'; }
-    [].forEach.call(dots.children,function(d,i){ d.classList.toggle('on',i===idx); });
-    scrollToken++; // cancela scroll anterior
-    if(s.type==='screen'){
-      intro.classList.add('hide'); closec.classList.add('hide');
-      frame.style.display='block';
-      if(frame.getAttribute('data-src')!==s.src){ frame.setAttribute('data-src',s.src); frame.src=s.src; }
-      else { autoscroll(s.ms); }
-    } else {
-      frame.style.display='none'; frame.removeAttribute('data-src');
-      intro.classList.toggle('hide', s.type!=='intro');
-      closec.classList.toggle('hide', s.type!=='close');
-    }
-    runBar(s.ms);
-  }
-  function schedule(){ clearTimeout(timer); if(playing){ timer=setTimeout(next,STEPS[idx].ms); } }
-  function go(i){ idx=(i%N+N)%N; render(); schedule(); }
-  function next(){ go(idx+1); } function prev(){ go(idx-1); }
-  function toggle(){
-    playing=!playing; playBtn.textContent=playing?'❚❚':'▶';
-    if(playing){ schedule(); runBar(STEPS[idx].ms); if(STEPS[idx].type==='screen') autoscroll(STEPS[idx].ms); }
-    else { clearTimeout(timer); scrollToken++; var w=getComputedStyle(bar).width; bar.style.transition='none'; bar.style.width=w; }
-  }
-  document.getElementById('next').onclick=function(){ go(idx+1); };
-  document.getElementById('prev').onclick=function(){ go(idx-1); };
-  playBtn.onclick=toggle;
-  document.addEventListener('keydown',function(e){ if(e.key==='ArrowRight')go(idx+1); else if(e.key==='ArrowLeft')go(idx-1); else if(e.key===' '){e.preventDefault();toggle();} });
-
-  go(0);
+  showIdx(0);
 })();
 </script>
 </body>
