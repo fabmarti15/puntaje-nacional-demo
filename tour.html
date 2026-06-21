@@ -25,6 +25,19 @@
   .splash .brandbig .g{color:#46a302;}
   .splash h1{font-size:21px;font-weight:800;letter-spacing:-.4px;line-height:1.15;margin:22px 0 12px;color:#5b4e3c;}
   .splash .tag{font-size:14px;font-weight:700;color:#9b8c6e;}
+  /* potential / oportunidad */
+  .cover.potential{background:linear-gradient(180deg,#fffaf0,#fff);color:#473c2e;}
+  .potential .c-eye{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#1cb0f6;}
+  .potential .pt{font-size:26px;font-weight:900;letter-spacing:-.7px;line-height:1.08;margin:9px 0 8px;}
+  .potential .pt .g{color:#46a302;}
+  .potential .ps{font-size:13.5px;font-weight:600;color:#5b4e3c;line-height:1.5;margin-bottom:22px;}
+  .potential .ps b{color:#46a302;}
+  .chart{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:0 6px;}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:7px;}
+  .bar .v{font-size:13px;font-weight:900;color:#46a302;}
+  .bar .col{width:100%;max-width:48px;border-radius:9px 9px 0 0;background:linear-gradient(180deg,#7ed957,#46a302);}
+  .bar .yr{font-size:12px;font-weight:800;color:#9b8c6e;}
+  .chartcap{text-align:center;font-size:10.5px;font-weight:800;color:#9b8c6e;margin-top:14px;text-transform:uppercase;letter-spacing:.5px;}
   /* model */
   .cover.model{background:linear-gradient(180deg,#fffaf0,#fff);color:#473c2e;}
   .c-title{font-size:32px;font-weight:900;letter-spacing:-.9px;line-height:1.05;color:#46a302;}
@@ -83,7 +96,21 @@
       <div class="tag">El estudiante, para la nueva era ✨</div>
     </div>
 
-    <!-- VISTA 1 · MODELO -->
+    <!-- VISTA 1 · OPORTUNIDAD -->
+    <div class="cover potential hide" id="potential">
+      <div class="c-eye">La oportunidad</div>
+      <div class="pt">Piloto en Chile<br>→ <span class="g">Colombia y México</span></div>
+      <div class="ps">Un modelo nativo de la <b>nueva era de la IA</b>.</div>
+      <div class="chart">
+        <div class="bar"><div class="v">$0,7M</div><div class="col" style="height:54px"></div><div class="yr">2026</div></div>
+        <div class="bar"><div class="v">$0,95M</div><div class="col" style="height:74px"></div><div class="yr">2027</div></div>
+        <div class="bar"><div class="v">$1,5M</div><div class="col" style="height:117px"></div><div class="yr">2028</div></div>
+        <div class="bar"><div class="v">$2,1M</div><div class="col" style="height:164px"></div><div class="yr">2029</div></div>
+      </div>
+      <div class="chartcap">Ingreso estimado · Chile (USD)</div>
+    </div>
+
+    <!-- VISTA 2 · MODELO -->
     <div class="cover model hide" id="cover">
       <div class="c-title">Gratis de verdad</div>
       <div class="c-sub">Reducir la brecha educacional, social y económica de Latinoamérica.</div>
@@ -126,13 +153,19 @@
 
 <script>
 (function(){
-  var ORDER=["__cover__","__intro__","home.html","practicar-v5.html","escanear-v1.html","perfil.html","niveles-final.html","logros.html"];
-  var HOME_IDX=2;
+  var ORDER=["__cover__","__potential__","__intro__","home.html","practicar-v5.html","escanear-v1.html","perfil.html","niveles-final.html","logros.html"];
+  var HOME_IDX=3;
   var PANELS={
     "__cover__":{badge:"Inicio", eye:"Bienvenido", title:"Puntaje Nacional", b:[
       {k:"Nuevo modelo. Nuevo diseño.",v:"el estudiante de Puntaje Nacional, para la nueva era."},
-      {k:"Este recorrido",v:"primero el modelo de negocio, luego cada pantalla del estudiante."},
+      {k:"Este recorrido",v:"la oportunidad, el modelo de negocio y cada pantalla del estudiante."},
       {k:"Tú navegas",v:"usa ◀ Siguiente ▶ o haz clic dentro de las pantallas."}
+    ]},
+    "__potential__":{badge:"La oportunidad", eye:"La oportunidad", title:"La oportunidad", b:[
+      {k:"Piloto en Chile",v:"validamos acá; luego escalamos a Colombia y México 🇨🇱→🇨🇴🇲🇽."},
+      {k:"Nativo de la era de la IA",v:"psicometría, fábrica de contenido y nutrIA: el producto es IA de punta a punta."},
+      {k:"Ingreso estimado (Chile, USD)",v:"2026 $0,7M · 2027 $0,95M · 2028 $1,5M · 2029 $2,1M."},
+      {k:"Escala",v:"contenido y adaptativo a costo casi cero → crecer sin frenos."}
     ]},
     "__intro__":{badge:"El modelo", eye:"El modelo", title:"El modelo B2C", b:[
       {k:"Aprender es gratis",v:"el 100% del aprendizaje, siempre. Esa es la misión."},
@@ -189,7 +222,7 @@
     ]}
   };
 
-  var frame=document.getElementById('frame'), splash=document.getElementById('splash'), cover=document.getElementById('cover'),
+  var frame=document.getElementById('frame'), splash=document.getElementById('splash'), potential=document.getElementById('potential'), cover=document.getElementById('cover'),
       badge=document.getElementById('badge'), homebtn=document.getElementById('homebtn'),
       elEye=document.getElementById('eyebrow'), elTitle=document.getElementById('ptitle'), elNote=document.getElementById('pnote'),
       elList=document.getElementById('plist'), dots=document.getElementById('dots'), openlink=document.getElementById('openlink');
@@ -234,7 +267,8 @@
     i=(i+ORDER.length)%ORDER.length; cur=i; paintDots(i); stopPing();
     var key=ORDER[i];
     splash.classList.toggle('hide', i!==0);
-    cover.classList.toggle('hide', i!==1);
+    potential.classList.toggle('hide', i!==1);
+    cover.classList.toggle('hide', i!==2);
     if(i>=HOME_IDX){
       frame.style.visibility='visible'; homebtn.style.display='flex';
       if(base(frame.getAttribute('src'))!==key){ frame.setAttribute('src',key); }
@@ -248,7 +282,7 @@
     try{
       var key=base(frame.contentWindow.location.pathname);
       var i=ORDER.indexOf(key);
-      if(i>=HOME_IDX){ cur=i; paintDots(i); setPanel(key); splash.classList.add('hide'); cover.classList.add('hide'); frame.style.visibility='visible'; homebtn.style.display='flex'; startPing(); }
+      if(i>=HOME_IDX){ cur=i; paintDots(i); setPanel(key); splash.classList.add('hide'); potential.classList.add('hide'); cover.classList.add('hide'); frame.style.visibility='visible'; homebtn.style.display='flex'; startPing(); }
     }catch(e){}
   };
   homebtn.onclick=function(){ showIdx(HOME_IDX); };
